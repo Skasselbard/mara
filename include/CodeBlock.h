@@ -6,6 +6,9 @@
 #define MARA_CODEBLOCK_H
 
 
+#include <cstddef>
+#include "Page.h"
+
 /**
  * The code block which encodes the size of the memory block dynamically
  *
@@ -42,6 +45,28 @@
  *                  .
  */
 class CodeBlock {
+public:
+    /**
+     * Reads the CodeBlock from the left
+     * @param firstByte the first byte from the CodeBlock
+     * @return the size of the memory block
+     */
+    static size_t readFromLeft(byte* firstByte);
+    /**
+     * Reads the CodeBlock from the right
+     * @param firstByte the first byte from the CodeBlock
+     * @return the size of the memory block
+     */
+    static size_t readFromRight(byte* firstByte);
+
+    /**
+     * Build a CodeBlock
+     * @param memoryBlockSize size of the memory block which should be represented by the CodeBlock
+     * @param returnArraySize size of the array returned by this function
+     * @return an array of bytes, containing the codeBlock representing the memory block size.
+     * The size of the array is stored in the second parameter
+     */
+    static byte* getCodeBlock(size_t memoryBlockSize, size_t &returnArraySize);
 
 };
 
