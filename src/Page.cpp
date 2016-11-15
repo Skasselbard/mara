@@ -2,7 +2,8 @@
 // Created by tom on 14.11.16.
 //
 
-#include <cstdlib>
+#include <stdlib.h>
+#include <malloc.h>
 #include "../include/Page.h"
 #include "../include/Logger.h"
 
