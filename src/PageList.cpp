@@ -4,8 +4,12 @@
 
 #include "../include/PageList.h"
 
-size_t PageList::blockSize= 104857600;//100mb
-int PageList::setBlockSize(size_t sizeInByte) {
-    blockSize = sizeInByte;
+size_t PageList::pageSize= 104857600;//100mb
+int PageList::setPageSize(size_t sizeInByte) {
+    pageSize = sizeInByte;
     return 0;
+}
+
+size_t PageList::getPageSize() {
+    return pageSize;
 }

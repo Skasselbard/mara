@@ -9,10 +9,11 @@
 
 class PageList{
 private:
-    static size_t blockSize;
+    static size_t pageSize;
 
 public:
-    static int setBlockSize(size_t sizeInByte);
+    static int setPageSize(size_t sizeInByte);
+    static size_t getPageSize();
 
 };
 

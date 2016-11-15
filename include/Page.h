@@ -11,7 +11,11 @@
     #define ALLIGN_DAYNAMIC
 #endif
 
+#define MAX_PAGE_SIZE 4294967295 //4GigaByte - 1Byte
+
 #include <stddef.h>
+#include "FreeSpace.h"
+#include "BucketList.h"
 
 typedef char byte;
 
@@ -21,7 +25,12 @@ private:
      * Pointer to the first byte of the page
      * TODO: See if needed
      */
-    void* startOfPage;
+    void *startOfPage;
+
+    /**
+     * Pointer to the next page
+     */
+    Page *nextPage;
 
     /**
      * the size in byte with which this page was initialized
@@ -29,7 +38,7 @@ private:
     const size_t pageSize;
 
     /**
-     * pointer to the leftmost byte of the static sector
+     * pointer to the leftmost byte of the static sector <br/>
      * the rightmost byte is the last byte of the page
      */
     byte* staticEnd;
@@ -39,12 +48,7 @@ private:
      */
     size_t staticSectorSize;
 
-    /**
-     * The array with th e information of the dynamic free sections
-     */
-    byte startOfDynamicLocations[];
-
-
+    BucketList bucketList;
 
     /**
      * Free blocks in between the dynamic blocks are included in the size
@@ -80,6 +84,8 @@ public:
      * returns if a requested block size would fit in the page
      */
     bool staticBlockFitInPage(size_t blockSizeInByte);
+
+    void* getDynamicBlock(size_t sizeInByte);
 
 };
 

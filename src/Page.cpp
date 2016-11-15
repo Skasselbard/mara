@@ -4,11 +4,17 @@
 
 #include <stdlib.h>
 #include <malloc.h>
+#include <new>
 #include "../include/Page.h"
 #include "../include/Logger.h"
+#include "../include/PageList.h"
 
 Page::Page(size_t sizeInBytes):pageSize(sizeInBytes){
     Logger::info("new page requested");
+    if(sizeInBytes > MAX_PAGE_SIZE){
+        sizeInBytes = MAX_PAGE_SIZE;
+        Logger::warning("maximum page size exceeded. Decreased size to the maximum of 4294967295 byte");
+    }
     this->startOfPage = malloc(sizeInBytes);
     this->staticEnd = (char*)this->startOfPage+sizeInBytes;
     if (startOfPage == nullptr){
@@ -47,4 +53,27 @@ bool Page::staticBlockFitInPage(size_t blockSizeInByte) {
 size_t Page::allign(size_t requestetSizeInByte) {
     Logger::error("Allignment is not implemented and returns the given block size");
     return requestetSizeInByte;
+}
+
+void *Page::getDynamicBlock(size_t sizeInByte) {
+#ifdef ALLIGN_DAYNAMIC
+    sizeInByte = allign(sizeInByte);
+#endif
+    FreeSpace* freeSpace = bucketList.getFreeSpace(sizeInByte);
+    if(freeSpace == nullptr){
+        Logger::info("no applicable freespace in this page. Switching to the next one");
+        if (nextPage == nullptr){
+            Logger::info("last page. Creating new one.");
+            try
+            {
+                nextPage = new Page(PageList::getPageSize());
+            }catch (std::bad_alloc& ba){
+                Logger::error("unable to allocate new Page");
+                Logger::error(ba.what());
+                return nullptr;
+            }
+        }
+        freeSpace = (FreeSpace*)nextPage->getDynamicBlock(sizeInByte);
+    }
+    return freeSpace;
 }
