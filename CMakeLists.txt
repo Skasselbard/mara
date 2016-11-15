@@ -8,6 +8,7 @@ set(HEADER_FILES
         include/PageList.h
         include/Page.h
         include/Logger.h
+        include/CodeBlock.h
         )
 
 set(SOURCE_FILES
@@ -17,6 +18,7 @@ set(SOURCE_FILES
         src/PageList.cpp
         src/Page.cpp
         src/Logger.cpp
+        src/CodeBlock.cpp
         )
 
 set(CMAKE_INCLUDE_PATH
