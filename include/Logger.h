@@ -7,6 +7,8 @@
 
 #define BUFFER_SIZE 4096
 
+#include <cstdio>
+
 class Logger {
 
 private:
