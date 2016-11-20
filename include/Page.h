@@ -73,6 +73,16 @@ private:
      */
     size_t allign(size_t requestetSizeInByte);
 
+    /**
+     * Merges the three blocks into one Block of free Space.<br/>
+     * WARNING: the blocks have to be adjacent to each other. Merging distant blocks will cause undefined behavior.
+     * Probably causing the world as we know it, cease to exist!
+     * @param leftBlock leftBlock to be merged. Ignored if null
+     * @param middleBlock middle Block to be merged
+     * @param rightBlock right Block to be merged. Ignored if null
+     */
+    void mergeFreeSpace(Space* leftBlock, Space* middleBlock, Space* rightBlock);
+
 public:
     Page(size_t sizeInBytes);
 

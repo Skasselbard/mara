@@ -11,8 +11,10 @@
 class FreeSpace : public Space{
 public:
     virtual bool isFreeMemory() override;
-
     virtual bool isOccupiedMemory() override;
+
+    FreeSpace* getNext();
+    void setNext(FreeSpace* next);
 };
 
 
