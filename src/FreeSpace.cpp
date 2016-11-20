@@ -3,3 +3,11 @@
 //
 
 #include "../include/FreeSpace.h"
+
+bool FreeSpace::isFreeMemory() {
+    return true;
+}
+
+bool FreeSpace::isOccupiedMemory() {
+    return false;
+}

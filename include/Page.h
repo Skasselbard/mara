@@ -44,6 +44,13 @@ private:
     byte* staticEnd;
 
     /**
+     * pointer to the rightmost allocated byte of the dynamic sector <br/>
+     * behind this pointer can only be an allocated chunk form the static
+     * sector. space between this pointer and the staticEnd pointer has to be free memory.
+     */
+    byte* dynamicEnd;
+
+    /**
      * The size of all static blocks combined
      */
     size_t staticSectorSize;

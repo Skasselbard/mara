@@ -47,7 +47,7 @@ size_t Page::getDynamicSectorSize() {
 }
 
 bool Page::staticBlockFitInPage(size_t blockSizeInByte) {
-    return (blockSizeInByte+staticSectorSize+getDynamicSectorSize() <= pageSize);
+    return (blockSizeInByte <= (staticEnd - dynamicEnd));
 }
 
 size_t Page::allign(size_t requestetSizeInByte) {
@@ -74,6 +74,10 @@ void *Page::getDynamicBlock(size_t sizeInByte) {
             }
         }
         freeSpace = (FreeSpace*)nextPage->getDynamicBlock(sizeInByte);
+    }else{
+        if ( freeSpace->getRightMostEnd() > dynamicEnd){
+            dynamicEnd = freeSpace->getRightMostEnd();
+        }
     }
     return freeSpace;
 }

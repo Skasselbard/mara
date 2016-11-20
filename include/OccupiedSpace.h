@@ -6,7 +6,13 @@
 #define MARA_OCCUPIEDSPACE_H
 
 
-class OccupiedSpace {
+#include "Space.h"
+
+class OccupiedSpace : public Space {
+public:
+    virtual bool isFreeMemory() override;
+
+    virtual bool isOccupiedMemory() override;
 
 };
 

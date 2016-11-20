@@ -12,6 +12,7 @@ set(HEADER_FILES
         include/FreeSpace.h
         include/OccupiedSpace.h
         include/BucketList.h
+        include/Space.h
         )
 
 set(SOURCE_FILES
@@ -25,6 +26,7 @@ set(SOURCE_FILES
         src/FreeSpace.cpp
         src/OccupiedSpace.cpp
         src/BucketList.cpp
+        src/Space.cpp
         )
 
 set(CMAKE_INCLUDE_PATH
