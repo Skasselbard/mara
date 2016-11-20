@@ -13,19 +13,19 @@
 /**
  * Basic Structure:<br/>
  * <code>
- * Standard Free Space:
+ * Standard Free Space:<br/>
  * ------------------------------------------------------------------------------------<br/>
  * |.CodeBlock.|.nextPointer.|.........Free Space...........|.nextPointer.|.CodeBlock.|<br/>
  * |.min 1byte.|....4byte....|.max PAGE_SIZE - 10 byte byte.|....4byte....|.min 1byte.|<br/>
  * ------------------------------------------------------------------------------------<br/>
- *
- * 6byte Free Space:
+ *<br/>
+ * 6byte Free Space:<br/>
  * ---------------------------------------<br/>
  * |.CodeBlock.|.nextPointer.|.CodeBlock.|<br/>
  * |.min 1byte.|....4byte....|.min 1byte.|<br/>
  * ---------------------------------------<br/>
- *
- * Occupied space Space:
+ *<br/>
+ * Occupied space Space:<br/>
  * --------------------------------------------------------<br/>
  * |.CodeBlock.|............Data..............|.CodeBlock.|<br/>
  * |.min 1byte.|.max PAGE_SIZE - 10 byte byte |.min 1byte.|<br/>
