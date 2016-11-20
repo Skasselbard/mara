@@ -42,9 +42,6 @@ private:
      */
     FreeSpace* bucketList[BYTE_MORE_THAN512+1];
 
-    bool deleteFromList(FreeSpace* freeSpace);
-    bool addToList(FreeSpace* freeSpace);
-
     /**
      * @param freeSpace the Space to search for
      * @return null if not i list, same pointer if found.
@@ -69,6 +66,9 @@ public:
      * @return null if there was no fitting space found. A pointer to the first free space in the list.
      */
     FreeSpace* getFreeSpace(size_t sizeInByte);
+
+    bool deleteFromList(FreeSpace* freeSpace);
+    bool addToList(FreeSpace* freeSpace);
 
 };
 

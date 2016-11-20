@@ -83,6 +83,16 @@ private:
      */
     void mergeFreeSpace(Space* leftBlock, Space* middleBlock, Space* rightBlock);
 
+    /**
+     * Takes free space und cut the specified amount from space, starting at the left end. The new block has the adaptet
+     * code blocks with the new size.
+     * @param freeSpace space to be cut
+     * @param bytesToCutOf amount of bytes to cut off
+     * @return null if the resulting block would be smaller than the smalest adressable block. A pointer to the
+     * resulting block otherwise
+     */
+    FreeSpace* cutFromFreeSpace(FreeSpace* freeSpace, size_t bytesToCutOf);
+
 public:
     Page(size_t sizeInBytes);
 
@@ -101,8 +111,8 @@ public:
      * returns if a requested block size would fit in the page
      */
     bool staticBlockFitInPage(size_t blockSizeInByte);
-
-    void* getDynamicBlock(size_t sizeInByte);
+    
+    OccupiedSpace * getDynamicBlock(size_t sizeInByte);
 
 };
 
