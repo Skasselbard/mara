@@ -36,7 +36,7 @@ class OccupiedSpace;
  */
 class Space {
 protected:
-    bool copyCodeBlocAtEnd(byte* startOfBlock, size_t sizeOfBlock)
+    bool copyCodeBlocAtEnd(byte* startOfBlock, size_t sizeOfBlock);
 
 public:
     /**
