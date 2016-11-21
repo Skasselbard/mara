@@ -5,14 +5,13 @@
 #ifndef MARA_LOGGER_H
 #define MARA_LOGGER_H
 
-#define BUFFER_SIZE 4096
-
 #include <stdio.h>
+#include "predefined.h"
 
 class Logger {
 
 private:
-    static char buffer[BUFFER_SIZE];
+    static char buffer[LOG_BUFFER_SIZE];
     static const FILE *logFile;
 
     static int clearBuffer();

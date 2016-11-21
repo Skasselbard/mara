@@ -8,7 +8,7 @@
 #include "../include/Logger.h"
 
 FILE const *Logger::logFile = fopen(".mara.log", "w");
-char Logger::buffer[BUFFER_SIZE];
+char Logger::buffer[LOG_BUFFER_SIZE];
 
 void Logger::warning(const char *message) {
     writeTimeStamp();
@@ -29,7 +29,7 @@ void Logger::writeToLog() {
 }
 
 int Logger::clearBuffer() {
-    for (int i = 0; i < BUFFER_SIZE; ++i) {
+    for (int i = 0; i < LOG_BUFFER_SIZE; ++i) {
         buffer[i] = '\0';
     }
     return 0;

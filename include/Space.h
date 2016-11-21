@@ -7,8 +7,9 @@
 
 
 #include <glob.h>
-#include "Page.h"
-#include "OccupiedSpace.h"
+#include "predefined.h"
+
+class OccupiedSpace;
 
 
 /**
@@ -71,7 +72,7 @@ public:
      * @param sizeOfBlockOfInterestInByte
      * @return size of a codeblock for a given memory block
      */
-    static size_t computeCodeBlockSize(size_t sizeOfBlockOfInterestInByte) const;
+    static size_t computeCodeBlockSize(size_t sizeOfBlockOfInterestInByte);
 
     /**
      * Takes a a Space and returns a Space interpreted as Ocuupied. The code blocks are adapted acordingly.

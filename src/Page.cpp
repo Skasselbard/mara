@@ -8,6 +8,7 @@
 #include "../include/Page.h"
 #include "../include/Logger.h"
 #include "../include/PageList.h"
+#include "../include/OccupiedSpace.h"
 
 Page::Page(size_t sizeInBytes):pageSize(sizeInBytes){
     Logger::info("new page requested");

@@ -13,7 +13,7 @@ set(HEADER_FILES
         include/OccupiedSpace.h
         include/BucketList.h
         include/Space.h
-        )
+        include/predefined.h)
 
 set(SOURCE_FILES
         ${HEADER_FILES}

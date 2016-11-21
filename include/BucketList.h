@@ -16,22 +16,22 @@ private:
      * be greater than its class. Eg. data <= 4 byte in class BYTE4 or 28 byte < data <= 32 byte in class BYTE32
      */
     enum SIZE_CLASS{
-        BYTE4,
-        BYTE8,
-        BYTE12,
-        BYTE16,
-        BYTE20,
-        BYTE24,
-        BYTE28,
-        BYTE32,
-        BYTE40,
-        BYTE48,
-        BYTE56,
-        BYTE64,
-        BYTE128,
-        BYTE256,
-        BYTE512,
-        BYTE_MORE_THAN512
+        BYTE4 = 0,
+        BYTE8 = 1,
+        BYTE12 = 2,
+        BYTE16 = 3,
+        BYTE20 = 4,
+        BYTE24 = 5,
+        BYTE28 = 6,
+        BYTE32 = 7,
+        BYTE40 = 8,
+        BYTE48 = 9,
+        BYTE56 = 10,
+        BYTE64 = 11,
+        BYTE128 = 12,
+        BYTE256 = 13,
+        BYTE512 = 14,
+        BYTE_MORE_THAN512 = 15
     };
 
     /**

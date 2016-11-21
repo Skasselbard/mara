@@ -7,7 +7,7 @@
 
 
 #include <cstddef>
-#include "Page.h"
+#include "predefined.h"
 
 /**
  * The code block which encodes the size of the memory block dynamically

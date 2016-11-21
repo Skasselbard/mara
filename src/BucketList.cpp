@@ -10,7 +10,7 @@ FreeSpace *BucketList::getFreeSpace(size_t sizeInByte) {
     SIZE_CLASS currentSizeClass = getCorrectBucket(sizeInByte);
     while (bucketList[currentSizeClass] == nullptr){
         if(currentSizeClass < BYTE_MORE_THAN512){
-            currentSizeClass++;
+            currentSizeClass = (SIZE_CLASS)((int)currentSizeClass+1);
         }else{
             return nullptr;
         }

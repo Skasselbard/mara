@@ -5,19 +5,15 @@
 #ifndef MARA_PAGE_H
 #define MARA_PAGE_H
 
-#define ALLIGNMENT
-#ifdef ALLIGNMENT
-    #define ALLIGN_STATIC
-    #define ALLIGN_DAYNAMIC
-#endif
 
-#define MAX_PAGE_SIZE 4294967295 //4GigaByte - 1Byte
 
 #include <stddef.h>
-#include "FreeSpace.h"
 #include "BucketList.h"
+#include "predefined.h"
 
-typedef char byte;
+class Space;
+class FreeSpace;
+class OccupiedSpace;
 
 class Page {
 private:
