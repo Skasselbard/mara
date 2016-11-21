@@ -36,22 +36,6 @@ class OccupiedSpace;
  */
 class Space {
 protected:
-    /**
-     * first byte of the left code block
-     * corresponds to the
-     */
-    //byte* leftCodeBlock;
-
-    //byte* rightCodeBlock;
-    /**
-     * the leftmost byte of the entire block, including management information
-     */
-    byte* leftMostEnd;
-    /**
-     * the rightmost byte of the entire block, including management information
-     */
-    byte* rightMostEnd;
-
     bool copyCodeBlocAtEnd(byte* startOfBlock, size_t sizeOfBlock)
 
 public:

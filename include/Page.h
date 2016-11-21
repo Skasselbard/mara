@@ -89,6 +89,8 @@ private:
      */
     FreeSpace* cutFromFreeSpace(FreeSpace* freeSpace, size_t bytesToCutOf);
 
+    FreeSpace* generateFirstBucketEntry();
+
 public:
     Page(size_t sizeInBytes);
 

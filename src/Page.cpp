@@ -9,6 +9,7 @@
 #include "../include/Logger.h"
 #include "../include/PageList.h"
 #include "../include/OccupiedSpace.h"
+#include "../include/CodeBlock.h"
 
 Page::Page(size_t sizeInBytes):pageSize(sizeInBytes){
     Logger::info("new page requested");
@@ -17,10 +18,11 @@ Page::Page(size_t sizeInBytes):pageSize(sizeInBytes){
         Logger::warning("maximum page size exceeded. Decreased size to the maximum of 4294967295 byte");
     }
     this->startOfPage = malloc(sizeInBytes);
-    this->staticEnd = (char*)this->startOfPage+sizeInBytes;
     if (startOfPage == nullptr){
         Logger::error("unable to allocate memory for new page");
     }
+    this->staticEnd = (byte*)this->startOfPage+sizeInBytes;
+    bucketList.addToList(generateFirstBucketEntry());
 }
 
 Page::~Page() {
@@ -75,7 +77,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
                 return nullptr;
             }
         }
-        freeSpace = (FreeSpace*)nextPage->getDynamicBlock(sizeInByte);
+        returnBlock = nextPage->getDynamicBlock(sizeInByte);
     }else {
         bucketList.deleteFromList(freeSpace);
         FreeSpace *remainingSpace = cutFromFreeSpace(freeSpace, sizeInByte + (2*Space::computeCodeBlockSize(sizeInByte)));
@@ -97,4 +99,12 @@ FreeSpace *Page::cutFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
         freeSpace = freeSpace->resize(((byte*)freeSpace)+bytesToCutOf);
         return freeSpace;
     }
+}
+
+FreeSpace *Page::generateFirstBucketEntry() {
+    FreeSpace* freeSpace = (FreeSpace*) startOfPage;
+    size_t codeBlockSize = 0;
+    CodeBlock::getCodeBlock((byte*)startOfPage, pageSize, codeBlockSize);
+    freeSpace->setNext(nullptr);
+    return freeSpace;
 }

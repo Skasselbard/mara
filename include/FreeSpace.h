@@ -11,12 +11,6 @@
 
 class FreeSpace : public Space{
 private:
-    /**
-     * The Offset to the next free space, starting from the right most end of this space.
-     * 4 bytes long
-     */
-    uint32_t* nextOfsetFromLastByte;
-
     bool copyNextPointerFromEndToFront(uint32_t* front, uint32_t* end);
 
 public:

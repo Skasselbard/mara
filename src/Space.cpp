@@ -7,11 +7,14 @@
 #include "../include/Logger.h"
 
 byte *Space::getLeftMostEnd() const {
-    return leftMostEnd;
+    return (byte*)this;
 }
 
 byte *Space::getRightMostEnd() const {
-    return rightMostEnd;
+    size_t memoryBlockSize = CodeBlock::readFromLeft(getLeftMostEnd());
+    size_t codeBlockSize = 0;
+    CodeBlock::getCodeBlock(getLeftMostEnd(), memoryBlockSize, codeBlockSize);
+    return (getLeftMostEnd()+(2*codeBlockSize)+memoryBlockSize);
 }
 
 size_t Space::computeCodeBlockSize(size_t sizeOfBlockOfInterestInByte) {
@@ -22,13 +25,13 @@ size_t Space::computeCodeBlockSize(size_t sizeOfBlockOfInterestInByte) {
 }
 
 size_t Space::getSize() {
-    return rightMostEnd - leftMostEnd;
+    return getRightMostEnd() - getLeftMostEnd();
 }
 
 bool Space::copyCodeBlocAtEnd(byte *startOfBlock, size_t sizeOfBlock) {
-    byte* currentPosition = rightMostEnd-sizeOfBlock;
+    byte* currentPosition = getRightMostEnd()-sizeOfBlock;
     for (int i = 0; i < sizeOfBlock; i++){
-        if(currentPosition <= rightMostEnd) {
+        if(currentPosition <= getRightMostEnd()) {
             *currentPosition = *(startOfBlock + i);
         }else{
             Logger::error("trying to write over the space boundary");
