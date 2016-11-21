@@ -69,6 +69,20 @@ public:
      */
     static byte* getCodeBlock(byte* leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize);
 
+    /**
+     * reads if the given CodeBlock describes a free or used block.
+     * @param firstByte  the first byte of the codeBlock, from the left
+     * @return 0 if free, 1 otherwise
+     */
+    static int isFree(byte* firstByte);
+
+    /**
+     * reads the size of the block in bytes
+     * @param firstByte the first byte of the codeBlock, from the left
+     * @return the number of bytes used by this block
+     */
+    static size_t getBlockSize(byte* firstByte);
+
 };
 
 

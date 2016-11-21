@@ -62,7 +62,7 @@ byte *CodeBlock::getCodeBlock(byte* leftStartOfBlock, size_t memoryBlockSize, si
         t >>= 7;
         returnArraySize++;
     }
-    //write the bytes left to right
+    //write the bytes right to left
     byte* current = leftStartOfBlock+(returnArraySize-1);
     int last = 1;
     for(int i = 0; i< returnArraySize; i++){
