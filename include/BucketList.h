@@ -63,7 +63,7 @@ public:
     /**
      * This function does only give a freeSpace of the page. It does not alter the list itself.
      * @param sizeInByte of the block of interest
-     * @return null if there was no fitting space found. A pointer to the first free space in the list.
+     * @return null if there was no fitting space found. A pointer to the first free space in the list Otherwise.
      */
     FreeSpace* getFreeSpace(size_t sizeInByte);
 
