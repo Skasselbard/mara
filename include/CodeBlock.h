@@ -72,7 +72,7 @@ public:
     /**
      * reads if the given CodeBlock describes a free or used block.
      * @param firstByte  the first byte of the codeBlock, from the left
-     * @return 0 if free, 1 otherwise
+     * @return 0 if used, !=0 otherwise
      */
     static int isFree(byte* firstByte);
 
@@ -82,6 +82,12 @@ public:
      * @return the number of bytes used by this block
      */
     static size_t getBlockSize(byte* firstByte);
+    /**
+     * set if the CodeBlock represents a free block or a used one
+     * @param firstByte the first byte of the codeBlock, from the left
+     * @param free 0 to mark it as free, != 0 otherwise
+     */
+    static void setFree(byte* firstByte, int free);
 
 };
 
