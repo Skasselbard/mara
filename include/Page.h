@@ -83,7 +83,7 @@ private:
      * Takes free space und cut the specified amount from space, starting at the left end. The new block has the adaptet
      * code blocks with the new size.
      * @param freeSpace space to be cut
-     * @param bytesToCutOf amount of bytes to cut off
+     * @param bytesToCutOf amount of bytes to cut off from the left
      * @return null if the resulting block would be smaller than the smalest adressable block. A pointer to the
      * resulting block otherwise
      */

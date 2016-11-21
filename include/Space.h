@@ -28,14 +28,14 @@ class OccupiedSpace;
  * ---------------------------------------<br/>
  *<br/>
  * Occupied space Space:<br/>
- * --------------------------------------------------------<br/>
- * |.CodeBlock.|............Data..............|.CodeBlock.|<br/>
- * |.min 1byte.|.max PAGE_SIZE - 10 byte byte |.min 1byte.|<br/>
- * --------------------------------------------------------<br/>
+ * ------------------------------------------------------------------<br/>
+ * |.CodeBlock.|...................Data.................|.CodeBlock.|<br/>
+ * |.min 1byte.|6byte to (max PAGE_SIZE - 10 byte) byte |.min 1byte.|<br/>
+ * ------------------------------------------------------------------<br/>
  * </code>
  */
 class Space {
-private:
+protected:
     byte* leftCodeBlock;
     byte* rightCodeBlock;
     /**
@@ -48,6 +48,9 @@ private:
     byte* rightMostEnd;
 
 public:
+    /**
+     * @return The size of the entire space block, including management informatin
+     */
     size_t getSize();
     virtual bool isFreeMemory() = 0;
     virtual bool isOccupiedMemory() = 0;

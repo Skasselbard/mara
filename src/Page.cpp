@@ -89,3 +89,13 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
     }
     return returnBlock;
 }
+
+FreeSpace *Page::cutFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
+    if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREESPACE) {
+        return nullptr;
+    }else{
+        size_t newSize = freeSpace->getSize() - bytesToCutOf;
+        freeSpace = freeSpace+bytesToCutOf;
+        freeSpace.
+    }
+}

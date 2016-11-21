@@ -12,6 +12,7 @@
 #define ALLIGN_DAYNAMIC
 #endif
 #define MAX_PAGE_SIZE 4294967295 //4GigaByte - 1Byte
+#define SMALLEST_POSSIBLE_FREESPACE 6 //6 byte
 
 typedef char byte;
 
