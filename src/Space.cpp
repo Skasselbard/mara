@@ -46,3 +46,9 @@ void Space::toOccupied(size_t newSize) {
     CodeBlock::getCodeBlock(getLeftMostEnd(), newSize, codeBlockSize);
     copyCodeBlocAtEnd(getLeftMostEnd(), codeBlockSize);
 }
+
+void *Space::getStartOfSpace() {
+    size_t codeBlockSize = 0;
+    CodeBlock::getCodeBlock(getLeftMostEnd(), this->getSize(), codeBlockSize);
+    return (getLeftMostEnd()+codeBlockSize);
+}
