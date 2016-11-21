@@ -40,3 +40,9 @@ bool Space::copyCodeBlocAtEnd(byte *startOfBlock, size_t sizeOfBlock) {
     }
     return true;
 }
+
+void Space::toOccupied(size_t newSize) {
+    size_t codeBlockSize = 0;
+    CodeBlock::getCodeBlock(getLeftMostEnd(), newSize, codeBlockSize);
+    copyCodeBlocAtEnd(getLeftMostEnd(), codeBlockSize);
+}

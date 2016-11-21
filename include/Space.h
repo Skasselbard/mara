@@ -68,10 +68,10 @@ public:
 
     /**
      * Takes a a Space and returns a Space interpreted as Ocuupied. The code blocks are adapted acordingly.
-     * @param neeSize
-     * @return
+     * @param newSize the size to new block should have
+     * @return a pointer to the new spece with updated codeblocks
      */
-    static OccupiedSpace* toOccupied(Space*, size_t newSize);
+    void toOccupied(size_t newSize);
 
 };
 

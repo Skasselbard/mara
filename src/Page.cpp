@@ -62,8 +62,8 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
 #ifdef ALLIGN_DAYNAMIC
     sizeInByte = allign(sizeInByte);
 #endif
-    OccupiedSpace* returnBlock = nullptr;
     FreeSpace* freeSpace = bucketList.getFreeSpace(sizeInByte);
+    OccupiedSpace* returnBlock = (OccupiedSpace*)freeSpace;
     if(freeSpace == nullptr){
         Logger::info("no applicable freespace in this page. Switching to the next one");
         if (nextPage == nullptr){
@@ -84,7 +84,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
         if (remainingSpace) {
             bucketList.addToList(remainingSpace);
         }
-        returnBlock = Space::toOccupied(freeSpace, sizeInByte);
+        returnBlock->toOccupied(sizeInByte);
         if (returnBlock->getRightMostEnd() > dynamicEnd) {
             dynamicEnd = freeSpace->getRightMostEnd();
         }
