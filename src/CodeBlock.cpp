@@ -30,6 +30,6 @@ size_t CodeBlock::readFromRight(byte *firstByte) {
     return 0;
 }
 
-byte *CodeBlock::getCodeBlock(size_t memoryBlockSize, size_t &returnArraySize) {
-    return nullptr;
+byte *CodeBlock::getCodeBlock(byte* leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize){
+    return leftStartOfBlock;
 }
