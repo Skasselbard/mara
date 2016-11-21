@@ -43,8 +43,6 @@ public:
      * @return The size of the entire space block, including management informatin
      */
     size_t getSize();
-    virtual bool isFreeMemory() = 0;
-    virtual bool isOccupiedMemory() = 0;
     /**
      * @return the start of the space which could be actual data. <br/>
      * WARNING: if this Space is freeSpace, this pointer might point on the next pointer of the of this free space.

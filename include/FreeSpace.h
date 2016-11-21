@@ -14,9 +14,6 @@ private:
     bool copyNextPointerFromEndToFront(uint32_t* front, uint32_t* end);
 
 public:
-    virtual bool isFreeMemory() override;
-    virtual bool isOccupiedMemory() override;
-
     FreeSpace* getNext();
     void setNext(FreeSpace* next);
 

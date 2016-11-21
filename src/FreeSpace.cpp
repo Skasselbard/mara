@@ -7,13 +7,6 @@
 #include "../include/CodeBlock.h"
 #include "../include/Logger.h"
 
-bool FreeSpace::isFreeMemory() {
-    return true;
-}
-
-bool FreeSpace::isOccupiedMemory() {
-    return false;
-}
 
 FreeSpace *FreeSpace::resize(byte *firstByte) {
     size_t codeBlockSize = 0;

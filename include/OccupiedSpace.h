@@ -10,9 +10,6 @@
 
 class OccupiedSpace : public Space {
 public:
-    virtual bool isFreeMemory() override;
-
-    virtual bool isOccupiedMemory() override;
 
 };
 
