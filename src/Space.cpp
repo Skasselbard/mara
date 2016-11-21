@@ -12,8 +12,7 @@ byte *Space::getLeftMostEnd() const {
 
 byte *Space::getRightMostEnd() const {
     size_t memoryBlockSize = CodeBlock::readFromLeft(getLeftMostEnd());
-    size_t codeBlockSize = 0;
-    CodeBlock::getCodeBlock(getLeftMostEnd(), memoryBlockSize, codeBlockSize);
+    size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
     return (getLeftMostEnd()+(2*codeBlockSize)+memoryBlockSize);
 }
 
@@ -28,7 +27,7 @@ size_t Space::getSize() {
     return getRightMostEnd() - getLeftMostEnd();
 }
 
-bool Space::copyCodeBlocAtEnd(byte *startOfBlock, size_t sizeOfBlock) {
+bool Space::copyCodeBlockAtEnd(byte *startOfBlock, size_t sizeOfBlock) {
     byte* currentPosition = getRightMostEnd()-sizeOfBlock;
     for (int i = 0; i < sizeOfBlock; i++){
         if(currentPosition <= getRightMostEnd()) {
@@ -44,11 +43,10 @@ bool Space::copyCodeBlocAtEnd(byte *startOfBlock, size_t sizeOfBlock) {
 void Space::toOccupied(size_t newSize) {
     size_t codeBlockSize = 0;
     CodeBlock::getCodeBlock(getLeftMostEnd(), newSize, codeBlockSize);
-    copyCodeBlocAtEnd(getLeftMostEnd(), codeBlockSize);
+    copyCodeBlockAtEnd(getLeftMostEnd(), codeBlockSize);
 }
 
 void *Space::getStartOfSpace() {
-    size_t codeBlockSize = 0;
-    CodeBlock::getCodeBlock(getLeftMostEnd(), this->getSize(), codeBlockSize);
+    size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
     return (getLeftMostEnd()+codeBlockSize);
 }

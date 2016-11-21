@@ -35,9 +35,6 @@ class OccupiedSpace;
  * </code>
  */
 class Space {
-protected:
-    bool copyCodeBlocAtEnd(byte* startOfBlock, size_t sizeOfBlock);
-
 public:
     /**
      * @return The size of the entire space block, including management informatin
@@ -72,6 +69,14 @@ public:
      * @return a pointer to the new spece with updated codeblocks
      */
     void toOccupied(size_t newSize);
+
+    /**
+     * Copies a code block from the beginning of space to the end of space
+     * @param startOfBlock beginning of the block to copy
+     * @param sizeOfBlock amount of bytes the block uses
+     * @return true on success
+     */
+    bool copyCodeBlockAtEnd(byte *startOfBlock, size_t sizeOfBlock);
 
 };
 

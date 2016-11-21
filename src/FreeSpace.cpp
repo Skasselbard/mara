@@ -11,7 +11,7 @@
 FreeSpace *FreeSpace::resize(byte *firstByte) {
     size_t codeBlockSize = 0;
     if (firstByte == CodeBlock::getCodeBlock(firstByte, getRightMostEnd()-firstByte, codeBlockSize)){
-        copyCodeBlocAtEnd(firstByte,codeBlockSize);
+        copyCodeBlockAtEnd(firstByte, codeBlockSize);
         copyNextPointerFromEndToFront(
                 getLeftNext(codeBlockSize),
                 getRightNext(codeBlockSize-1)
@@ -30,16 +30,12 @@ bool FreeSpace::copyNextPointerFromEndToFront(uint32_t *front, uint32_t *end) {
 }
 
 void FreeSpace::setNext(FreeSpace *next) {
-    size_t codeBlockSize = 0;
-    if (getLeftMostEnd() == CodeBlock::getCodeBlock(getLeftMostEnd(), getSize(), codeBlockSize)) {
-        uint32_t offset = (uint32_t) ((byte *) next - getRightMostEnd());
-        uint32_t *leftNext = getLeftNext(codeBlockSize);
-        uint32_t *rightNext = getRightNext(codeBlockSize);
-        *leftNext = offset;
-        *rightNext = offset;
-    }else{
-        Logger::error("Unable to build CodeBlock");
-    }
+    size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
+    uint32_t offset = (uint32_t) ((byte *) next - getRightMostEnd());
+    uint32_t *leftNext = getLeftNext(codeBlockSize);
+    uint32_t *rightNext = getRightNext(codeBlockSize);
+    *leftNext = offset;
+    *rightNext = offset;
 }
 
 uint32_t *FreeSpace::getLeftNext(size_t codeBlockSize) {
@@ -51,11 +47,6 @@ uint32_t *FreeSpace::getRightNext(size_t codeBlockSize) {
 }
 
 FreeSpace *FreeSpace::getNext() {
-    size_t codeBlockSize = 0;
-    if (getLeftMostEnd() == CodeBlock::getCodeBlock(getLeftMostEnd(), getSize(), codeBlockSize)) {
-        return (FreeSpace*)(getRightMostEnd()+(*getLeftNext(codeBlockSize)));
-    }else{
-        Logger::error("Unable to build CodeBlock");
-        return nullptr;
-    }
+    size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
+    return (FreeSpace*)(getRightMostEnd()+(*getLeftNext(codeBlockSize)));
 }

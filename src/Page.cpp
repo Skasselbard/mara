@@ -94,6 +94,7 @@ FreeSpace *Page::generateFirstBucketEntry() {
     FreeSpace* freeSpace = (FreeSpace*) startOfPage;
     size_t codeBlockSize = 0;
     CodeBlock::getCodeBlock((byte*)startOfPage, pageSize, codeBlockSize);
+    freeSpace->copyCodeBlockAtEnd((byte*)freeSpace, codeBlockSize);
     freeSpace->setNext(nullptr);
     return freeSpace;
 }
