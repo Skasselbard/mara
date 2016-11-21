@@ -61,12 +61,13 @@ public:
 
     /**
      * Build a CodeBlock
+     * @param leftStartOfBlock the beginning of the codeBlock starting from the left (return and this pointer should be the same)
      * @param memoryBlockSize size of the memory block which should be represented by the CodeBlock
      * @param returnArraySize size of the array returned by this function
      * @return an array of bytes, containing the codeBlock representing the memory block size.
-     * The size of the array is stored in the second parameter
+     * The size of the array is stored in the last parameter. It should correspond to the leftStartOfBlock parameter
      */
-    static byte* getCodeBlock(size_t memoryBlockSize, size_t &returnArraySize);
+    static byte* getCodeBlock(byte* leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize);
 
 };
 
