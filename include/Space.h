@@ -8,24 +8,25 @@
 
 #include <glob.h>
 #include "Page.h"
+#include "OccupiedSpace.h"
 
 
 /**
  * Basic Structure:<br/>
  * <code>
- * Standard Free Space:
+ * Standard Free Space:<br/>
  * ------------------------------------------------------------------------------------<br/>
  * |.CodeBlock.|.nextPointer.|.........Free Space...........|.nextPointer.|.CodeBlock.|<br/>
  * |.min 1byte.|....4byte....|.max PAGE_SIZE - 10 byte byte.|....4byte....|.min 1byte.|<br/>
  * ------------------------------------------------------------------------------------<br/>
- *
- * 6byte Free Space:
+ *<br/>
+ * 6byte Free Space:<br/>
  * ---------------------------------------<br/>
  * |.CodeBlock.|.nextPointer.|.CodeBlock.|<br/>
  * |.min 1byte.|....4byte....|.min 1byte.|<br/>
  * ---------------------------------------<br/>
- *
- * Occupied space Space:
+ *<br/>
+ * Occupied space Space:<br/>
  * --------------------------------------------------------<br/>
  * |.CodeBlock.|............Data..............|.CodeBlock.|<br/>
  * |.min 1byte.|.max PAGE_SIZE - 10 byte byte |.min 1byte.|<br/>
@@ -64,6 +65,20 @@ public:
      * @return the rightmost byte of the entire block, including management information
      */
     byte *getRightMostEnd() const;
+
+    /**
+     * Returns the size of a code block for a memory block with the given size. Does not change any actual codeBlocks
+     * @param sizeOfBlockOfInterestInByte
+     * @return size of a codeblock for a given memory block
+     */
+    static size_t computeCodeBlockSize(size_t sizeOfBlockOfInterestInByte) const;
+
+    /**
+     * Takes a a Space and returns a Space interpreted as Ocuupied. The code blocks are adapted acordingly.
+     * @param neeSize
+     * @return
+     */
+    static OccupiedSpace* toOccupied(Space*, size_t newSize);
 
 };
 

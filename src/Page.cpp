@@ -55,10 +55,11 @@ size_t Page::allign(size_t requestetSizeInByte) {
     return requestetSizeInByte;
 }
 
-void *Page::getDynamicBlock(size_t sizeInByte) {
+OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
 #ifdef ALLIGN_DAYNAMIC
     sizeInByte = allign(sizeInByte);
 #endif
+    OccupiedSpace* returnBlock = nullptr;
     FreeSpace* freeSpace = bucketList.getFreeSpace(sizeInByte);
     if(freeSpace == nullptr){
         Logger::info("no applicable freespace in this page. Switching to the next one");
@@ -74,10 +75,16 @@ void *Page::getDynamicBlock(size_t sizeInByte) {
             }
         }
         freeSpace = (FreeSpace*)nextPage->getDynamicBlock(sizeInByte);
-    }else{
-        if ( freeSpace->getRightMostEnd() > dynamicEnd){
+    }else {
+        bucketList.deleteFromList(freeSpace);
+        FreeSpace *remainingSpace = cutFromFreeSpace(freeSpace, sizeInByte + (2*Space::computeCodeBlockSize(sizeInByte)));
+        if (remainingSpace) {
+            bucketList.addToList(remainingSpace);
+        }
+        returnBlock = Space::toOccupied(freeSpace, sizeInByte);
+        if (returnBlock->getRightMostEnd() > dynamicEnd) {
             dynamicEnd = freeSpace->getRightMostEnd();
         }
     }
-    return freeSpace;
+    return returnBlock;
 }
