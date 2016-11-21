@@ -12,6 +12,7 @@
 class FreeSpace : public Space{
 private:
     bool copyNextPointerFromEndToFront(uint32_t* front, uint32_t* end);
+    bool copyNextPointerFromFrontToEnd(uint32_t* front, uint32_t* end);
     uint32_t* getLeftNext(size_t codeBlockSize);
     uint32_t* getRightNext(size_t codeBlockSize);
 
@@ -29,13 +30,22 @@ public:
     void setNext(FreeSpace* next);
 
     /**
-     * Adjust the size of the fre space.<br/>
+     * Adjust the size of the free space.<br/>
      * The right most end will be the same as before. The left most end will be the given byte. The next pointer
      * from the free space will be copied from the right to the left
      * @param firstByte the new first byte of the space
-     * @return a pointer the the left most byte of the free space (should be the same as the input)
+     * @return a pointer to the left most byte of the free space (should be the same as the input)
      */
-    FreeSpace* resize(byte* firstByte);
+    FreeSpace* pushBeginningRight(byte *firstByte);
+
+    /**
+     * Adjust the size of the free space.<br/>
+     * The left most end will be the same as before. The right most end will be the given byte. The next pointer
+     * from the free space will be copied from the left to the right
+     * @param lastByte the new last byte of the space
+     * @return a pointer to the left most byte of the free space
+     */
+    FreeSpace* pushEndLeft(byte *lastByte);
 };
 
 

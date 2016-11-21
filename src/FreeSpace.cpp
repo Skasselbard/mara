@@ -8,20 +8,38 @@
 #include "../include/Logger.h"
 
 
-FreeSpace *FreeSpace::resize(byte *firstByte) {
+FreeSpace *FreeSpace::pushBeginningRight(byte *firstByte) {
     size_t codeBlockSize = 0;
     if (firstByte == CodeBlock::getCodeBlock(firstByte, getRightMostEnd()-firstByte, codeBlockSize)){
-        copyCodeBlockAtEnd(firstByte, codeBlockSize);
+        copyCodeBlockToEnd(firstByte, codeBlockSize);
         copyNextPointerFromEndToFront(
                 getLeftNext(codeBlockSize),
-                getRightNext(codeBlockSize-1)
-                );
+                getRightNext(codeBlockSize)
+        );
         return (FreeSpace*)firstByte;
     }else{
         Logger::error("Unable to build CodeBlock");
         return nullptr;
     }
     return nullptr;
+}
+
+FreeSpace *FreeSpace::pushEndLeft(byte *lastByte) {
+    size_t codeBlockSize = 0;
+    CodeBlock::getCodeBlock(getLeftMostEnd(), lastByte-getLeftMostEnd(), codeBlockSize);//get the needed size
+    copyCodeBlockToFront(
+            CodeBlock::getCodeBlock(
+                    getRightMostEnd()-codeBlockSize,
+                    lastByte-getLeftMostEnd(),
+                    codeBlockSize
+            ),
+            codeBlockSize
+    );
+    copyNextPointerFromFrontToEnd(
+            getLeftNext(codeBlockSize),
+            getRightNext(codeBlockSize)
+    );
+    return (FreeSpace*)getLeftMostEnd();
 }
 
 bool FreeSpace::copyNextPointerFromEndToFront(uint32_t *front, uint32_t *end) {
@@ -50,3 +68,10 @@ FreeSpace *FreeSpace::getNext() {
     size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
     return (FreeSpace*)(getRightMostEnd()+(*getLeftNext(codeBlockSize)));
 }
+
+bool FreeSpace::copyNextPointerFromFrontToEnd(uint32_t *front, uint32_t *end) {
+    *end = *front;
+    return true;
+}
+
+

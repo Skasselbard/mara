@@ -37,6 +37,8 @@ void* Page::getStaticBlock(size_t sizeInByte) {
 #endif
     if (staticBlockFitInPage(sizeInByte)) {
         this->staticEnd = this->staticEnd - sizeInByte;
+        FreeSpace* lastFreeSpace = (FreeSpace*)(dynamicEnd+1);
+        cutRightFromFreeSpace(lastFreeSpace, sizeInByte);
         return this->staticEnd;
     }else{
         Logger::error("requested block does not fit in page");
@@ -69,7 +71,8 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
         return nullptr;
     }else {
         bucketList.deleteFromList(freeSpace);
-        FreeSpace *remainingSpace = cutFromFreeSpace(freeSpace, sizeInByte + (2*Space::computeCodeBlockSize(sizeInByte)));
+        FreeSpace *remainingSpace = cutLeftFromFreeSpace(freeSpace,
+                                                         sizeInByte + (2 * Space::computeCodeBlockSize(sizeInByte)));
         if (remainingSpace) {
             bucketList.addToList(remainingSpace);
         }
@@ -81,11 +84,11 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
     return returnBlock;
 }
 
-FreeSpace *Page::cutFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
+FreeSpace *Page::cutLeftFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
     if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREESPACE) {
         return nullptr;
     }else{
-        freeSpace = freeSpace->resize(((byte*)freeSpace)+bytesToCutOf);
+        freeSpace = freeSpace->pushBeginningRight(((byte *) freeSpace) + bytesToCutOf);
         return freeSpace;
     }
 }
@@ -94,7 +97,7 @@ FreeSpace *Page::generateFirstBucketEntry() {
     FreeSpace* freeSpace = (FreeSpace*) startOfPage;
     size_t codeBlockSize = 0;
     CodeBlock::getCodeBlock((byte*)startOfPage, pageSize, codeBlockSize);
-    freeSpace->copyCodeBlockAtEnd((byte*)freeSpace, codeBlockSize);
+    freeSpace->copyCodeBlockToEnd((byte *) freeSpace, codeBlockSize);
     freeSpace->setNext(nullptr);
     return freeSpace;
 }

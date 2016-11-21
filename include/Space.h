@@ -76,7 +76,16 @@ public:
      * @param sizeOfBlock amount of bytes the block uses
      * @return true on success
      */
-    bool copyCodeBlockAtEnd(byte *startOfBlock, size_t sizeOfBlock);
+    bool copyCodeBlockToEnd(byte *startOfBlock, size_t sizeOfBlock);
+
+    /**
+     * Copies a code block from the end of space to the beginning of space
+     * @param startOfBlock beginning of the block to copy
+     * @param sizeOfBlock amount of bytes the block uses
+     * @return true on success
+     */
+    bool copyCodeBlockToFront(byte *startOfBlock, size_t sizeOfBlock);
+
 
 };
 
