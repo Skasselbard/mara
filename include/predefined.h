@@ -13,6 +13,7 @@
 #endif
 #define MAX_PAGE_SIZE 4294967295 //4GigaByte - 1Byte
 #define SMALLEST_POSSIBLE_FREESPACE 6 //6 byte
+#define MAX_CODEBLOCK_ARRAY_SIZE 128 //TODO: probably enough?
 
 typedef char byte;
 

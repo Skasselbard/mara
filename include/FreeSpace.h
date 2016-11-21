@@ -17,6 +17,8 @@ private:
      */
     uint32_t* nextOfsetFromLastByte;
 
+    bool copyNextPointerFromEndToFront(uint32_t* front, uint32_t* end);
+
 public:
     virtual bool isFreeMemory() override;
     virtual bool isOccupiedMemory() override;
@@ -26,9 +28,10 @@ public:
 
     /**
      * Adjust the size of the fre space.<br/>
-     * The right most end will be the same as before. The left most end will be the given byte. The pointer will
-     * @param firstByte
-     * @return
+     * The right most end will be the same as before. The left most end will be the given byte. The next pointer
+     * from the free space will be copied from the right to the left
+     * @param firstByte the new first byte of the space
+     * @return a pointer the the left most byte of the free space (should be the same as the input)
      */
     FreeSpace* resize(byte* firstByte);
 };
