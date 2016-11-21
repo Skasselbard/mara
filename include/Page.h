@@ -112,6 +112,9 @@ public:
 
     OccupiedSpace * getDynamicBlock(size_t sizeInByte);
 
+    Page* getNextPage();
+    void setNextPage(Page* nextPage);
+
 };
 
 

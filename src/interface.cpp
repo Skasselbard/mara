@@ -6,20 +6,18 @@
 #include "../include/interface.h"
 #include "../include/PageList.h"
 
-PageList pagelist;
-
 int setDefaultBlockSize(size_t sizeInByte) {
-    return 0;
+    return PageList::setPageSize(sizeInByte);
 }
 
 void *staticNew(size_t sizeInByte) {
-    return NULL;
+    return PageList::staticNew(sizeInByte);
 }
 
 void *dynamicNew(size_t sizeInByte) {
-    return NULL;
+    return PageList::dynamicNew(sizeInByte);
 }
 
 int dynamicDelete(void *address) {
-    return 0;
+    return PageList::dynamicDelete(address);
 }

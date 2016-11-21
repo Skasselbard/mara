@@ -66,18 +66,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
     OccupiedSpace* returnBlock = (OccupiedSpace*)freeSpace;
     if(freeSpace == nullptr){
         Logger::info("no applicable freespace in this page. Switching to the next one");
-        if (nextPage == nullptr){
-            Logger::info("last page. Creating new one.");
-            try
-            {
-                nextPage = new Page(PageList::getPageSize());
-            }catch (std::bad_alloc& ba){
-                Logger::error("unable to allocate new Page");
-                Logger::error(ba.what());
-                return nullptr;
-            }
-        }
-        returnBlock = nextPage->getDynamicBlock(sizeInByte);
+        return nullptr;
     }else {
         bucketList.deleteFromList(freeSpace);
         FreeSpace *remainingSpace = cutFromFreeSpace(freeSpace, sizeInByte + (2*Space::computeCodeBlockSize(sizeInByte)));
@@ -107,4 +96,15 @@ FreeSpace *Page::generateFirstBucketEntry() {
     CodeBlock::getCodeBlock((byte*)startOfPage, pageSize, codeBlockSize);
     freeSpace->setNext(nullptr);
     return freeSpace;
+}
+
+void Page::setNextPage(Page *nextPage) {
+    if(nextPage != nullptr){
+        Logger::warning("reseting non empty nextPage pointer. Old Pointer will be overwritten");
+    }
+    this->nextPage = nextPage;
+}
+
+Page *Page::getNextPage() {
+    return nextPage;
 }
