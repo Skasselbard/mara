@@ -73,6 +73,26 @@ private:
      */
     size_t allign(size_t requestetSizeInByte);
 
+    /**
+     * Merges the three blocks into one Block of free Space.<br/>
+     * WARNING: the blocks have to be adjacent to each other. Merging distant blocks will cause undefined behavior.
+     * Probably causing the world as we know it, cease to exist!
+     * @param leftBlock leftBlock to be merged. Ignored if null
+     * @param middleBlock middle Block to be merged
+     * @param rightBlock right Block to be merged. Ignored if null
+     */
+    void mergeFreeSpace(Space* leftBlock, Space* middleBlock, Space* rightBlock);
+
+    /**
+     * Takes free space und cut the specified amount from space, starting at the left end. The new block has the adaptet
+     * code blocks with the new size.
+     * @param freeSpace space to be cut
+     * @param bytesToCutOf amount of bytes to cut off
+     * @return null if the resulting block would be smaller than the smalest adressable block. A pointer to the
+     * resulting block otherwise
+     */
+    FreeSpace* cutFromFreeSpace(FreeSpace* freeSpace, size_t bytesToCutOf);
+
 public:
     Page(size_t sizeInBytes);
 
@@ -92,7 +112,7 @@ public:
      */
     bool staticBlockFitInPage(size_t blockSizeInByte);
 
-    void* getDynamicBlock(size_t sizeInByte);
+    OccupiedSpace * getDynamicBlock(size_t sizeInByte);
 
 };
 
