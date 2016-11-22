@@ -70,14 +70,31 @@ private:
     size_t allign(size_t requestetSizeInByte);
 
     /**
-     * Merges the three blocks into one Block of free Space.<br/>
+     * Merges the three blocks into one Block of free Space.
+     * The bucketlist will be updated accordingly<br/>
      * WARNING: the blocks have to be adjacent to each other. Merging distant blocks will cause undefined behavior.
      * Probably causing the world as we know it, cease to exist!
      * @param leftBlock leftBlock to be merged. Ignored if null
      * @param middleBlock middle Block to be merged
      * @param rightBlock right Block to be merged. Ignored if null
+     *
+     * @return the new block of free space
      */
-    void mergeFreeSpace(Space* leftBlock, Space* middleBlock, Space* rightBlock);
+    FreeSpace * mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *rightBlock);
+
+    /**
+     * Merges both blocks to one. The types of Blocks are ignored.
+     * @param leftBlock
+     * @param middleBlock
+     */
+    void mergeWithLeft(Space* leftBlock, Space* middleBlock);
+
+    /**
+     * Merges both blocks to one. The types of Blocks are ignored.
+     * @param leftBlock
+     * @param middleBlock
+     */
+    void mergeWithRight(Space* middleBlock, Space* rightBlock);
 
     /**
      * Takes free space und cut the specified amount from space, starting at the left end. The new block has the adaptet
@@ -124,6 +141,16 @@ public:
 
     Page* getNextPage();
     void setNextPage(Page* nextPage);
+
+    /**
+     * @param firstByte a pointer to the block of interest
+     * @return true if the pointer is in between the start of page and the left most byte of the static sector.
+     * false otherwise. Blocks in the static sector CANNOT be detected with this function.
+     */
+    bool blockIsInSpace(void* firstByte);
+
+
+    bool deleteBlock(void* firstByte);
 
 };
 

@@ -65,3 +65,14 @@ bool PageList::iteratePage(Page* &currentPage) {
     }
     return true;
 }
+
+bool PageList::dynamicDelete(void *address) {
+    Page* currentPage = firstPage;
+    while (!currentPage->blockIsInSpace(address)){
+        if(!iteratePage(currentPage)){
+            return false;
+        }
+    }
+    currentPage->deleteBlock(address);
+    return true;
+}

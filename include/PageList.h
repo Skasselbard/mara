@@ -22,7 +22,7 @@ public:
 
     static void* staticNew(size_t sizeInByte);
     static void* dynamicNew(size_t sizeInByte);
-    static int dynamicDelete(void* address);
+    static bool dynamicDelete(void *address);
 
 };
 

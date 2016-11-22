@@ -86,6 +86,12 @@ public:
      */
     bool copyCodeBlockToFront(byte *startOfBlock, size_t sizeOfBlock);
 
+    /**
+     * @param lastByte of the left neighbor
+     * @return pointer to the left neighboor
+     */
+    static Space* getleftNeighbor(byte* lastByte);
+
 
 };
 

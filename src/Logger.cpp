@@ -77,5 +77,7 @@ void Logger::fatal(const char *message, int exitcode) {
     strcat(buffer,"Fatal Error: ");
     strcat(buffer, message);
     writeToLog();
+#ifdef EXIT_ON_FATAL
     exit(exitcode);
+#endif
 }

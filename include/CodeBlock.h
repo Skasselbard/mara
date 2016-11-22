@@ -55,9 +55,10 @@ public:
     /**
      * Reads the CodeBlock from the right
      * @param firstByte the first byte from the CodeBlock
+     * @param outLeftByte output for the leftmost byte of the block
      * @return the size of the memory block
      */
-    static size_t readFromRight(byte* firstByte);
+    static size_t readFromRight(byte* firstByte, byte* &outLeftByte);
 
     /**
      * Build a CodeBlock

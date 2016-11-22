@@ -25,7 +25,7 @@ size_t CodeBlock::readFromLeft(byte *firstByte) {
     return size;
 }
 
-size_t CodeBlock::readFromRight(byte *firstByte) {
+size_t CodeBlock::readFromRight(byte *firstByte, byte* &outLeftByte) {
     size_t size = 0;
     if(*firstByte >= 128){
         //block is single byte
@@ -46,6 +46,7 @@ size_t CodeBlock::readFromRight(byte *firstByte) {
         size_t tmp = *currentByte & 63; //stuff the 7 bits into a temporary size_t
         tmp <<= (7*(m-1)+6);//shift them to the appropriate position
         size &= tmp; //merge size and tmp
+        outLeftByte = currentByte;
     }
 }
 

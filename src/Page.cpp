@@ -96,6 +96,7 @@ FreeSpace *Page::cutLeftFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf)
 FreeSpace *Page::generateFirstBucketEntry() {
     FreeSpace* freeSpace = (FreeSpace*) startOfPage;
     size_t codeBlockSize = 0;
+    //TODO: Calculate CodeBlock correctly
     CodeBlock::getCodeBlock((byte*)startOfPage, pageSize, codeBlockSize);
     freeSpace->copyCodeBlockToEnd((byte *) freeSpace, codeBlockSize);
     freeSpace->setNext(nullptr);
@@ -111,4 +112,70 @@ void Page::setNextPage(Page *nextPage) {
 
 Page *Page::getNextPage() {
     return nextPage;
+}
+
+bool Page::blockIsInSpace(void *firstByte) {
+    return (startOfPage <= firstByte && firstByte <= staticEnd);
+}
+
+FreeSpace *Page::cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
+    if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREESPACE) {
+        return nullptr;
+    }else{
+        freeSpace = freeSpace->pushEndLeft((freeSpace->getRightMostEnd()) + bytesToCutOf);
+        return freeSpace;
+    }
+}
+
+bool Page::deleteBlock(void *firstByte) {
+    OccupiedSpace* occupiedSpace = nullptr;
+    size_t memoryBlockSize = CodeBlock::readFromRight(((byte*)firstByte-1), (byte*)occupiedSpace);
+    size_t codBlockSize = CodeBlock::getBlockSize((byte*)occupiedSpace);
+    if(((byte*)occupiedSpace+(2*codBlockSize)+memoryBlockSize) > staticEnd){
+        Logger::fatal("dynamic block to delete overlaps with static sector", ERROR_CODES::STATIC_AND_DYNAMIC_SECTORS_OVERLAP);
+        return false;
+    }
+    Space* leftNeighbor = nullptr;
+    Space* rightNeighbor = (Space*)((byte*)occupiedSpace+(2*codBlockSize)+memoryBlockSize+1);
+    if( (byte*)rightNeighbor > staticEnd){
+        Logger::fatal("dynamic block to delete overlaps with static sector", ERROR_CODES::STATIC_AND_DYNAMIC_SECTORS_OVERLAP);
+        return false;
+    }
+    if(startOfPage < occupiedSpace){
+        leftNeighbor = Space::getleftNeighbor(((byte*)occupiedSpace)-1);
+    }
+    if (!CodeBlock::isFree((byte *)leftNeighbor)){
+        leftNeighbor = nullptr;
+    }
+    if (!CodeBlock::isFree((byte *)rightNeighbor)){
+        rightNeighbor = nullptr;
+    }
+    mergeFreeSpace(leftNeighbor,occupiedSpace,rightNeighbor);
+    return false;
+}
+
+FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *rightBlock) {
+    if ( leftBlock == nullptr){
+        if (rightBlock != nullptr){
+            bucketList.deleteFromList((FreeSpace*)rightBlock);
+            mergeWithRight(middleBlock, rightBlock);
+        }
+        bucketList.addToList((FreeSpace*)middleBlock);
+        return (FreeSpace*)middleBlock;
+    } else{
+        if(rightBlock != nullptr){
+            bucketList.deleteFromList((FreeSpace*)rightBlock);
+            mergeWithRight(middleBlock, rightBlock);
+        }
+        bucketList.deleteFromList((FreeSpace*)leftBlock);
+        mergeWithLeft(leftBlock,middleBlock);
+        bucketList.addToList((FreeSpace*)leftBlock);
+        return (FreeSpace*)leftBlock;
+    }
+}
+
+void Page::mergeWithRight(Space *middleBlock, Space *rightBlock) {
+    byte* leftEnd = (byte*) middleBlock;
+    byte* rightEnd = rightBlock->getRightMostEnd();
+    //TODO: weiter machen
 }
