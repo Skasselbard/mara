@@ -177,5 +177,7 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
 void Page::mergeWithRight(Space *middleBlock, Space *rightBlock) {
     byte* leftEnd = (byte*) middleBlock;
     byte* rightEnd = rightBlock->getRightMostEnd();
-    //TODO: weiter machen
+    size_t codeBLockSize = 0;
+    CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd-leftEnd, codeBLockSize);
+    middleBlock->copyCodeBlockToEnd(leftEnd, codeBLockSize);
 }
