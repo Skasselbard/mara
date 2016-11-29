@@ -84,6 +84,17 @@ byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memor
     return leftStartOfBlock;
 }
 
+byte *CodeBlock::getCodeBlockForInternalSize(byte *leftStartOfBlock, size_t internallyNeededSize, size_t &returnArraySize) {
+    size_t oldCodeBlockSize = 0;
+    size_t newCodeBlockSize = 1;
+    byte* resultingBlock;
+    do {
+        oldCodeBlockSize = newCodeBlockSize;
+        resultingBlock = getCodeBlockForPayloadSize(leftStartOfBlock, internallyNeededSize, newCodeBlockSize);
+    }while (oldCodeBlockSize != newCodeBlockSize);
+    return resultingBlock;
+}
+
 size_t CodeBlock::getBlockSize(byte *firstByte) {
     if(*firstByte >= 128) return 1;
     byte *currentByte = firstByte+1;
@@ -104,3 +115,5 @@ void CodeBlock::setFree(byte *firstByte, int free) {
     else *firstByte &= 191;
 
 }
+
+
