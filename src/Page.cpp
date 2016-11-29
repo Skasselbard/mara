@@ -96,8 +96,7 @@ FreeSpace *Page::cutLeftFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf)
 FreeSpace *Page::generateFirstBucketEntry() {
     FreeSpace* freeSpace = (FreeSpace*) startOfPage;
     size_t codeBlockSize = 0;
-    //TODO: Calculate CodeBlock correctly
-    CodeBlock::getCodeBlockForPayloadSize((byte *) startOfPage, pageSize, codeBlockSize);
+    CodeBlock::getCodeBlockForInternalSize((byte *) startOfPage, pageSize, codeBlockSize);
     freeSpace->copyCodeBlockToEnd((byte *) freeSpace, codeBlockSize);
     freeSpace->setNext(nullptr);
     return freeSpace;
