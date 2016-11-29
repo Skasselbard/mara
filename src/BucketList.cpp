@@ -26,6 +26,7 @@ bool BucketList::addToList(FreeSpace *freeSpace) {
     } else {
         predecessor->setNext(freeSpace);
     }
+    freeSpace->setNext(nullptr);
     return true;
 }
 

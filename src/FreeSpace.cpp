@@ -49,9 +49,14 @@ bool FreeSpace::copyNextPointerFromEndToFront(uint32_t *front, uint32_t *end) {
 
 void FreeSpace::setNext(FreeSpace *next) {
     size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
-    uint32_t offset = (uint32_t) ((byte *) next - getRightMostEnd());
     uint32_t *leftNext = getLeftNext(codeBlockSize);
     uint32_t *rightNext = getRightNext(codeBlockSize);
+    if (next == nullptr){
+        *leftNext = 0;
+        *rightNext = 0;
+        return;
+    }
+    uint32_t offset = (uint32_t) ((byte *) next - getRightMostEnd());
     *leftNext = offset;
     *rightNext = offset;
 }
@@ -66,7 +71,11 @@ uint32_t *FreeSpace::getRightNext(size_t codeBlockSize) {
 
 FreeSpace *FreeSpace::getNext() {
     size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
-    return (FreeSpace*)(getRightMostEnd()+(*getLeftNext(codeBlockSize)));
+    uint32_t *leftNext = getLeftNext(codeBlockSize);
+    if (*leftNext == 0){
+        return nullptr;
+    }
+    return (FreeSpace*)(getRightMostEnd()+(*leftNext));
 }
 
 bool FreeSpace::copyNextPointerFromFrontToEnd(uint32_t *front, uint32_t *end) {
