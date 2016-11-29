@@ -50,7 +50,7 @@ size_t CodeBlock::readFromRight(byte *firstByte, byte* &outLeftByte) {
     }
 }
 
-byte *CodeBlock::getCodeBlock(byte* leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize){
+byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize){
     if(memoryBlockSize <= 63){
         returnArraySize = 1;
         *leftStartOfBlock = memoryBlockSize | 128;
