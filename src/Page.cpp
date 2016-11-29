@@ -128,21 +128,21 @@ FreeSpace *Page::cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf
 }
 
 bool Page::deleteBlock(void *firstByte) {
-    OccupiedSpace* occupiedSpace = nullptr;
-    size_t memoryBlockSize = CodeBlock::readFromRight(((byte*)firstByte-1), (byte*)occupiedSpace);
-    size_t codBlockSize = CodeBlock::getBlockSize((byte*)occupiedSpace);
-    if(((byte*)occupiedSpace+(2*codBlockSize)+memoryBlockSize) > staticEnd){
+    byte* occupiedSpace = nullptr;
+    size_t memoryBlockSize = CodeBlock::readFromRight(((byte*)firstByte-1), occupiedSpace);
+    size_t codBlockSize = CodeBlock::getBlockSize(occupiedSpace);
+    if((occupiedSpace+(2*codBlockSize)+memoryBlockSize) > staticEnd){
         Logger::fatal("dynamic block to delete overlaps with static sector", ERROR_CODES::STATIC_AND_DYNAMIC_SECTORS_OVERLAP);
         return false;
     }
     Space* leftNeighbor = nullptr;
-    Space* rightNeighbor = (Space*)((byte*)occupiedSpace+(2*codBlockSize)+memoryBlockSize+1);
+    Space* rightNeighbor = (Space*)(occupiedSpace+(2*codBlockSize)+memoryBlockSize+1);
     if( (byte*)rightNeighbor > staticEnd){
         Logger::fatal("dynamic block to delete overlaps with static sector", ERROR_CODES::STATIC_AND_DYNAMIC_SECTORS_OVERLAP);
         return false;
     }
     if(startOfPage < occupiedSpace){
-        leftNeighbor = Space::getleftNeighbor(((byte*)occupiedSpace)-1);
+        leftNeighbor = Space::getleftNeighbor(occupiedSpace-1);
     }
     if (!CodeBlock::isFree((byte *)leftNeighbor)){
         leftNeighbor = nullptr;
@@ -150,7 +150,7 @@ bool Page::deleteBlock(void *firstByte) {
     if (!CodeBlock::isFree((byte *)rightNeighbor)){
         rightNeighbor = nullptr;
     }
-    mergeFreeSpace(leftNeighbor,occupiedSpace,rightNeighbor);
+    mergeFreeSpace(leftNeighbor,(Space*)occupiedSpace,rightNeighbor);
     return false;
 }
 
@@ -177,6 +177,14 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
 void Page::mergeWithRight(Space *middleBlock, Space *rightBlock) {
     byte* leftEnd = (byte*) middleBlock;
     byte* rightEnd = rightBlock->getRightMostEnd();
+    size_t codeBLockSize = 0;
+    CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd-leftEnd, codeBLockSize);
+    middleBlock->copyCodeBlockToEnd(leftEnd, codeBLockSize);
+}
+
+void Page::mergeWithLeft(Space *leftBlock, Space *middleBlock) {
+    byte* leftEnd = (byte*) leftBlock;
+    byte* rightEnd = middleBlock->getRightMostEnd();
     size_t codeBLockSize = 0;
     CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd-leftEnd, codeBLockSize);
     middleBlock->copyCodeBlockToEnd(leftEnd, codeBLockSize);
