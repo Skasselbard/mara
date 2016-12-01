@@ -8,7 +8,7 @@ set(HEADER_FILES
         include/PageList.h
         include/Page.h
         include/Logger.h
-        )
+        include/Test.h)
 
 set(SOURCE_FILES
         ${HEADER_FILES}
@@ -17,7 +17,7 @@ set(SOURCE_FILES
         src/PageList.cpp
         src/Page.cpp
         src/Logger.cpp
-        )
+        src/Test.cpp)
 
 set(CMAKE_INCLUDE_PATH
         ${CMAKE_INCLUDE_PATH}
