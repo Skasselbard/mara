@@ -99,8 +99,8 @@ byte *CodeBlock::getCodeBlockForInternalSize(byte *leftStartOfBlock, size_t inte
 size_t CodeBlock::getBlockSize(byte *firstByte) {
     if(*firstByte >= 128) return 1;
     byte *currentByte = firstByte+1;
-    size_t size = 1;
-    while(*currentByte <=127){
+    size_t size = 2;
+    while(*currentByte >127){
         currentByte++;
         size++;
     }
