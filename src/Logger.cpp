@@ -2,10 +2,9 @@
 // Created by tom on 14.11.16.
 //
 
-#include <cstdio>
-#include <ctime>
-#include <cstring>
-#include <cstdlib>
+#include <time.h>
+#include <string.h>
+#include <stdlib.h>
 #include "../include/Logger.h"
 
 FILE const *Logger::logFile = fopen(".mara.log", "w");
