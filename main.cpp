@@ -46,7 +46,6 @@ int main(int argc, char** argv) {
         dynamicDelete(funfzig);
         dynamicDelete(funfhundert);
     }
-    printf("%s\n%s", block1, block2);
 
     if (argc >= 2 && strcmp(argv[1], "test") == 0) {
         Test::test(argc, argv);
