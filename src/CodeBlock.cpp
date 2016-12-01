@@ -1,9 +1,8 @@
 //
 // Created by tom on 15.11.16.
 //
-
-#include "../include/CodeBlock.h"
 #include "../include/Logger.h"
+#include "../include/CodeBlock.h"
 
 size_t CodeBlock::readFromLeft(byte *firstByte) {
     size_t size = 0;

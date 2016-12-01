@@ -5,6 +5,8 @@
 #ifndef MARA_PREDEFINED_H
 #define MARA_PREDEFINED_H
 
+#include <stdint.h>
+
 #define LOG_BUFFER_SIZE 4096
 
 // enables/disables the allignment
@@ -19,7 +21,7 @@
 #define MAX_CODEBLOCK_ARRAY_SIZE 128 //TODO: probably enough?
 #define EXIT_ON_FATAL //call exit if LOGGER::fatal() was called
 //#define DEBUG //mutes/unmutes debugLog
-typedef char byte;
+typedef uint8_t byte;
 
 enum ERROR_CODES{
     STATIC_AND_DYNAMIC_SECTORS_OVERLAP

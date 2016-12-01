@@ -6,7 +6,6 @@
 #define MARA_FREESPACE_H
 
 
-#include <stdint.h>
 #include "Space.h"
 
 class FreeSpace : public Space{
