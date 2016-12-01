@@ -92,6 +92,7 @@ byte *CodeBlock::getCodeBlockForInternalSize(byte *leftStartOfBlock, size_t inte
     do {
         oldCodeBlockSize = returnArraySize;
         resultingBlock = getCodeBlockForPayloadSize(leftStartOfBlock, internallyNeededSize, returnArraySize);
+        internallyNeededSize = (internallyNeededSize - (2*returnArraySize));
     }while (oldCodeBlockSize != returnArraySize);
     return resultingBlock;
 }
