@@ -47,6 +47,7 @@ size_t CodeBlock::readFromRight(byte *firstByte, byte* &outLeftByte) {
         tmp <<= (7*(m-1)+6);//shift them to the appropriate position
         size |= tmp; //merge size and tmp
         outLeftByte = currentByte;
+        return size;
     }
 }
 
