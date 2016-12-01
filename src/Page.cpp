@@ -149,10 +149,10 @@ bool Page::deleteBlock(void *firstByte) {
     if(startOfPage < occupiedSpace){
         leftNeighbor = Space::getleftNeighbor(occupiedSpace-1);
     }
-    if (!CodeBlock::isFree((byte *)leftNeighbor)&&leftNeighbor!= nullptr){
+    if (leftNeighbor!= nullptr && !CodeBlock::isFree((byte *)leftNeighbor)){
         leftNeighbor = nullptr;
     }
-    if (!CodeBlock::isFree((byte *)rightNeighbor)&&rightNeighbor!= nullptr){
+    if (rightNeighbor!= nullptr&&!CodeBlock::isFree((byte *)rightNeighbor)){
         rightNeighbor = nullptr;
     }
     mergeFreeSpace(leftNeighbor,(Space*)occupiedSpace,rightNeighbor);
