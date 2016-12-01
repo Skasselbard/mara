@@ -16,11 +16,11 @@ size_t CodeBlock::readFromLeft(byte *firstByte) {
         size = *firstByte & 63;
         size <<= 6;
         while(*currentByte >=128){
-            size &= (*currentByte & 127); //insert the last 7 bits of the current byte at the end of size
+            size |= (*currentByte & 127); //insert the last 7 bits of the current byte at the end of size
             currentByte++;
             size <<= 7; //shift the old byte 7  bits to the left to make space for the next 7 bits
         }
-        size &= (*currentByte & 127); //insert the last 7 bits of the current byte at the end of size
+        size |= (*currentByte & 127); //insert the last 7 bits of the current byte at the end of size
     }
     return size;
 }
@@ -39,13 +39,13 @@ size_t CodeBlock::readFromRight(byte *firstByte, byte* &outLeftByte) {
         while(*currentByte >=128){
             size_t tmp = *currentByte & 127; //stuff the 7 bits into a temporary size_t
             tmp <<= (7*m);//shift them to the appropriate position
-            size &= tmp; //merge size and tmp
+            size |= tmp; //merge size and tmp
             currentByte++;
             m++;
         }
         size_t tmp = *currentByte & 63; //stuff the 7 bits into a temporary size_t
         tmp <<= (7*(m-1)+6);//shift them to the appropriate position
-        size &= tmp; //merge size and tmp
+        size |= tmp; //merge size and tmp
         outLeftByte = currentByte;
     }
 }
