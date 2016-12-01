@@ -3,6 +3,7 @@
 //
 
 #include "../include/CodeBlock.h"
+#include "../include/Logger.h"
 
 size_t CodeBlock::readFromLeft(byte *firstByte) {
     size_t size = 0;
@@ -67,20 +68,21 @@ byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memor
     byte* current = leftStartOfBlock+(returnArraySize-1);
     int last = 1;
     for(int i = 0; i< returnArraySize; i++){
-        if(last){
-            *current = (memoryBlockSize & 127);
+        if(last){ //current is the rightmost byte
+            *current = (byte) (memoryBlockSize & 127);
             memoryBlockSize >>= 7;
             last = 0;
             current--;
-        }else if(current == leftStartOfBlock){
+        }else if(current == leftStartOfBlock){ //current is the leftmost byte
             *current = (memoryBlockSize & 63);
-            current--;
+            return leftStartOfBlock;
         }else{
             *current = ((memoryBlockSize & 127) | 128);
             memoryBlockSize >>= 7;
+            current--;
         }
     }
-
+    Logger::error("This code should never be reached!");
     return leftStartOfBlock;
 }
 
