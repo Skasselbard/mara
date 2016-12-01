@@ -4,9 +4,10 @@
 
 #include "../include/BucketList.h"
 #include "../include/Logger.h"
+#include <string>
 
 FreeSpace *BucketList::getFreeSpace(size_t sizeInByte) {
-    Logger::error("getFreeSpace is not implemented");
+    Logger::info((std::string("free space requested with size: ")+std::to_string(sizeInByte)).c_str());
     SIZE_CLASS currentSizeClass = getCorrectBucket(sizeInByte);
     while (bucketList[currentSizeClass] == nullptr){
         if(currentSizeClass < BYTE_MORE_THAN512){
