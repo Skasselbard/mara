@@ -3,6 +3,7 @@
 //
 
 #include "../include/CodeBlock.h"
+#include "../include/Logger.h"
 
 size_t CodeBlock::readFromLeft(byte *firstByte) {
     size_t size = 0;
@@ -25,7 +26,7 @@ size_t CodeBlock::readFromLeft(byte *firstByte) {
     return size;
 }
 
-size_t CodeBlock::readFromRight(byte *firstByte) {
+size_t CodeBlock::readFromRight(byte *firstByte, byte* &outLeftByte) {
     size_t size = 0;
     if(*firstByte >= 128){
         //block is single byte
@@ -46,10 +47,11 @@ size_t CodeBlock::readFromRight(byte *firstByte) {
         size_t tmp = *currentByte & 63; //stuff the 7 bits into a temporary size_t
         tmp <<= (7*(m-1)+6);//shift them to the appropriate position
         size &= tmp; //merge size and tmp
+        outLeftByte = currentByte;
     }
 }
 
-byte *CodeBlock::getCodeBlock(byte* leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize){
+byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize){
     if(memoryBlockSize <= 63){
         returnArraySize = 1;
         *leftStartOfBlock = memoryBlockSize | 128;
@@ -66,21 +68,33 @@ byte *CodeBlock::getCodeBlock(byte* leftStartOfBlock, size_t memoryBlockSize, si
     byte* current = leftStartOfBlock+(returnArraySize-1);
     int last = 1;
     for(int i = 0; i< returnArraySize; i++){
-        if(last){
-            *current = (memoryBlockSize & 127);
+        if(last){ //current is the rightmost byte
+            *current = (byte) (memoryBlockSize & 127);
             memoryBlockSize >>= 7;
             last = 0;
             current--;
-        }else if(current == leftStartOfBlock){
+        }else if(current == leftStartOfBlock){ //current is the leftmost byte
             *current = (memoryBlockSize & 63);
-            current--;
+            return leftStartOfBlock;
         }else{
             *current = ((memoryBlockSize & 127) | 128);
             memoryBlockSize >>= 7;
+            current--;
         }
     }
-
+    Logger::error("This code should never be reached!");
     return leftStartOfBlock;
+}
+
+byte *CodeBlock::getCodeBlockForInternalSize(byte *leftStartOfBlock, size_t internallyNeededSize, size_t &returnArraySize) {
+    size_t oldCodeBlockSize = 0;
+    returnArraySize = 1;
+    byte* resultingBlock;
+    do {
+        oldCodeBlockSize = returnArraySize;
+        resultingBlock = getCodeBlockForPayloadSize(leftStartOfBlock, internallyNeededSize, returnArraySize);
+    }while (oldCodeBlockSize != returnArraySize);
+    return resultingBlock;
 }
 
 size_t CodeBlock::getBlockSize(byte *firstByte) {
@@ -103,3 +117,5 @@ void CodeBlock::setFree(byte *firstByte, int free) {
     else *firstByte &= 191;
 
 }
+
+

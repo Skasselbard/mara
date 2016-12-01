@@ -7,7 +7,7 @@
 
 
 #include <cstddef>
-#include "Page.h"
+#include "predefined.h"
 
 /**
  * The code block which encodes the size of the memory block dynamically
@@ -55,19 +55,31 @@ public:
     /**
      * Reads the CodeBlock from the right
      * @param firstByte the first byte from the CodeBlock
+     * @param outLeftByte output for the leftmost byte of the block
      * @return the size of the memory block
      */
-    static size_t readFromRight(byte* firstByte);
+    static size_t readFromRight(byte* firstByte, byte* &outLeftByte);
 
     /**
-     * Build a CodeBlock
+     * Build a CodeBlock for a payload with the given size (from the right side of the left codeblock to the left side
+     * of the right code block). Useful to allocate the memory for a new occupied space.
      * @param leftStartOfBlock the beginning of the codeBlock starting from the left (return and this pointer should be the same)
      * @param memoryBlockSize size of the memory block which should be represented by the CodeBlock
      * @param returnArraySize size of the array returned by this function
      * @return an array of bytes, containing the codeBlock representing the memory block size.
      * The size of the array is stored in the last parameter. It should correspond to the leftStartOfBlock parameter
      */
-    static byte* getCodeBlock(byte* leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize);
+    static byte* getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize);
+
+    /**
+     * Build a CodeBlock for space that is managed internally (from the left side of the left codeblock to the right side
+     * of the right code block). Useful to allocate the memory for a new free space.
+     * @param leftStartOfBlock the beginning of the codeBlock starting from the left (return and this pointer should be the same)
+     * @param internallyNeededSize size of the internally occupied space including management information
+     * @param returnArraySize size of the array returned by this function
+     * @return an array of bytes, containing the codeBlock representing the size between the both codeblocks.
+     */
+    static byte* getCodeBlockForInternalSize(byte *leftStartOfBlock, size_t internallyNeededSize, size_t &returnArraySize);
 
     /**
      * reads if the given CodeBlock describes a free or used block.

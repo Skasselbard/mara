@@ -8,9 +8,12 @@ set(HEADER_FILES
         include/PageList.h
         include/Page.h
         include/Logger.h
-        include/Test.h
         include/CodeBlock.h
-        )
+        include/FreeSpace.h
+        include/OccupiedSpace.h
+        include/BucketList.h
+        include/Space.h
+        include/predefined.h)
 
 set(SOURCE_FILES
         ${HEADER_FILES}
@@ -21,6 +24,10 @@ set(SOURCE_FILES
         src/Logger.cpp
         src/CodeBlock.cpp
         src/Test.cpp
+        src/FreeSpace.cpp
+        src/OccupiedSpace.cpp
+        src/BucketList.cpp
+        src/Space.cpp
         )
 
 set(CMAKE_INCLUDE_PATH
