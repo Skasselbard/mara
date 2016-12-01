@@ -10,7 +10,7 @@
 #define LOG_BUFFER_SIZE 4096
 
 // enables/disables the allignment
-#define ALLIGNMENT
+//#define ALLIGNMENT
 #ifdef ALLIGNMENT
 #define ALLIGN_STATIC
 #define ALLIGN_DAYNAMIC
