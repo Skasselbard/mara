@@ -50,7 +50,7 @@ void *PageList::dynamicNew(size_t sizeInByte) {
             return nullptr;
         }
     }
-    return returnBlock;
+    return ((Space*)returnBlock)->getStartOfSpace();
 }
 
 bool PageList::iteratePage(Page* &currentPage) {
