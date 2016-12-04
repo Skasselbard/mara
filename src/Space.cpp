@@ -36,6 +36,7 @@ bool Space::copyCodeBlockToEnd(byte *startOfBlock, size_t sizeOfBlock) {
             Logger::error("trying to write over the space boundary");
             return false;
         }
+        currentPosition++;
     }
     return true;
 }
@@ -63,5 +64,5 @@ Space *Space::getleftNeighbor(byte *lastByte) {
     byte* leftByte = nullptr;
     size_t memorySize = CodeBlock::readFromRight(lastByte,leftByte);
     size_t codeBlockSize = lastByte - leftByte;
-    return (Space*)((leftByte-memorySize)-codeBlockSize);
+    return (Space*)((leftByte-memorySize)-codeBlockSize-1);
 }

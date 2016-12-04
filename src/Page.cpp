@@ -133,29 +133,29 @@ FreeSpace *Page::cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf
 
 bool Page::deleteBlock(void *firstByte) {
     Logger::info("deleting block");
-    byte* occupiedSpace = nullptr;
-    size_t memoryBlockSize = CodeBlock::readFromRight(((byte*)firstByte-1), occupiedSpace);
-    size_t codBlockSize = CodeBlock::getBlockSize(occupiedSpace);
-    if((occupiedSpace+(2*codBlockSize)+memoryBlockSize) > staticEnd){
+    byte* codeBlockStart = nullptr;
+    size_t memoryBlockSize = CodeBlock::readFromRight(((byte*)firstByte-1), codeBlockStart);
+    size_t codBlockSize = CodeBlock::getBlockSize(codeBlockStart);
+    if((codeBlockStart+(2*codBlockSize)+memoryBlockSize) > staticEnd){
         Logger::fatal("dynamic block to delete overlaps with static sector", ERROR_CODES::STATIC_AND_DYNAMIC_SECTORS_OVERLAP);
         return false;
     }
     Space* leftNeighbor = nullptr;
-    Space* rightNeighbor = (Space*)(occupiedSpace+(2*codBlockSize)+memoryBlockSize+1);
+    Space* rightNeighbor = (Space*)(codeBlockStart+(2*codBlockSize)+memoryBlockSize);
     if( (byte*)rightNeighbor > staticEnd){
         Logger::fatal("dynamic block to delete overlaps with static sector", ERROR_CODES::STATIC_AND_DYNAMIC_SECTORS_OVERLAP);
         return false;
     }
-    if(startOfPage < occupiedSpace){
-        leftNeighbor = Space::getleftNeighbor(occupiedSpace-1);
+    if(startOfPage < codeBlockStart){
+        leftNeighbor = Space::getleftNeighbor(codeBlockStart-1);
     }
-    if (leftNeighbor!= nullptr && !CodeBlock::isFree((byte *)leftNeighbor)){
+    if (leftNeighbor && !CodeBlock::isFree((byte *)leftNeighbor)){
         leftNeighbor = nullptr;
     }
-    if (rightNeighbor!= nullptr&&!CodeBlock::isFree((byte *)rightNeighbor)){
+    if (rightNeighbor &&!CodeBlock::isFree((byte *)rightNeighbor)){
         rightNeighbor = nullptr;
     }
-    mergeFreeSpace(leftNeighbor,(Space*)occupiedSpace,rightNeighbor);
+    mergeFreeSpace(leftNeighbor,(Space*)codeBlockStart,rightNeighbor);
     return false;
 }
 

@@ -20,6 +20,7 @@ FreeSpace *BucketList::getFreeSpace(size_t sizeInByte) {
 }
 
 bool BucketList::addToList(FreeSpace *freeSpace) {
+    Logger::info("adding element to bucketList");
     size_t size = freeSpace->getSize();
     FreeSpace* predecessor = getLastInBucket(getCorrectBucket(size));
     if (predecessor == nullptr){

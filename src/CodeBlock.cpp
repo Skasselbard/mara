@@ -26,6 +26,7 @@ size_t CodeBlock::readFromLeft(byte *firstByte) {
 }
 
 size_t CodeBlock::readFromRight(byte *firstByte, byte* &outLeftByte) {
+    outLeftByte = firstByte;
     size_t size = 0;
     if(*firstByte >= 128){
         //block is single byte
