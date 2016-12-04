@@ -156,7 +156,7 @@ bool Page::deleteBlock(void *firstByte) {
         rightNeighbor = nullptr;
     }
     mergeFreeSpace(leftNeighbor,(Space*)codeBlockStart,rightNeighbor);
-    return false;
+    return true;
 }
 
 FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *rightBlock) {
