@@ -110,7 +110,7 @@ size_t CodeBlock::getBlockSize(byte *firstByte) {
 }
 
 int CodeBlock::isFree(byte *firstByte) {
-    return *firstByte & 191; //191 is all 1 except the second bit in a byte
+    return *firstByte & 64;
 }
 
 void CodeBlock::setFree(byte *firstByte, int free) {
