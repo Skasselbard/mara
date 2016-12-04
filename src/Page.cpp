@@ -22,6 +22,8 @@ Page::Page(size_t sizeInBytes):pageSize(sizeInBytes){
         Logger::error("unable to allocate memory for new page");
     }
     this->staticEnd = (byte*)this->startOfPage+sizeInBytes;
+
+    Logger::info("initialize bucket list");
     bucketList.addToList(generateFirstBucketEntry());
 }
 
@@ -61,6 +63,7 @@ size_t Page::allign(size_t requestetSizeInByte) {
 }
 
 OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
+    Logger::info("dynamic block requested");
 #ifdef ALLIGN_DAYNAMIC
     sizeInByte = allign(sizeInByte);
 #endif
@@ -85,6 +88,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
 }
 
 FreeSpace *Page::cutLeftFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
+    Logger::info("cut left");
     if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREESPACE) {
         return nullptr;
     }else{
@@ -118,6 +122,7 @@ bool Page::blockIsInSpace(void *firstByte) {
 }
 
 FreeSpace *Page::cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
+    Logger::info("cut right");
     if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREESPACE) {
         return nullptr;
     }else{
@@ -127,6 +132,7 @@ FreeSpace *Page::cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf
 }
 
 bool Page::deleteBlock(void *firstByte) {
+    Logger::info("deleting block");
     byte* occupiedSpace = nullptr;
     size_t memoryBlockSize = CodeBlock::readFromRight(((byte*)firstByte-1), occupiedSpace);
     size_t codBlockSize = CodeBlock::getBlockSize(occupiedSpace);
@@ -143,10 +149,10 @@ bool Page::deleteBlock(void *firstByte) {
     if(startOfPage < occupiedSpace){
         leftNeighbor = Space::getleftNeighbor(occupiedSpace-1);
     }
-    if (!CodeBlock::isFree((byte *)leftNeighbor)){
+    if (leftNeighbor!= nullptr && !CodeBlock::isFree((byte *)leftNeighbor)){
         leftNeighbor = nullptr;
     }
-    if (!CodeBlock::isFree((byte *)rightNeighbor)){
+    if (rightNeighbor!= nullptr&&!CodeBlock::isFree((byte *)rightNeighbor)){
         rightNeighbor = nullptr;
     }
     mergeFreeSpace(leftNeighbor,(Space*)occupiedSpace,rightNeighbor);
@@ -154,6 +160,7 @@ bool Page::deleteBlock(void *firstByte) {
 }
 
 FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *rightBlock) {
+    Logger::info("merge block");
     if ( leftBlock == nullptr){
         if (rightBlock != nullptr){
             bucketList.deleteFromList((FreeSpace*)rightBlock);
@@ -174,6 +181,7 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
 }
 
 void Page::mergeWithRight(Space *middleBlock, Space *rightBlock) {
+    Logger::info("merge with right");
     byte* leftEnd = (byte*) middleBlock;
     byte* rightEnd = rightBlock->getRightMostEnd();
     size_t codeBLockSize = 0;
@@ -182,6 +190,7 @@ void Page::mergeWithRight(Space *middleBlock, Space *rightBlock) {
 }
 
 void Page::mergeWithLeft(Space *leftBlock, Space *middleBlock) {
+    Logger::info("merge with left");
     byte* leftEnd = (byte*) leftBlock;
     byte* rightEnd = middleBlock->getRightMostEnd();
     size_t codeBLockSize = 0;
