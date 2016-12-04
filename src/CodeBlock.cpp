@@ -14,7 +14,7 @@ size_t CodeBlock::readFromLeft(byte *firstByte) {
         //block is more than one byte
         byte *currentByte = firstByte+1;
         size = *firstByte & 63;
-        size <<= 6;
+        size <<= 7;
         while(*currentByte >=128){
             size |= (*currentByte & 127); //insert the last 7 bits of the current byte at the end of size
             currentByte++;
