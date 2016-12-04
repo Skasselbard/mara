@@ -19,8 +19,6 @@ int Test::test(int argc, char** argv) {
 
 #define DEBUG
 
-    Logger::info("Test started with seed: ");
-
     unsigned int seed = 123456789;
 
 
@@ -28,7 +26,7 @@ int Test::test(int argc, char** argv) {
     double pDynamic;
 
     maxIterations = 10;
-    amountNewVariables = 10000000;
+    amountNewVariables = 1000;
     pDynamic = 0.85;
     minSize = 4;
     averageSize = 16;
@@ -45,12 +43,12 @@ int Test::test(int argc, char** argv) {
 
             do {
                 varSize = size_distribution(generator);
+                varSize = varSize + (4-(varSize % 4));
             } while (varSize < minSize || varSize > maxSize);
 
             char** pointer;
             if (prob_distribution(generator) <= pDynamic) {
                 pointer = (char**) dynamicNew(varSize);
-                //printf("%zu\n", pointer);
             } else {
                 pointer = (char **) staticNew(varSize);
                 printf("%p\n", pointer);
@@ -59,9 +57,6 @@ int Test::test(int argc, char** argv) {
             *pointerAtPointer = (char**) pointerAtPointer;
         }
     }
-
-
-
 
     return 0;
 }
