@@ -23,6 +23,7 @@ set(SOURCE_FILES
         src/Page.cpp
         src/Logger.cpp
         src/CodeBlock.cpp
+        src/Test.cpp
         src/FreeSpace.cpp
         src/OccupiedSpace.cpp
         src/BucketList.cpp
