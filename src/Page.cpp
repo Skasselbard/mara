@@ -81,7 +81,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
         }
         returnBlock->toOccupied(sizeInByte);
         if (returnBlock->getRightMostEnd() > dynamicEnd) {
-            dynamicEnd = freeSpace->getRightMostEnd();
+            dynamicEnd = returnBlock->getRightMostEnd();
         }
     }
     return returnBlock;
