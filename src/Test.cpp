@@ -35,7 +35,7 @@ int Test::test(int argc, char** argv) {
     averageSize = 16;
     maxSize = 1000;
 
-    std::vector<char**> dynamicPointers;
+    std::vector<unsigned long*> dynamicPointers;
 
     std::mt19937 generator(seed);
     std::uniform_real_distribution<double> prob_distribution(0, 1);
@@ -52,27 +52,26 @@ int Test::test(int argc, char** argv) {
                 varSize = varSize + (4-(varSize % 4));
             } while (varSize < minSize || varSize > maxSize);
 
-            char** pointer;
+            unsigned long* address;
             if (prob_distribution(generator) <= pDynamic) {
-                // request pointer to dynamic memory and save the pointer for later deletion
-                pointer = (char**) dynamicNew(varSize);
-                dynamicPointers.push_back(pointer);
+                // request address to dynamic memory and save the address for later deletion
+                address = (unsigned long*) dynamicNew(varSize);
+                dynamicPointers.push_back(address);
             } else {
-                // request pointer to static memory
-                pointer = (char **) staticNew(varSize);
+                // request address to static memory
+                address = (unsigned long *) staticNew(varSize);
             }
 
             // write address to address
-            char** * pointerAtPointer = &pointer;
-            //*pointerAtPointer = (char**) pointerAtPointer;
-            *pointerAtPointer = (char**) pointerAtPointer;
+            unsigned long valueAtAddress = (unsigned long)address;
+            *address = valueAtAddress;
 
             printf("iterations=%u, variables=%u\n", iterations, v);
 
             // maybe free a dynamic variable
             if (prob_distribution(generator) <= pFree) {
                 unsigned long deletedIndex = (unsigned long) dynamicVariable_distribution(generator) % dynamicPointers.size();
-                char** toDelete = dynamicPointers.at(deletedIndex);
+                unsigned long* toDelete = dynamicPointers.at(deletedIndex);
                 dynamicDelete(toDelete);
                 dynamicPointers.erase(dynamicPointers.begin() + deletedIndex);
                 Logger::debug("Freed dynamic memory");
