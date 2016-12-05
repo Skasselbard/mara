@@ -24,6 +24,7 @@ Page::Page(size_t sizeInBytes):pageSize(sizeInBytes){
     this->staticEnd = (byte*)this->startOfPage+sizeInBytes;
 
     Logger::info("initialize bucket list");
+    CodeBlock::setFree((byte*)startOfPage, true);
     bucketList.addToList(generateFirstBucketEntry());
 }
 
@@ -73,6 +74,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
         Logger::info("no applicable freespace in this page. Switching to the next one");
         return nullptr;
     }else {
+        CodeBlock::setFree((byte*)freeSpace, false);
         bucketList.deleteFromList(freeSpace);
         FreeSpace *remainingSpace = cutLeftFromFreeSpace(freeSpace,
                                                          sizeInByte + (2 * Space::computeCodeBlockSize(sizeInByte)));
@@ -163,18 +165,23 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
     Logger::info("merge block");
     if ( leftBlock == nullptr){
         if (rightBlock != nullptr){
+            CodeBlock::setFree((byte*)rightBlock, false);
             bucketList.deleteFromList((FreeSpace*)rightBlock);
             mergeWithRight(middleBlock, rightBlock);
         }
+        CodeBlock::setFree((byte*)middleBlock, true);
         bucketList.addToList((FreeSpace*)middleBlock);
         return (FreeSpace*)middleBlock;
     } else{
         if(rightBlock != nullptr){
+            CodeBlock::setFree((byte*)rightBlock, false);
             bucketList.deleteFromList((FreeSpace*)rightBlock);
             mergeWithRight(middleBlock, rightBlock);
         }
+        CodeBlock::setFree((byte*)leftBlock, false);
         bucketList.deleteFromList((FreeSpace*)leftBlock);
         mergeWithLeft(leftBlock,middleBlock);
+        CodeBlock::setFree((byte*)leftBlock, true);
         bucketList.addToList((FreeSpace*)leftBlock);
         return (FreeSpace*)leftBlock;
     }
