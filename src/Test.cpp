@@ -28,7 +28,7 @@ int Test::test(int argc, char** argv) {
     // TODO read parameters from arguments
 
     maxIterations = 1;
-    amountNewVariables = 5;
+    amountNewVariables = 50000;
     pDynamic = 0.85;
     pFree = 0.2;
     minSize = 4;
