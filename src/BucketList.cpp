@@ -103,7 +103,7 @@ FreeSpace *BucketList::searchInList(FreeSpace *freeSpace, FreeSpace* &predecesso
     FreeSpace* currentElement = bucketList[getCorrectBucket(freeSpace->getSize())];
     while (currentElement != nullptr && currentElement != freeSpace ){
         predecessor = currentElement;
-        currentElement = freeSpace->getNext();
+        currentElement = currentElement->getNext();
     }
     return currentElement;
 }

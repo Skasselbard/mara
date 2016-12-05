@@ -170,6 +170,7 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
             mergeWithRight(middleBlock, rightBlock);
         }
         CodeBlock::setFree((byte*)middleBlock, true);
+        middleBlock->copyCodeBlockToEnd((byte*)middleBlock, CodeBlock::readFromLeft((byte*)middleBlock));
         bucketList.addToList((FreeSpace*)middleBlock);
         return (FreeSpace*)middleBlock;
     } else{
@@ -182,6 +183,7 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
         bucketList.deleteFromList((FreeSpace*)leftBlock);
         mergeWithLeft(leftBlock,middleBlock);
         CodeBlock::setFree((byte*)leftBlock, true);
+        middleBlock->copyCodeBlockToEnd((byte*)leftBlock, CodeBlock::readFromLeft((byte*)leftBlock));
         bucketList.addToList((FreeSpace*)leftBlock);
         return (FreeSpace*)leftBlock;
     }
