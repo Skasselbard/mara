@@ -20,7 +20,7 @@ public:
      * @return a pointer to the next FreeSpace in the bucket. The left next pointer will be taken as reference.
      * nullptr if the offset == 0
      */
-    FreeSpace* getNext();
+    FreeSpace *getNext(byte *startOfPage);
 
     /**
      * Adapt the next pointer in the data structure. The next pointer is adjacent to the code blocks and stored
@@ -28,7 +28,7 @@ public:
      * @param next pointer to the next free space. Can be null. If null the offset is set to 0 which will be interpreted
      * as if there is no successor.
      */
-    void setNext(FreeSpace* next);
+    void setNext(FreeSpace *next, byte *startOfPage);
 
     /**
      * Adjust the size of the free space.<br/>

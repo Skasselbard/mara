@@ -42,6 +42,12 @@ private:
      */
     FreeSpace* bucketList[BYTE_MORE_THAN512+1];
 
+    byte* startOfPage;
+public:
+    void setStartOfPage(byte *startOfPage);
+
+private:
+
     /**
      * @param freeSpace the Space to search for
      * @return null if not i list, same pointer if found.
