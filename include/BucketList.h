@@ -43,8 +43,6 @@ private:
     FreeSpace* bucketList[BYTE_MORE_THAN512+1];
 
     byte* startOfPage;
-public:
-    void setStartOfPage(byte *startOfPage);
 
 private:
 
@@ -75,6 +73,9 @@ public:
 
     bool deleteFromList(FreeSpace* freeSpace);
     bool addToList(FreeSpace* freeSpace);
+
+    void setStartOfPage(byte *startOfPage);
+
 
 };
 

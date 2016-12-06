@@ -64,6 +64,6 @@ bool Space::copyCodeBlockToFront(byte *startOfBlock, size_t sizeOfBlock) {
 Space *Space::getleftNeighbor(byte *lastByte) {
     byte* leftByte = nullptr;
     size_t memorySize = CodeBlock::readFromRight(lastByte,leftByte);
-    size_t codeBlockSize = lastByte - leftByte;
-    return (Space*)((leftByte-memorySize)-codeBlockSize-1);
+    size_t codeBlockSize = lastByte - leftByte + 1;
+    return (Space*)((leftByte-memorySize)-codeBlockSize);
 }

@@ -12,7 +12,7 @@
 FreeSpace *FreeSpace::pushBeginningRight(byte *firstByte) {
     size_t codeBlockSize = 0;
     assert(firstByte<getRightMostEnd()); //Never cross the pointers!
-    if (firstByte == CodeBlock::getCodeBlockForInternalSize(firstByte, getRightMostEnd() - firstByte, codeBlockSize)){
+    if (firstByte == CodeBlock::getCodeBlockForInternalSize(firstByte, getRightMostEnd() - firstByte + 1, codeBlockSize)){
         CodeBlock::setFree(firstByte, true);
         copyCodeBlockToEnd(firstByte, codeBlockSize);
         copyNextPointerFromEndToFront(
@@ -29,11 +29,11 @@ FreeSpace *FreeSpace::pushBeginningRight(byte *firstByte) {
 
 FreeSpace *FreeSpace::pushEndLeft(byte *lastByte) {
     size_t codeBlockSize = 0;
-    CodeBlock::getCodeBlockForPayloadSize(getLeftMostEnd(), lastByte - getLeftMostEnd(), codeBlockSize);//get the needed size
+    CodeBlock::getCodeBlockForPayloadSize(getLeftMostEnd(), lastByte - getLeftMostEnd() + 1, codeBlockSize);//get the needed size
     copyCodeBlockToFront(
             CodeBlock::getCodeBlockForPayloadSize(
-                    getRightMostEnd() - codeBlockSize,
-                    lastByte - getLeftMostEnd(),
+                    getRightMostEnd() - codeBlockSize + 1,
+                    lastByte - getLeftMostEnd() + 1,
                     codeBlockSize
             ),
             codeBlockSize
@@ -71,7 +71,7 @@ uint32_t *FreeSpace::getLeftNext(size_t codeBlockSize) {
 }
 
 uint32_t *FreeSpace::getRightNext(size_t codeBlockSize) {
-    return (uint32_t*)((getRightMostEnd()-(codeBlockSize-1))- sizeof(uint32_t));//uint32_t is 4 byte in contrast to the one byte rightMostEnd pointer
+    return (uint32_t*)((getRightMostEnd()-(codeBlockSize))- sizeof(uint32_t));//uint32_t is 4 byte in contrast to the one byte rightMostEnd pointer
 }
 
 FreeSpace *FreeSpace::getNext(byte *startOfPage) {
