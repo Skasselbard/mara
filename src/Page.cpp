@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <new>
+#include <assert.h>
 #include "../include/Page.h"
 #include "../include/Logger.h"
 #include "../include/PageList.h"
@@ -92,6 +93,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
 
 FreeSpace *Page::cutLeftFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
     Logger::info("cut left");
+    assert(freeSpace->getSize()>=bytesToCutOf);
     if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREESPACE) {
         return nullptr;
     }else{

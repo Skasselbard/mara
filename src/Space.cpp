@@ -55,7 +55,8 @@ void *Space::getStartOfSpace() {
 bool Space::copyCodeBlockToFront(byte *startOfBlock, size_t sizeOfBlock) {
     byte* currentPosition = getLeftMostEnd();
     for (int i = 0; i < sizeOfBlock; i++){
-        *currentPosition = *(getLeftMostEnd() + i);
+        currentPosition[i] = startOfBlock[i];
+        currentPosition ++;
     }
     return true;
 }
