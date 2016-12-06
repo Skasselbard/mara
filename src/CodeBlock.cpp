@@ -1,6 +1,7 @@
 //
 // Created by tom on 15.11.16.
 //
+#include <assert.h>
 #include "../include/Logger.h"
 #include "../include/CodeBlock.h"
 
@@ -21,6 +22,7 @@ size_t CodeBlock::readFromLeft(byte *firstByte) {
             size <<= 7; //shift the old byte 7  bits to the left to make space for the next 7 bits
         }
         size |= (*currentByte & 127); //insert the last 7 bits of the current byte at the end of size
+        assert(size>63); //Size encoded should be at least 64 to require multiple bytes
     }
     return size;
 }

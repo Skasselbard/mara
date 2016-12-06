@@ -11,6 +11,7 @@
 
 FreeSpace *FreeSpace::pushBeginningRight(byte *firstByte) {
     size_t codeBlockSize = 0;
+    assert(firstByte<getRightMostEnd()); //Never cross the pointers!
     if (firstByte == CodeBlock::getCodeBlockForInternalSize(firstByte, getRightMostEnd() - firstByte, codeBlockSize)){
         CodeBlock::setFree(firstByte, true);
         copyCodeBlockToEnd(firstByte, codeBlockSize);
