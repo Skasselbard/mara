@@ -24,7 +24,7 @@ size_t Space::computeCodeBlockSize(size_t sizeOfBlockOfInterestInByte) {
 }
 
 size_t Space::getSize() {
-    return getRightMostEnd() - getLeftMostEnd();
+    return getRightMostEnd() - getLeftMostEnd() + 1;
 }
 
 bool Space::copyCodeBlockToEnd(byte *startOfBlock, size_t sizeOfBlock) {
