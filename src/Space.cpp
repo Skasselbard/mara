@@ -13,7 +13,7 @@ byte *Space::getLeftMostEnd() const {
 byte *Space::getRightMostEnd() const {
     size_t memoryBlockSize = CodeBlock::readFromLeft(getLeftMostEnd());
     size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
-    return (getLeftMostEnd()+(2*codeBlockSize)+memoryBlockSize);
+    return (getLeftMostEnd()+(2*codeBlockSize)+memoryBlockSize-1);
 }
 
 size_t Space::computeCodeBlockSize(size_t sizeOfBlockOfInterestInByte) {
@@ -28,7 +28,7 @@ size_t Space::getSize() {
 }
 
 bool Space::copyCodeBlockToEnd(byte *startOfBlock, size_t sizeOfBlock) {
-    byte* currentPosition = getRightMostEnd()-sizeOfBlock;
+    byte* currentPosition = getRightMostEnd()-sizeOfBlock+1;
     for (int i = 0; i < sizeOfBlock; i++){
         if(currentPosition <= getRightMostEnd()) {
             *currentPosition = *(startOfBlock + i);
