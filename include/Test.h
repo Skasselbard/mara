@@ -12,6 +12,8 @@ private:
 public:
 
     static int test(int argc, char** argv);
+    static int distributionTest();
+    static int testBucketList();
 };
 
 #endif //MARA_TEST_H
