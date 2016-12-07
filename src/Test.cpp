@@ -1,6 +1,5 @@
-#include <cstdio>
-#include <cstdlib>
-#include <cstdint>
+#include <stdio.h>
+#include <stdint.h>
 #include <iostream>
 #include <random>
 #include <map>
@@ -146,27 +145,9 @@ int Test::distributionTest() {
     }
 }
 
-static int lastLinear4Scaling = 32;
-static int lastLinear16Scaling = 128;
-static int largestBucketSize = 1024;
 
-static int blSize = lastLinear4Scaling/4
-             + (lastLinear16Scaling-lastLinear4Scaling+4)/16
-             + (int) (log2(largestBucketSize)-log2(lastLinear16Scaling));
 
-static int lookupBucket(int size) {
-    if (size <= lastLinear4Scaling) {
-        return ((size-1) / 4);
-    } else if (size <= lastLinear16Scaling) {
-        return lookupBucket(lastLinear4Scaling) + 1 + (size-lastLinear4Scaling-1)/16;
-    } else if (size <= largestBucketSize) {
-        return lookupBucket(lastLinear16Scaling) + 1 + (int) (log2(size-1)-log2(lastLinear16Scaling));
-    } else {
-        return blSize-1;
-    }
-}
-
-int Test::testBucketList() {
+/*int Test::testBucketList() {
 
 
 
@@ -180,5 +161,5 @@ int Test::testBucketList() {
     for (int i = 1; i <= 1100; i++) {
         cout << i << ": index=" << lookupBucket(i) << endl;
     }
-}
+}*/
 

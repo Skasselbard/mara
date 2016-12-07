@@ -7,32 +7,18 @@
 
 
 #include <cstdlib>
+#include <tgmath.h>
 #include "FreeSpace.h"
 
 class BucketList {
 private:
-    /**
-     * Defines the possible sizes of the buckets and the index in the bucketlist. Data in that bucket cannot
-     * be greater than its class. Eg. data <= 4 byte in class BYTE4 or 28 byte < data <= 32 byte in class BYTE32
-     */
-    enum SIZE_CLASS{
-        BYTE4 = 0,
-        BYTE8 = 1,
-        BYTE12 = 2,
-        BYTE16 = 3,
-        BYTE20 = 4,
-        BYTE24 = 5,
-        BYTE28 = 6,
-        BYTE32 = 7,
-        BYTE40 = 8,
-        BYTE48 = 9,
-        BYTE56 = 10,
-        BYTE64 = 11,
-        BYTE128 = 12,
-        BYTE256 = 13,
-        BYTE512 = 14,
-        BYTE_MORE_THAN512 = 15
-    };
+    static const size_t lastLinear4Scaling = 32;
+    static const size_t lastLinear16Scaling = 128;
+    static const size_t largestBucketSize = 1024;
+
+    static const size_t blSize = lastLinear4Scaling/4
+                                       + (lastLinear16Scaling-lastLinear4Scaling+4)/16
+                                       + (const size_t) (log2(largestBucketSize)-log2(lastLinear16Scaling));
 
     /**
      * The array with th e information of the dynamic free sections
@@ -40,7 +26,7 @@ private:
      * The space pointed to at the given index is the first one of the size class.  <br/>
      * Each index represent another size class. Increasing indices represent increasing size classes.
      */
-    FreeSpace* bucketList[BYTE_MORE_THAN512+1];
+    FreeSpace* bucketList[blSize];
 
     byte* startOfPage;
 
@@ -53,15 +39,15 @@ private:
     FreeSpace* searchInList(FreeSpace* freeSpace, FreeSpace* &predecessor);
 
     /**
-     * @param sizeClass
+     * @param size
      * @return null if bucket is empty, the last element otherwise
      */
-    FreeSpace* getLastInBucket(SIZE_CLASS sizeClass);
+    FreeSpace* getLastInBucket(size_t size);
 
     /**
      * Get the correct index in the bucket list for a block with the given size
      */
-    SIZE_CLASS getCorrectBucket(size_t blockSizeInByte);
+    static unsigned int lookupBucket(size_t size) ;
 
 public:
     /**

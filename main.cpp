@@ -21,9 +21,7 @@ void printArray(char* array, size_t size){
 int main(int argc, char** argv) {
 
     //Test::distributionTest();
-    Test::testBucketList();
-
-    return 0;
+    //Test::testBucketList();
 
     if (argc >= 2 && strcmp(argv[1], "test") == 0) {
         Test::test(argc, argv);

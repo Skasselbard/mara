@@ -4,27 +4,29 @@
 
 #include "../include/BucketList.h"
 #include "../include/Logger.h"
+#include "../include/CodeBlock.h"
 #include <string>
+#include <assert.h>
 
 FreeSpace *BucketList::getFreeSpace(size_t sizeInByte) {
     Logger::info((std::string("free space requested with size: ")+std::to_string(sizeInByte)).c_str());
-    SIZE_CLASS currentSizeClass = getCorrectBucket(sizeInByte);
-    while (bucketList[currentSizeClass] == nullptr){
-        if(currentSizeClass < BYTE_MORE_THAN512){
-            currentSizeClass = (SIZE_CLASS)((int)currentSizeClass+1);
+    unsigned int bucketIndex = lookupBucket(sizeInByte);
+    while (bucketList[bucketIndex] == nullptr){
+        if(bucketIndex < blSize-1){
+            bucketIndex++;
         }else{
             return nullptr;
         }
     }
-    return bucketList[currentSizeClass];
+    return bucketList[bucketIndex];
 }
 
 bool BucketList::addToList(FreeSpace *freeSpace) {
     Logger::info("adding element to bucketList");
-    size_t size = freeSpace->getSize();
-    FreeSpace* predecessor = getLastInBucket(getCorrectBucket(size));
+    size_t size = CodeBlock::readFromLeft((byte*)freeSpace);
+    FreeSpace* predecessor = getLastInBucket(lookupBucket(size));
     if (predecessor == nullptr){
-        bucketList[getCorrectBucket(size)] = freeSpace;
+        bucketList[lookupBucket(size)] = freeSpace;
     } else {
         predecessor->setNext(freeSpace, startOfPage);
     }
@@ -32,75 +34,9 @@ bool BucketList::addToList(FreeSpace *freeSpace) {
     return true;
 }
 
-BucketList::SIZE_CLASS BucketList::getCorrectBucket(size_t blockSizeInByte) {
-    if (blockSizeInByte > 32){//(32,512+]
-        if(blockSizeInByte > 64){//(64,512+]
-            if(blockSizeInByte > 256) {//(256,512+]
-                if(blockSizeInByte > 512){
-                    return BYTE_MORE_THAN512;
-                }else{
-                    return BYTE512;
-                }
-            }else{//(64,256]
-                if (blockSizeInByte > 128){
-                    return BYTE256;
-                }else{
-                    return BYTE128;
-                }
-            }
-        }else{//(32,64]
-            if(blockSizeInByte > 48){//(48,64]
-                if(blockSizeInByte > 56){
-                    return BYTE64;
-                }else{
-                    return BYTE56;
-                }
-            }else{//(32,48]
-                if(blockSizeInByte > 40){
-                    return BYTE48;
-                }else{
-                    return BYTE40;
-                }
-            }
-        }
-    }else{//[4,32]
-        if (blockSizeInByte > 16){ //(16,32]
-            if(blockSizeInByte > 24){//(24,32]
-                if(blockSizeInByte > 28){
-                    return BYTE32;
-                }else{
-                    return BYTE28;
-                }
-            }else{//(16,24]
-                if(blockSizeInByte > 20){
-                    return BYTE24;
-                }else{//(16,20]
-                    return BYTE20;
-                }
-            }
-        }else {//[4,16]
-            if (blockSizeInByte > 8){//(8,16]
-                if (blockSizeInByte > 12){
-                    return BYTE16;
-                }
-                else{
-                    return BYTE12;
-                }
-            }else{//[4,8]
-                if (blockSizeInByte > 4){
-                    return BYTE8;
-                }else{
-                    return BYTE4;
-                }
-            }
-        }
-    }
-    return BYTE_MORE_THAN512;
-}
-
 FreeSpace *BucketList::searchInList(FreeSpace *freeSpace, FreeSpace* &predecessor) {
     predecessor = nullptr;
-    FreeSpace* currentElement = bucketList[getCorrectBucket(freeSpace->getSize())];
+    FreeSpace* currentElement = bucketList[lookupBucket(freeSpace->getSize())];
     while (currentElement != nullptr && currentElement != freeSpace ){
         predecessor = currentElement;
         currentElement = currentElement->getNext(startOfPage);
@@ -108,8 +44,8 @@ FreeSpace *BucketList::searchInList(FreeSpace *freeSpace, FreeSpace* &predecesso
     return currentElement;
 }
 
-FreeSpace *BucketList::getLastInBucket(BucketList::SIZE_CLASS sizeClass) {
-    FreeSpace* currentElement = bucketList[sizeClass];
+FreeSpace *BucketList::getLastInBucket(size_t size) {
+    FreeSpace* currentElement = bucketList[size];
     while(currentElement != nullptr){
         currentElement = currentElement->getNext(startOfPage);
     }
@@ -121,7 +57,7 @@ bool BucketList::deleteFromList(FreeSpace *freeSpace) {
     FreeSpace* predecessor = nullptr;
     if (freeSpace == searchInList(freeSpace, predecessor)){
         if (predecessor == nullptr){
-            bucketList[getCorrectBucket(freeSpace->getSize())] = freeSpace->getNext(startOfPage);
+            bucketList[lookupBucket(freeSpace->getSize())] = freeSpace->getNext(startOfPage);
         }else{
             predecessor->setNext(freeSpace->getNext(startOfPage), startOfPage);
         }
@@ -133,4 +69,19 @@ bool BucketList::deleteFromList(FreeSpace *freeSpace) {
 
 void BucketList::setStartOfPage(byte *startOfPage) {
     BucketList::startOfPage = startOfPage;
+}
+
+
+
+unsigned int BucketList::lookupBucket(size_t size) {
+    assert(size != 0);
+    if (size <= lastLinear4Scaling) {
+        return (unsigned int)((size-1) / 4);
+    } else if (size <= lastLinear16Scaling) {
+        return (unsigned int)(lookupBucket(lastLinear4Scaling) + 1 + (size-lastLinear4Scaling-1)/16);
+    } else if (size <= largestBucketSize) {
+        return (unsigned int)(lookupBucket(lastLinear16Scaling) + 1 + (size_t) (log2(size-1)-log2(lastLinear16Scaling)));
+    } else {
+        return (unsigned int)blSize-1;
+    }
 }
