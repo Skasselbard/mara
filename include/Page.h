@@ -19,7 +19,6 @@ class Page {
 private:
     /**
      * Pointer to the first byte of the page
-     * TODO: See if needed
      */
     void *startOfPage;
 
@@ -46,28 +45,18 @@ private:
      */
     byte* dynamicEnd;
 
-    /**
-     * The size of all static blocks combined
-     */
-    size_t staticSectorSize;
-
     BucketList bucketList;
 
-    /**
-     * Free blocks in between the dynamic blocks are included in the size
-     * @return the size in bytes which the dynamic sector spans
-     */
-    size_t getDynamicSectorSize();
 
 
 
     /**
-     * TODO: discribe allignment
+     * TODO: describe allignment
      * allign the requestet block size
      * @param requestetSizeInByte the needed size for the requested block
      * @return the allignet size of the requested block
      */
-    size_t allign(size_t requestetSizeInByte);
+    size_t align(size_t requestetSizeInByte);
 
     /**
      * Merges the three blocks into one Block of free Space.
@@ -122,7 +111,7 @@ public:
     Page(size_t sizeInBytes);
 
     /**
-     * shuold be private destructor because we dont expect pages to be deleted before program termination
+     * should be private destructor because we dont expect pages to be deleted before program termination
      */
     ~Page();
 

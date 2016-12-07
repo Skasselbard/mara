@@ -3,6 +3,7 @@
 //
 
 #include <malloc.h>
+#include <assert.h>
 #include "../include/FreeSpace.h"
 #include "../include/CodeBlock.h"
 #include "../include/Logger.h"
@@ -10,7 +11,8 @@
 
 FreeSpace *FreeSpace::pushBeginningRight(byte *firstByte) {
     size_t codeBlockSize = 0;
-    if (firstByte == CodeBlock::getCodeBlockForInternalSize(firstByte, getRightMostEnd() - firstByte, codeBlockSize)){
+    assert(firstByte<getRightMostEnd()); //Never cross the pointers!
+    if (firstByte == CodeBlock::getCodeBlockForInternalSize(firstByte, (getRightMostEnd() - firstByte) + 1, codeBlockSize)){
         CodeBlock::setFree(firstByte, true);
         copyCodeBlockToEnd(firstByte, codeBlockSize);
         copyNextPointerFromEndToFront(
@@ -27,11 +29,11 @@ FreeSpace *FreeSpace::pushBeginningRight(byte *firstByte) {
 
 FreeSpace *FreeSpace::pushEndLeft(byte *lastByte) {
     size_t codeBlockSize = 0;
-    CodeBlock::getCodeBlockForPayloadSize(getLeftMostEnd(), lastByte - getLeftMostEnd(), codeBlockSize);//get the needed size
+    CodeBlock::getCodeBlockForPayloadSize(getLeftMostEnd(), (lastByte - getLeftMostEnd()) + 1, codeBlockSize);//get the needed size
     copyCodeBlockToFront(
             CodeBlock::getCodeBlockForPayloadSize(
-                    getRightMostEnd() - codeBlockSize,
-                    lastByte - getLeftMostEnd(),
+                    (getRightMostEnd() - codeBlockSize) + 1,
+                    (lastByte - getLeftMostEnd()) + 1,
                     codeBlockSize
             ),
             codeBlockSize
@@ -48,7 +50,7 @@ bool FreeSpace::copyNextPointerFromEndToFront(uint32_t *front, uint32_t *end) {
     return true;
 }
 
-void FreeSpace::setNext(FreeSpace *next) {
+void FreeSpace::setNext(FreeSpace *next, byte *startOfPage) {
     size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
     uint32_t *leftNext = getLeftNext(codeBlockSize);
     uint32_t *rightNext = getRightNext(codeBlockSize);
@@ -57,7 +59,9 @@ void FreeSpace::setNext(FreeSpace *next) {
         *rightNext = 0;
         return;
     }
-    uint32_t offset = (uint32_t) ((byte *) next - getRightMostEnd());
+    assert((byte*)next >= startOfPage);
+    assert(((byte*) next - startOfPage) < 4294967295 );// offset is less than uint 32
+    uint32_t offset = (uint32_t) ((byte*) next - startOfPage);
     *leftNext = offset;
     *rightNext = offset;
 }
@@ -67,16 +71,16 @@ uint32_t *FreeSpace::getLeftNext(size_t codeBlockSize) {
 }
 
 uint32_t *FreeSpace::getRightNext(size_t codeBlockSize) {
-    return (uint32_t*)((getRightMostEnd()-(codeBlockSize-1))- sizeof(uint32_t));//uint32_t is 4 byte in contrast to the one byte rightMostEnd pointer
+    return (uint32_t*)((getRightMostEnd()-(codeBlockSize))- sizeof(uint32_t));//uint32_t is 4 byte in contrast to the one byte rightMostEnd pointer
 }
 
-FreeSpace *FreeSpace::getNext() {
+FreeSpace *FreeSpace::getNext(byte *startOfPage) {
     size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
     uint32_t *leftNext = getLeftNext(codeBlockSize);
     if (*leftNext == 0){
         return nullptr;
     }
-    return (FreeSpace*)(getRightMostEnd()+(*leftNext));
+    return (FreeSpace*)(startOfPage+(*leftNext));
 }
 
 bool FreeSpace::copyNextPointerFromFrontToEnd(uint32_t *front, uint32_t *end) {

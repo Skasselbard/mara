@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <new>
+#include <assert.h>
 #include "../include/Page.h"
 #include "../include/Logger.h"
 #include "../include/PageList.h"
@@ -21,6 +22,7 @@ Page::Page(size_t sizeInBytes):pageSize(sizeInBytes){
     if (startOfPage == nullptr){
         Logger::error("unable to allocate memory for new page");
     }
+    bucketList.setStartOfPage((byte*)startOfPage);
     this->staticEnd = (byte*)this->startOfPage+sizeInBytes;
 
     Logger::info("initialize bucket list");
@@ -36,7 +38,7 @@ Page::~Page() {
 void* Page::getStaticBlock(size_t sizeInByte) {
     Logger::info("static block requested");
 #ifdef ALLIGN_STATIC
-    sizeInByte = allign(sizeInByte);
+    sizeInByte = align(sizeInByte);
 #endif
     if (staticBlockFitInPage(sizeInByte)) {
         this->staticEnd = this->staticEnd - sizeInByte;
@@ -49,24 +51,19 @@ void* Page::getStaticBlock(size_t sizeInByte) {
     }
 }
 
-size_t Page::getDynamicSectorSize() {
-    Logger::error("getDynamicSectorSize is not implemented and returns wrong results");
-    return 0;
-}
-
 bool Page::staticBlockFitInPage(size_t blockSizeInByte) {
-    return (blockSizeInByte <= (staticEnd - dynamicEnd));
+    return (blockSizeInByte <= (staticEnd - dynamicEnd - 1));
 }
 
-size_t Page::allign(size_t requestetSizeInByte) {
-    Logger::error("Allignment is not implemented and returns the given block size");
+size_t Page::align(size_t requestetSizeInByte) {
+    Logger::error("Alignment is not implemented and returns the given block size");
     return requestetSizeInByte;
 }
 
 OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
     Logger::info("dynamic block requested");
-#ifdef ALLIGN_DAYNAMIC
-    sizeInByte = allign(sizeInByte);
+#ifdef ALIGN_DYNAMIC
+    sizeInByte = align(sizeInByte);
 #endif
     FreeSpace* freeSpace = bucketList.getFreeSpace(sizeInByte);
     OccupiedSpace* returnBlock = (OccupiedSpace*)freeSpace;
@@ -91,6 +88,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
 
 FreeSpace *Page::cutLeftFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
     Logger::info("cut left");
+    assert(freeSpace->getSize()>=bytesToCutOf);
     if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREESPACE) {
         return nullptr;
     }else{
@@ -104,7 +102,7 @@ FreeSpace *Page::generateFirstBucketEntry() {
     size_t codeBlockSize = 0;
     CodeBlock::getCodeBlockForInternalSize((byte *) startOfPage, pageSize, codeBlockSize);
     freeSpace->copyCodeBlockToEnd((byte *) freeSpace, codeBlockSize);
-    freeSpace->setNext(nullptr);
+    freeSpace->setNext(nullptr, (byte*)startOfPage);
     return freeSpace;
 }
 
@@ -120,11 +118,12 @@ Page *Page::getNextPage() {
 }
 
 bool Page::blockIsInSpace(void *firstByte) {
-    return (startOfPage <= firstByte && firstByte <= staticEnd);
+    return (startOfPage <= firstByte && firstByte < staticEnd);
 }
 
 FreeSpace *Page::cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
     Logger::info("cut right");
+    assert(freeSpace->getSize()>=bytesToCutOf);
     if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREESPACE) {
         return nullptr;
     }else{
@@ -138,7 +137,8 @@ bool Page::deleteBlock(void *firstByte) {
     byte* codeBlockStart = nullptr;
     size_t memoryBlockSize = CodeBlock::readFromRight(((byte*)firstByte-1), codeBlockStart);
     size_t codBlockSize = CodeBlock::getBlockSize(codeBlockStart);
-    if((codeBlockStart+(2*codBlockSize)+memoryBlockSize) > staticEnd){
+    assert((codeBlockStart+(2*codBlockSize)+memoryBlockSize) < staticEnd);
+    if((codeBlockStart+(2*codBlockSize)+memoryBlockSize) >= staticEnd){
         Logger::fatal("dynamic block to delete overlaps with static sector", ERROR_CODES::STATIC_AND_DYNAMIC_SECTORS_OVERLAP);
         return false;
     }
@@ -170,6 +170,7 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
             mergeWithRight(middleBlock, rightBlock);
         }
         CodeBlock::setFree((byte*)middleBlock, true);
+        middleBlock->copyCodeBlockToEnd((byte*)middleBlock, CodeBlock::getBlockSize((byte*)middleBlock));
         bucketList.addToList((FreeSpace*)middleBlock);
         return (FreeSpace*)middleBlock;
     } else{
@@ -182,6 +183,7 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
         bucketList.deleteFromList((FreeSpace*)leftBlock);
         mergeWithLeft(leftBlock,middleBlock);
         CodeBlock::setFree((byte*)leftBlock, true);
+        middleBlock->copyCodeBlockToEnd((byte*)leftBlock, CodeBlock::getBlockSize((byte*)leftBlock));
         bucketList.addToList((FreeSpace*)leftBlock);
         return (FreeSpace*)leftBlock;
     }
@@ -192,7 +194,7 @@ void Page::mergeWithRight(Space *middleBlock, Space *rightBlock) {
     byte* leftEnd = (byte*) middleBlock;
     byte* rightEnd = rightBlock->getRightMostEnd();
     size_t codeBLockSize = 0;
-    CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd-leftEnd, codeBLockSize);
+    CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd-leftEnd + 1, codeBLockSize);
     middleBlock->copyCodeBlockToEnd(leftEnd, codeBLockSize);
 }
 
@@ -201,6 +203,6 @@ void Page::mergeWithLeft(Space *leftBlock, Space *middleBlock) {
     byte* leftEnd = (byte*) leftBlock;
     byte* rightEnd = middleBlock->getRightMostEnd();
     size_t codeBLockSize = 0;
-    CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd-leftEnd, codeBLockSize);
+    CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd-leftEnd + 1, codeBLockSize);
     middleBlock->copyCodeBlockToEnd(leftEnd, codeBLockSize);
 }

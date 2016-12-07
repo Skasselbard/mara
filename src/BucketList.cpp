@@ -26,9 +26,9 @@ bool BucketList::addToList(FreeSpace *freeSpace) {
     if (predecessor == nullptr){
         bucketList[getCorrectBucket(size)] = freeSpace;
     } else {
-        predecessor->setNext(freeSpace);
+        predecessor->setNext(freeSpace, startOfPage);
     }
-    freeSpace->setNext(nullptr);
+    freeSpace->setNext(nullptr, startOfPage);
     return true;
 }
 
@@ -103,7 +103,7 @@ FreeSpace *BucketList::searchInList(FreeSpace *freeSpace, FreeSpace* &predecesso
     FreeSpace* currentElement = bucketList[getCorrectBucket(freeSpace->getSize())];
     while (currentElement != nullptr && currentElement != freeSpace ){
         predecessor = currentElement;
-        currentElement = freeSpace->getNext();
+        currentElement = currentElement->getNext(startOfPage);
     }
     return currentElement;
 }
@@ -111,7 +111,7 @@ FreeSpace *BucketList::searchInList(FreeSpace *freeSpace, FreeSpace* &predecesso
 FreeSpace *BucketList::getLastInBucket(BucketList::SIZE_CLASS sizeClass) {
     FreeSpace* currentElement = bucketList[sizeClass];
     while(currentElement != nullptr){
-        currentElement = currentElement->getNext();
+        currentElement = currentElement->getNext(startOfPage);
     }
     return currentElement;
 }
@@ -121,12 +121,16 @@ bool BucketList::deleteFromList(FreeSpace *freeSpace) {
     FreeSpace* predecessor = nullptr;
     if (freeSpace == searchInList(freeSpace, predecessor)){
         if (predecessor == nullptr){
-            bucketList[getCorrectBucket(freeSpace->getSize())] = freeSpace->getNext();
+            bucketList[getCorrectBucket(freeSpace->getSize())] = freeSpace->getNext(startOfPage);
         }else{
-            predecessor->setNext(freeSpace->getNext());
+            predecessor->setNext(freeSpace->getNext(startOfPage), startOfPage);
         }
         return true;
     }
     Logger::warning("element not found in bucketList");
     return false;
+}
+
+void BucketList::setStartOfPage(byte *startOfPage) {
+    BucketList::startOfPage = startOfPage;
 }
