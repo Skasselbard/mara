@@ -16,7 +16,9 @@ FreeSpace *BucketList::getFreeSpace(size_t sizeInByte) {
         returnSpace = findFittingSpaceInBucket(sizeInByte, bucketIndex);
         !returnSpace ? bucketIndex++ : bucketIndex;
     }
-    assert(returnSpace->getSize()>=sizeInByte);
+    if(returnSpace) {
+        assert(returnSpace->getSize() >= sizeInByte);
+    }
     return returnSpace;
 }
 
