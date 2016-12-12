@@ -11,11 +11,11 @@ FreeSpace *BucketList::getFreeSpace(size_t sizeInByte) {
     Logger::info((std::string("free space requested with size: ")+std::to_string(sizeInByte)).c_str());
     unsigned int bucketIndex = lookupBucket(sizeInByte);
     FreeSpace* returnSpace = nullptr;
-    while (!returnSpace && bucketIndex<(blSize-1)){
+    do {
         bucketIndex = findNonEmptyBucket(bucketIndex);
         returnSpace = findFittingSpaceInBucket(sizeInByte, bucketIndex);
         !returnSpace ? bucketIndex++ : bucketIndex;
-    }
+    } while (!returnSpace && bucketIndex<(blSize-1));
     if(returnSpace) {
         assert(returnSpace->getSize() >= sizeInByte);
     }
