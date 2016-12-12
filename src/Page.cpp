@@ -45,9 +45,10 @@ void* Page::getStaticBlock(size_t sizeInByte) {
     sizeInByte = align(sizeInByte);
 #endif
     if (staticBlockFitInPage(sizeInByte)) {
-        this->staticEnd = this->staticEnd - sizeInByte;
-        FreeSpace* lastFreeSpace = (FreeSpace*)(dynamicEnd+1);
+        byte* codeBlockLeft = nullptr;
+        FreeSpace* lastFreeSpace = (FreeSpace*)(staticEnd - CodeBlock::readFromRight(staticEnd-1, codeBlockLeft)-(2*CodeBlock::getBlockSize(codeBlockLeft)));
         cutRightFromFreeSpace(lastFreeSpace, sizeInByte);
+        this->staticEnd = this->staticEnd - sizeInByte;
         return this->staticEnd;
     }else{
         Logger::error("requested block does not fit in page");
@@ -75,7 +76,6 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
         Logger::info("no applicable freespace in this page. Switching to the next one");
         return nullptr;
     }else {
-        CodeBlock::setFree((byte*)freeSpace, false);
         bucketList.deleteFromList(freeSpace);
         FreeSpace *remainingSpace = cutLeftFromFreeSpace(freeSpace,
                                                          sizeInByte + (2 * Space::computeCodeBlockSize(sizeInByte)));

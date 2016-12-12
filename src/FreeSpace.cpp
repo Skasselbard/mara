@@ -63,7 +63,9 @@ void FreeSpace::setNext(FreeSpace *next, byte *startOfPage) {
     assert(((byte*) next - startOfPage) < 4294967295 );// offset is less than uint 32
     uint32_t offset = (uint32_t) ((byte*) next - startOfPage);
     *leftNext = offset;
-    *rightNext = offset;
+    if (CodeBlock::readFromLeft((byte*)this)>=8){//overlapping pointers if the size is too little
+        *rightNext = offset;
+    }
 }
 
 uint32_t *FreeSpace::getLeftNext(size_t codeBlockSize) {

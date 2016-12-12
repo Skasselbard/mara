@@ -42,6 +42,7 @@ bool Space::copyCodeBlockToEnd(byte *startOfBlock, size_t sizeOfBlock) {
 }
 
 void Space::toOccupied(size_t newSize) {
+    CodeBlock::setFree(getLeftMostEnd(), false);
     size_t codeBlockSize = 0;
     CodeBlock::getCodeBlockForPayloadSize(getLeftMostEnd(), newSize, codeBlockSize);
     copyCodeBlockToEnd(getLeftMostEnd(), codeBlockSize);
