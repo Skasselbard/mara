@@ -5,20 +5,18 @@
 #include "../include/BucketList.h"
 #include "../include/Logger.h"
 #include "../include/CodeBlock.h"
-#include <string>
 #include <assert.h>
 
 FreeSpace *BucketList::getFreeSpace(size_t sizeInByte) {
     Logger::info((std::string("free space requested with size: ")+std::to_string(sizeInByte)).c_str());
     unsigned int bucketIndex = lookupBucket(sizeInByte);
-    while (bucketList[bucketIndex] == nullptr){
-        if(bucketIndex < blSize-1){
-            bucketIndex++;
-        }else{
-            return nullptr;
-        }
+    FreeSpace* returnSpace = nullptr;
+    while (!returnSpace && bucketIndex<(blSize-1)){
+        bucketIndex = findNonEmptyBucket(bucketIndex);
+        returnSpace = findFittingSpaceInBucket(sizeInByte, bucketIndex);
+        !returnSpace ? bucketIndex++ : bucketIndex;
     }
-    return bucketList[bucketIndex];
+    return returnSpace;
 }
 
 bool BucketList::addToList(FreeSpace *freeSpace) {
@@ -84,4 +82,23 @@ unsigned int BucketList::lookupBucket(size_t size) {
     } else {
         return (unsigned int)blSize-1;
     }
+}
+
+unsigned int BucketList::findNonEmptyBucket(unsigned int index) {
+    while (bucketList[index] == nullptr){
+        if(index < blSize-1){
+            index++;
+        }else{
+            return index;
+        }
+    }
+    return index;
+}
+
+FreeSpace *BucketList::findFittingSpaceInBucket(size_t minimumSize, unsigned int index) {
+    FreeSpace* returnSpace = bucketList[index];
+    while(returnSpace && returnSpace->getSize() < minimumSize){
+        returnSpace = returnSpace->getNext(startOfPage);
+    }
+    return returnSpace;
 }

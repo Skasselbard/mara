@@ -49,6 +49,20 @@ private:
      */
     static unsigned int lookupBucket(size_t size) ;
 
+    /**
+     * @param index start index to search. The returned index will greater or equal to this index.
+     * @return a bucket index with a non null entry. The index will always be >= the given index.
+     */
+    unsigned int findNonEmptyBucket(unsigned int index);
+
+    /**
+     * @param minimumSize count of bytes the space has to have at a minimum
+     * @param index the index of the bucketlist, where to search
+     * @return null if no fitting space is found in the bucket, a freeSpace with a size greater than byte
+     */
+    FreeSpace *findFittingSpaceInBucket(size_t minimumSize, unsigned int index);
+
+
 public:
     /**
      * This function does only give a freeSpace of the page. It does not alter the list itself.
@@ -61,7 +75,6 @@ public:
     bool addToList(FreeSpace* freeSpace);
 
     void setStartOfPage(byte *startOfPage);
-
 
 };
 
