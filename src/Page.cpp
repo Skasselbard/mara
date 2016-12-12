@@ -18,15 +18,19 @@ Page::Page(size_t sizeInBytes):pageSize(sizeInBytes){
         sizeInBytes = MAX_PAGE_SIZE;
         Logger::warning("maximum page size exceeded. Decreased size to the maximum of 4294967295 byte");
     }
+    this->nextPage = nullptr;
     this->startOfPage = malloc(sizeInBytes);
     if (startOfPage == nullptr){
         Logger::error("unable to allocate memory for new page");
     }
-    bucketList.setStartOfPage((byte*)startOfPage);
     this->staticEnd = (byte*)this->startOfPage+sizeInBytes;
-
-    Logger::info("initialize bucket list");
     CodeBlock::setFree((byte*)startOfPage, true);
+    initializeBucketList();
+}
+
+void Page::initializeBucketList() {
+    Logger::info("initialize bucket list");
+    bucketList.setStartOfPage((byte*) startOfPage);
     bucketList.addToList(generateFirstBucketEntry());
 }
 

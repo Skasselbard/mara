@@ -107,6 +107,9 @@ private:
 
     FreeSpace* generateFirstBucketEntry();
 
+    void initializeBucketList();
+
+
 public:
     Page(size_t sizeInBytes);
 

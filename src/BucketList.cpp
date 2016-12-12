@@ -105,3 +105,9 @@ FreeSpace *BucketList::findFittingSpaceInBucket(size_t minimumSize, unsigned int
     }
     return returnSpace;
 }
+
+BucketList::BucketList() {
+    for(int i = 0; i < blSize; i++){
+        bucketList[i] = nullptr;
+    }
+}

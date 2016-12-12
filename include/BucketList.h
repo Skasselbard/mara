@@ -30,8 +30,6 @@ private:
 
     byte* startOfPage;
 
-private:
-
     /**
      * @param freeSpace the Space to search for
      * @return null if not i list, same pointer if found.
@@ -64,6 +62,7 @@ private:
 
 
 public:
+    BucketList();
     /**
      * This function does only give a freeSpace of the page. It does not alter the list itself.
      * @param sizeInByte of the block of interest
