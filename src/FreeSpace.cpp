@@ -12,8 +12,8 @@
 FreeSpace *FreeSpace::pushBeginningRight(byte *firstByte) {
     size_t codeBlockSize = 0;
     assert(firstByte<getRightMostEnd()); //Never cross the pointers!
-    if (firstByte == CodeBlock::getCodeBlockForInternalSize(firstByte, (getRightMostEnd() - firstByte) + 1, codeBlockSize)){
-        CodeBlock::setFree(firstByte, true);
+    if (firstByte ==
+            CodeBlock::getCodeBlockForInternalSize(firstByte, (getRightMostEnd() - firstByte) + 1, codeBlockSize, true)){
         copyCodeBlockToEnd(firstByte, codeBlockSize);
         copyNextPointerFromEndToFront(
                 getLeftNext(codeBlockSize),
@@ -29,7 +29,7 @@ FreeSpace *FreeSpace::pushBeginningRight(byte *firstByte) {
 
 FreeSpace *FreeSpace::pushEndLeft(byte *lastByte) {
     size_t codeBlockSize = 0;
-    CodeBlock::getCodeBlockForInternalSize(getLeftMostEnd(), (lastByte - getLeftMostEnd()) + 1, codeBlockSize);//get the needed size
+    CodeBlock::getCodeBlockForInternalSize(getLeftMostEnd(), (lastByte - getLeftMostEnd()) + 1, codeBlockSize, true);//get the needed size
     copyCodeBlockToEnd(
             getLeftMostEnd(),
             codeBlockSize

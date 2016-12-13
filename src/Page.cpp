@@ -79,7 +79,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
     }else {
         bucketList.deleteFromList(freeSpace);
         FreeSpace *remainingSpace = cutLeftFromFreeSpace(freeSpace,
-                                                         sizeInByte + (2 * Space::computeCodeBlockSize(sizeInByte)));
+                                                         sizeInByte + (2 * CodeBlock::getBlockSize((byte*)freeSpace)));
         if (remainingSpace) {
             bucketList.addToList(remainingSpace);
         }
@@ -105,7 +105,7 @@ FreeSpace *Page::cutLeftFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf)
 FreeSpace *Page::generateFirstBucketEntry() {
     FreeSpace* freeSpace = (FreeSpace*) startOfPage;
     size_t codeBlockSize = 0;
-    CodeBlock::getCodeBlockForInternalSize((byte *) startOfPage, pageSize, codeBlockSize);
+    CodeBlock::getCodeBlockForInternalSize((byte *) startOfPage, pageSize, codeBlockSize, true);
     freeSpace->copyCodeBlockToEnd((byte *) freeSpace, codeBlockSize);
     freeSpace->setNext(nullptr, (byte*)startOfPage);
     return freeSpace;
@@ -199,7 +199,7 @@ void Page::mergeWithRight(Space *middleBlock, Space *rightBlock) {
     byte* leftEnd = (byte*) middleBlock;
     byte* rightEnd = rightBlock->getRightMostEnd();
     size_t codeBLockSize = 0;
-    CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd-leftEnd + 1, codeBLockSize);
+    CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd - leftEnd + 1, codeBLockSize, true);
     middleBlock->copyCodeBlockToEnd(leftEnd, codeBLockSize);
 }
 
@@ -208,6 +208,6 @@ void Page::mergeWithLeft(Space *leftBlock, Space *middleBlock) {
     byte* leftEnd = (byte*) leftBlock;
     byte* rightEnd = middleBlock->getRightMostEnd();
     size_t codeBLockSize = 0;
-    CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd-leftEnd + 1, codeBLockSize);
+    CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd - leftEnd + 1, codeBLockSize, true);
     middleBlock->copyCodeBlockToEnd(leftEnd, codeBLockSize);
 }

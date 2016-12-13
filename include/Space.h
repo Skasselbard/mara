@@ -56,12 +56,6 @@ public:
      */
     byte *getRightMostEnd() const;
 
-    /**
-     * Returns the size of a code block for a memory block with the given size. Does not change any actual codeBlocks
-     * @param sizeOfBlockOfInterestInByte
-     * @return size of a codeBlock for a given memory block
-     */
-    static size_t computeCodeBlockSize(size_t sizeOfBlockOfInterestInByte);
 
     /**
      * Takes a a Space and returns a Space interpreted as Occupied. The code blocks are adapted accordingly.

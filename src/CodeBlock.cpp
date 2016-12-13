@@ -54,10 +54,12 @@ size_t CodeBlock::readFromRight(byte *firstByte, byte* &outLeftByte) {
     }
 }
 
-byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize){
+byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize,
+                                            bool isFree) {
     if(memoryBlockSize <= 63){
         returnArraySize = 1;
         *leftStartOfBlock = memoryBlockSize | 128;
+        setFree(leftStartOfBlock, isFree);
         return leftStartOfBlock;
     }
     //calculate how many bytes are needed
@@ -78,6 +80,7 @@ byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memor
             current--;
         }else if(current == leftStartOfBlock){ //current is the leftmost byte
             *current = (memoryBlockSize & 63);
+            setFree(leftStartOfBlock, isFree);
             return leftStartOfBlock;
         }else{
             *current = ((memoryBlockSize & 127) | 128);
@@ -89,13 +92,14 @@ byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memor
     return leftStartOfBlock;
 }
 
-byte *CodeBlock::getCodeBlockForInternalSize(byte *leftStartOfBlock, size_t internallyNeededSize, size_t &returnArraySize) {
+byte *CodeBlock::getCodeBlockForInternalSize(byte *leftStartOfBlock, size_t internallyNeededSize, size_t &returnArraySize,
+                                             bool isFree) {
     size_t oldCodeBlockSize = 0;
     returnArraySize = 1;
     byte* resultingBlock;
     do {
         oldCodeBlockSize = returnArraySize;
-        resultingBlock = getCodeBlockForPayloadSize(leftStartOfBlock, internallyNeededSize, returnArraySize);
+        resultingBlock = getCodeBlockForPayloadSize(leftStartOfBlock, internallyNeededSize, returnArraySize, isFree);
         internallyNeededSize = (internallyNeededSize - (2*returnArraySize));
     }while (oldCodeBlockSize != returnArraySize);
     return resultingBlock;

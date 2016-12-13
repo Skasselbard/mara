@@ -69,7 +69,8 @@ public:
      * @return an array of bytes, containing the codeBlock representing the memory block size.
      * The size of the array is stored in the last parameter. It should correspond to the leftStartOfBlock parameter
      */
-    static byte* getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize);
+    static byte *getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize,
+                                                bool isFree);
 
     /**
      * Build a CodeBlock for space that is managed internally (from the left side of the left codeBlock to the right side
@@ -79,7 +80,8 @@ public:
      * @param returnArraySize size of the array returned by this function
      * @return an array of bytes, containing the codeBlock representing the size between the both codeBlocks.
      */
-    static byte* getCodeBlockForInternalSize(byte *leftStartOfBlock, size_t internallyNeededSize, size_t &returnArraySize);
+    static byte *getCodeBlockForInternalSize(byte *leftStartOfBlock, size_t internallyNeededSize, size_t &returnArraySize,
+                                                 bool isFree);
 
     /**
      * reads if the given CodeBlock describes a free or used block.

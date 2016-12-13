@@ -16,13 +16,6 @@ byte *Space::getRightMostEnd() const {
     return ((getLeftMostEnd()+(2*codeBlockSize)+memoryBlockSize)-1);
 }
 
-size_t Space::computeCodeBlockSize(size_t sizeOfBlockOfInterestInByte) {
-    size_t codeBlockSize = 0;
-    byte codeBlock[MAX_CODE_BLOCK_ARRAY_SIZE];
-    CodeBlock::getCodeBlockForPayloadSize(&codeBlock[0], sizeOfBlockOfInterestInByte, codeBlockSize);
-    return codeBlockSize;
-}
-
 size_t Space::getSize() {
     return (getRightMostEnd() - getLeftMostEnd()) + 1;
 }
@@ -44,7 +37,7 @@ bool Space::copyCodeBlockToEnd(byte *startOfBlock, size_t sizeOfBlock) {
 void Space::toOccupied(size_t newSize) {
     CodeBlock::setFree(getLeftMostEnd(), false);
     size_t codeBlockSize = 0;
-    CodeBlock::getCodeBlockForPayloadSize(getLeftMostEnd(), newSize, codeBlockSize);
+    CodeBlock::getCodeBlockForPayloadSize(getLeftMostEnd(), newSize, codeBlockSize, false);
     copyCodeBlockToEnd(getLeftMostEnd(), codeBlockSize);
 }
 
