@@ -45,7 +45,7 @@ bool PageList::addPageToList(Page *currentPage) {
 void *PageList::dynamicNew(size_t sizeInByte) {
     Page* currentPage = firstPage;
     OccupiedSpace* returnBlock = nullptr;
-    while ( (returnBlock = firstPage->getDynamicBlock(sizeInByte)) == nullptr){
+    while ( (returnBlock = currentPage->getDynamicBlock(sizeInByte)) == nullptr){
         if(!iteratePage(currentPage)){
             return nullptr;
         }
