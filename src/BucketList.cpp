@@ -27,8 +27,8 @@ FreeSpace *BucketList::getFreeSpace(size_t sizeInByte) {
 }
 
 bool BucketList::addToList(FreeSpace *freeSpace) {
-    Logger::info("adding element to bucketList");
     size_t size = CodeBlock::readFromLeft((byte*)freeSpace);
+    Logger::info((std::string("adding element to bucketList position ")+std::to_string(lookupBucket(size))).c_str());
     FreeSpace* predecessor = getLastInBucket(lookupBucket(size));
     if (predecessor == nullptr){
         bucketList[lookupBucket(size)] = freeSpace;
@@ -58,11 +58,12 @@ FreeSpace *BucketList::getLastInBucket(size_t size) {
 }
 
 bool BucketList::deleteFromList(FreeSpace *freeSpace) {
-    Logger::info("deleting element from bucketList");
+    size_t size = CodeBlock::readFromLeft((byte*)freeSpace);
+    Logger::info((std::string("deleting element from bucketList position ")+std::to_string(lookupBucket(size))).c_str());
     FreeSpace* predecessor = nullptr;
     if (freeSpace == searchInList(freeSpace, predecessor)){
         if (predecessor == nullptr){
-            bucketList[lookupBucket(freeSpace->getSize())] = freeSpace->getNext(startOfPage);
+            bucketList[lookupBucket(size)] = freeSpace->getNext(startOfPage);
         }else{
             predecessor->setNext(freeSpace->getNext(startOfPage), startOfPage);
         }
