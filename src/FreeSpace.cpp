@@ -29,13 +29,9 @@ FreeSpace *FreeSpace::pushBeginningRight(byte *firstByte) {
 
 FreeSpace *FreeSpace::pushEndLeft(byte *lastByte) {
     size_t codeBlockSize = 0;
-    CodeBlock::getCodeBlockForPayloadSize(getLeftMostEnd(), (lastByte - getLeftMostEnd()) + 1, codeBlockSize);//get the needed size
-    copyCodeBlockToFront(
-            CodeBlock::getCodeBlockForPayloadSize(
-                    (getRightMostEnd() - codeBlockSize) + 1,
-                    (lastByte - getLeftMostEnd()) + 1,
-                    codeBlockSize
-            ),
+    CodeBlock::getCodeBlockForInternalSize(getLeftMostEnd(), (lastByte - getLeftMostEnd()) + 1, codeBlockSize);//get the needed size
+    copyCodeBlockToEnd(
+            getLeftMostEnd(),
             codeBlockSize
     );
     copyNextPointerFromFrontToEnd(

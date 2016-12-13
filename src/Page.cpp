@@ -41,11 +41,12 @@ Page::~Page() {
 
 void* Page::getStaticBlock(size_t sizeInByte) {
     Logger::info("static block requested");
-#ifdef ALLIGN_STATIC
+#ifdef ALIGN_STATIC
     sizeInByte = align(sizeInByte);
 #endif
     if (staticBlockFitInPage(sizeInByte)) {
         byte* codeBlockLeft = nullptr;
+        //TODO: catch if dynamic space (left from static end) is less than 6 byte
         FreeSpace* lastFreeSpace = (FreeSpace*)(staticEnd - CodeBlock::readFromRight(staticEnd-1, codeBlockLeft)-(2*CodeBlock::getBlockSize(codeBlockLeft)));
         cutRightFromFreeSpace(lastFreeSpace, sizeInByte);
         this->staticEnd = this->staticEnd - sizeInByte;
@@ -131,7 +132,7 @@ FreeSpace *Page::cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf
     if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREESPACE) {
         return nullptr;
     }else{
-        freeSpace = freeSpace->pushEndLeft((freeSpace->getRightMostEnd()) + bytesToCutOf);
+        freeSpace = freeSpace->pushEndLeft((freeSpace->getRightMostEnd()) - bytesToCutOf);
         return freeSpace;
     }
 }
