@@ -18,7 +18,8 @@ private:
 
     static const size_t blSize = lastLinear4Scaling/4
                                        + (lastLinear16Scaling-lastLinear4Scaling+4)/16
-                                       + (const size_t) (log2(largestBucketSize)-log2(lastLinear16Scaling));
+                                       + (const size_t) (log2(largestBucketSize)-log2(lastLinear16Scaling))
+                                       + 1;
 
     /**
      * The array with th e information of the dynamic free sections
