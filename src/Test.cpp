@@ -16,6 +16,7 @@ const double Test::DEFAULT_P_FREE = 0.2;
 
 /**
  * Syntax: {@code test amountNewVariables pDynamic pFree minSize averageSize maxSize iterations seed}
+ * Example arguments: test 50000 0.85 0.2 4 16 1000 1 123456789
  */
 
 int Test::test(int argc, char** argv) {
