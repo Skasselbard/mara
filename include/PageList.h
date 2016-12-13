@@ -2,8 +2,8 @@
 // Created by tom on 14.11.16.
 //
 
-#ifndef MARA_PAGELIST_H
-#define MARA_PAGELIST_H
+#ifndef MARA_PAGE_LIST_H
+#define MARA_PAGE_LIST_H
 
 #include <stddef.h>
 #include "Page.h"
@@ -26,4 +26,4 @@ public:
 
 };
 
-#endif //MARA_PAGELIST_H
+#endif //MARA_PAGE_LIST_H

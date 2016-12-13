@@ -2,8 +2,8 @@
 // Created by tom on 15.11.16.
 //
 
-#ifndef MARA_OCCUPIEDSPACE_H
-#define MARA_OCCUPIEDSPACE_H
+#ifndef MARA_OCCUPIED_SPACE_H
+#define MARA_OCCUPIED_SPACE_H
 
 
 #include "Space.h"
@@ -14,4 +14,4 @@ public:
 };
 
 
-#endif //MARA_OCCUPIEDSPACE_H
+#endif //MARA_OCCUPIED_SPACE_H

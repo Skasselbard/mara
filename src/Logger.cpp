@@ -12,7 +12,7 @@ char Logger::buffer[LOG_BUFFER_SIZE];
 
 void Logger::warning(const char *message) {
     writeTimeStamp();
-    strcat(buffer,"Warninig: ");
+    strcat(buffer,"Warning: ");
     strcat(buffer, message);
     writeToLog();
 }
@@ -65,7 +65,7 @@ void Logger::error(const char *message) {
 
 void Logger::debug(const char *message) {
 #ifdef DEBUG
-    writeTimeStemp();
+    writeTimeStamp();
     strcat(buffer,"Info: ");
     strcat(buffer, message);
     writeToLog();

@@ -37,13 +37,13 @@ class OccupiedSpace;
 class Space {
 public:
     /**
-     * @return The size of the entire space block, including management informatin
+     * @return The size of the entire space block, including management information
      */
     size_t getSize();
     /**
      * @return the start of the space which could be actual data. <br/>
      * WARNING: if this Space is freeSpace, this pointer might point on the next pointer of the of this free space.
-     * This place should only be used if the block is occupied or is immediatly converted to occupied space.
+     * This place should only be used if the block is occupied or is immediately converted to occupied space.
      */
     void* getStartOfSpace();
 
@@ -59,14 +59,14 @@ public:
     /**
      * Returns the size of a code block for a memory block with the given size. Does not change any actual codeBlocks
      * @param sizeOfBlockOfInterestInByte
-     * @return size of a codeblock for a given memory block
+     * @return size of a codeBlock for a given memory block
      */
     static size_t computeCodeBlockSize(size_t sizeOfBlockOfInterestInByte);
 
     /**
-     * Takes a a Space and returns a Space interpreted as Ocuupied. The code blocks are adapted acordingly.
+     * Takes a a Space and returns a Space interpreted as Occupied. The code blocks are adapted accordingly.
      * @param newSize the size to new block should have
-     * @return a pointer to the new spece with updated codeblocks
+     * @return a pointer to the new space with updated codeBlocks
      */
     void toOccupied(size_t newSize);
 
@@ -88,9 +88,9 @@ public:
 
     /**
      * @param lastByte of the left neighbor
-     * @return pointer to the left neighboor
+     * @return pointer to the left neighbor
      */
-    static Space* getleftNeighbor(byte* lastByte);
+    static Space* getLeftNeighbor(byte *lastByte);
 
 
 };

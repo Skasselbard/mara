@@ -18,7 +18,7 @@ byte *Space::getRightMostEnd() const {
 
 size_t Space::computeCodeBlockSize(size_t sizeOfBlockOfInterestInByte) {
     size_t codeBlockSize = 0;
-    byte codeBlock[MAX_CODEBLOCK_ARRAY_SIZE];
+    byte codeBlock[MAX_CODE_BLOCK_ARRAY_SIZE];
     CodeBlock::getCodeBlockForPayloadSize(&codeBlock[0], sizeOfBlockOfInterestInByte, codeBlockSize);
     return codeBlockSize;
 }
@@ -62,7 +62,7 @@ bool Space::copyCodeBlockToFront(byte *startOfBlock, size_t sizeOfBlock) {
     return true;
 }
 
-Space *Space::getleftNeighbor(byte *lastByte) {
+Space *Space::getLeftNeighbor(byte *lastByte) {
     byte* leftByte = nullptr;
     size_t memorySize = CodeBlock::readFromRight(lastByte,leftByte);
     size_t codeBlockSize = (lastByte - leftByte) + 1;

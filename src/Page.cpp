@@ -61,9 +61,9 @@ bool Page::staticBlockFitInPage(size_t blockSizeInByte) {
     return (blockSizeInByte <= (staticEnd - dynamicEnd - 1));
 }
 
-size_t Page::align(size_t requestetSizeInByte) {
+size_t Page::align(size_t requestedSizeInByte) {
     Logger::error("Alignment is not implemented and returns the given block size");
-    return requestetSizeInByte;
+    return requestedSizeInByte;
 }
 
 OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
@@ -74,7 +74,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
     FreeSpace* freeSpace = bucketList.getFreeSpace(sizeInByte);
     OccupiedSpace* returnBlock = (OccupiedSpace*)freeSpace;
     if(freeSpace == nullptr){
-        Logger::info("no applicable freespace in this page. Switching to the next one");
+        Logger::info("no applicable freeSpace in this page. Switching to the next one");
         return nullptr;
     }else {
         bucketList.deleteFromList(freeSpace);
@@ -94,7 +94,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
 FreeSpace *Page::cutLeftFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
     Logger::info("cut left");
     assert(freeSpace->getSize()>=bytesToCutOf);
-    if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREESPACE) {
+    if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREE_SPACE) {
         return nullptr;
     }else{
         freeSpace = freeSpace->pushBeginningRight(((byte *) freeSpace) + bytesToCutOf);
@@ -113,7 +113,7 @@ FreeSpace *Page::generateFirstBucketEntry() {
 
 void Page::setNextPage(Page *nextPage) {
     if(nextPage != nullptr){
-        Logger::warning("reseting non empty nextPage pointer. Old Pointer will be overwritten");
+        Logger::warning("resetting non empty nextPage pointer. Old Pointer will be overwritten");
     }
     this->nextPage = nextPage;
 }
@@ -129,7 +129,7 @@ bool Page::blockIsInSpace(void *firstByte) {
 FreeSpace *Page::cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
     Logger::info("cut right");
     assert(freeSpace->getSize()>=bytesToCutOf);
-    if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREESPACE) {
+    if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREE_SPACE) {
         return nullptr;
     }else{
         freeSpace = freeSpace->pushEndLeft((freeSpace->getRightMostEnd()) - bytesToCutOf);
@@ -154,7 +154,7 @@ bool Page::deleteBlock(void *firstByte) {
         return false;
     }
     if(startOfPage < codeBlockStart){
-        leftNeighbor = Space::getleftNeighbor(codeBlockStart-1);
+        leftNeighbor = Space::getLeftNeighbor(codeBlockStart - 1);
     }
     if (leftNeighbor && !CodeBlock::isFree((byte *)leftNeighbor)){
         leftNeighbor = nullptr;

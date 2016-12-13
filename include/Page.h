@@ -51,16 +51,16 @@ private:
 
 
     /**
-     * TODO: describe allignment
-     * allign the requestet block size
-     * @param requestetSizeInByte the needed size for the requested block
-     * @return the allignet size of the requested block
+     * TODO: describe alignment
+     * align the requested block size
+     * @param requestedSizeInByte the needed size for the requested block
+     * @return the aligned size of the requested block
      */
-    size_t align(size_t requestetSizeInByte);
+    size_t align(size_t requestedSizeInByte);
 
     /**
      * Merges the three blocks into one Block of free Space.
-     * The bucketlist will be updated accordingly<br/>
+     * The bucketList will be updated accordingly<br/>
      * WARNING: the blocks have to be adjacent to each other. Merging distant blocks will cause undefined behavior.
      * Probably causing the world as we know it, cease to exist!
      * @param leftBlock leftBlock to be merged. Ignored if null
@@ -86,21 +86,21 @@ private:
     void mergeWithRight(Space* middleBlock, Space* rightBlock);
 
     /**
-     * Takes free space und cut the specified amount from space, starting at the left end. The new block has the adaptet
+     * Takes free space und cut the specified amount from space, starting at the left end. The new block has the adapted
      * code blocks with the new size.
      * @param freeSpace space to be cut
      * @param bytesToCutOf amount of bytes to cut off from the left
-     * @return null if the resulting block would be smaller than the smalest adressable block. A pointer to the
+     * @return null if the resulting block would be smaller than the smallest addressable block. A pointer to the
      * resulting block otherwise
      */
     FreeSpace* cutLeftFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf);
 
     /**
-     * Takes free space und cut the specified amount from space, starting at the right end. The new block has the adaptet
+     * Takes free space und cut the specified amount from space, starting at the right end. The new block has the adapted
      * code blocks with the new size.
      * @param freeSpace space to be cut
      * @param bytesToCutOf amount of bytes to cut off from the left
-     * @return null if the resulting block would be smaller than the smalest adressable block. A pointer to the
+     * @return null if the resulting block would be smaller than the smallest addressable block. A pointer to the
      * resulting block otherwise
      */
     FreeSpace* cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf);
