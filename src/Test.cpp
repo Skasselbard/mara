@@ -10,30 +10,34 @@
 using namespace std;
 
 
+const double Test::DEFAULT_P_DYNAMIC = 0.85;
+const double Test::DEFAULT_P_FREE = 0.2;
+
 
 /**
- * Syntax: {@code test amountNewVariables pStatic pNewDynamic pFreeDynamic minSize averageSize maxSize iterations}
+ * Syntax: {@code test amountNewVariables pDynamic pFree minSize averageSize maxSize iterations seed}
  */
 
 int Test::test(int argc, char** argv) {
 
 #define DEBUG
 
-    unsigned int seed = 123456789;
+    unsigned int seed = DEFAULT_SEED;
 
 
     unsigned int amountNewVariables, minSize, averageSize, maxSize, maxIterations;
     double pDynamic, pFree;
 
-    // TODO read parameters from arguments
+    // set default values
+    maxIterations = DEFAULT_ITERATIONS;
+    amountNewVariables = DEFAULT_VARIABLES;
+    pDynamic = DEFAULT_P_DYNAMIC;
+    pFree = DEFAULT_P_FREE;
+    minSize = DEFAULT_MIN_SIZE;
+    averageSize = DEFAULT_AVERAGE_SIZE;
+    maxSize = DEFAULT_MAX_SIZE;
 
-    maxIterations = 1;
-    amountNewVariables = 50000;
-    pDynamic = 0.85;
-    pFree = 0.2;
-    minSize = 4;
-    averageSize = 16;
-    maxSize = 1000;
+    Test::readArguments(argc, argv, &amountNewVariables, &pDynamic, &pFree, &minSize, &averageSize, &maxSize, &maxIterations, &seed);
 
     std::vector<unsigned long*> dynamicPointers;
 
@@ -42,7 +46,7 @@ int Test::test(int argc, char** argv) {
     std::uniform_int_distribution<unsigned int> dynamicVariable_distribution(0, amountNewVariables-1);
 
     //std::poisson_distribution<unsigned int> size_distribution(averageSize);
-    std::uniform_int_distribution<unsigned int> size_distribution(averageSize);
+    std::uniform_int_distribution<unsigned int> size_distribution(minSize, maxSize);
 
     for (int iterations = 1; iterations <= maxIterations; iterations++) {
         for (int v = 0; v <= amountNewVariables; v++) {
@@ -106,6 +110,22 @@ int testBlock() {
     return 0;
 }
 
+void Test::readArguments(int argc, char** argv, unsigned int * amountNewVariables,
+                         double * pDynamic, double * pFree,
+                         unsigned int * minSize, unsigned int * averageSize, unsigned int * maxSize,
+                         unsigned int * maxIterations, unsigned int * seed){
+    if (argc == 10) {
+        sscanf(argv[2], "%u", amountNewVariables);
+        sscanf(argv[3], "%lf", pDynamic);
+        sscanf(argv[4], "%lf", pFree);
+        sscanf(argv[5], "%u", minSize);
+        sscanf(argv[6], "%u", averageSize);
+        sscanf(argv[7], "%u", maxSize);
+        sscanf(argv[8], "%u", maxIterations);
+        sscanf(argv[9], "%u", seed);
+    }
+}
+
 int Test::distributionTest() {
 
     unsigned int seed = 123456789;
@@ -144,22 +164,3 @@ int Test::distributionTest() {
                   << std::string((unsigned long) (p.second / 100), '*') << '\n';
     }
 }
-
-
-
-/*int Test::testBucketList() {
-
-
-
-    cout << lastLinear4Scaling/4 << endl
-         << (lastLinear16Scaling-lastLinear4Scaling+4)/16 << endl
-         << (int) log2(largestBucketSize)-log2(lastLinear16Scaling) << endl
-         << blSize << endl;
-
-    int * bucketList[blSize];
-
-    for (int i = 1; i <= 1100; i++) {
-        cout << i << ": index=" << lookupBucket(i) << endl;
-    }
-}*/
-

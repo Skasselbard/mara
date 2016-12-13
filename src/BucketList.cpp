@@ -6,6 +6,7 @@
 #include "../include/Logger.h"
 #include "../include/CodeBlock.h"
 #include <assert.h>
+#include <string>
 
 FreeSpace *BucketList::getFreeSpace(size_t sizeInByte) {
     Logger::info((std::string("free space requested with size: ")+std::to_string(sizeInByte)).c_str());
