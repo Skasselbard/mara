@@ -69,8 +69,7 @@ int Test::test(int argc, char** argv) {
             }
 
             // write address to address
-            unsigned long valueAtAddress = (unsigned long)address;
-            *address = valueAtAddress;
+            writeIntoBlock(address, varSize);
 
             printf("iterations=%u, variables=%u\n", iterations, v);
 
@@ -95,6 +94,14 @@ int Test::test(int argc, char** argv) {
     }
 
     return 0;
+}
+
+void Test::writeIntoBlock(unsigned long * address, size_t size) {
+    cout << address << endl;
+    for(unsigned int i = 0; i < size/8; i++) {
+        unsigned long valueAtAddress = (unsigned long) (address);
+        *(address+i) = valueAtAddress;
+    }
 }
 
 int testBlock() {
