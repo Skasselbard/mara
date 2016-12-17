@@ -102,7 +102,12 @@ public:
      * @param free 0 to mark it as free, != 0 otherwise
      */
     static void setFree(byte* firstByte, int free);
-
+    /**
+     * calculates how many bytes a codeBlock would need to encode a given block size
+     * @param sizeToEncode the block size to encode
+     * @return the size of the resulting code block
+     */
+    static size_t getNeededCodeBlockSize(size_t sizeToEncode);
 };
 
 

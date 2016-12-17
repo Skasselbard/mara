@@ -126,4 +126,15 @@ void CodeBlock::setFree(byte *firstByte, int free) {
 
 }
 
+size_t CodeBlock::getNeededCodeBlockSize(size_t sizeToEncode) {
+    if(sizeToEncode < 64) return 1;
+    size_t size = 1;
+    sizeToEncode >>= 6;
+    while(sizeToEncode){
+        size++;
+        sizeToEncode >>= 7;
+    }
+    return size;
+}
+
 

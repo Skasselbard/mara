@@ -79,7 +79,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
     }else {
         bucketList.deleteFromList(freeSpace);
         FreeSpace *remainingSpace = cutLeftFromFreeSpace(freeSpace,
-                                                         sizeInByte + (2 * CodeBlock::getBlockSize((byte*)freeSpace)));
+                                                         sizeInByte + (2 * CodeBlock::getNeededCodeBlockSize(sizeInByte)));
         if (remainingSpace) {
             bucketList.addToList(remainingSpace);
         }
