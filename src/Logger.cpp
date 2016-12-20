@@ -66,7 +66,7 @@ void Logger::error(const char *message) {
 void Logger::debug(const char *message) {
 #ifdef DEBUG
     writeTimeStamp();
-    strcat(buffer,"Info: ");
+    strcat(buffer,"Debug: ");
     strcat(buffer, message);
     writeToLog();
 #endif

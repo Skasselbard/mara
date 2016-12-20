@@ -215,3 +215,11 @@ void Page::mergeWithLeft(Space *leftBlock, Space *middleBlock) {
 void *Page::getStartOfPage() {
     return startOfPage;
 }
+
+byte *Page::getStaticEnd() {
+    return staticEnd;
+}
+
+byte *Page::getDynamicEnd() {
+    return dynamicEnd;
+}

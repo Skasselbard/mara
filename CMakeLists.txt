@@ -28,7 +28,7 @@ set(SOURCE_FILES
         src/OccupiedSpace.cpp
         src/BucketList.cpp
         src/Space.cpp
-        )
+        src/MemDump.cpp include/MemDump.h)
 
 set(CMAKE_INCLUDE_PATH
         ${CMAKE_INCLUDE_PATH}

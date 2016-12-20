@@ -3,11 +3,13 @@
 #include <iostream>
 #include <random>
 #include <map>
+#include <assert.h>
 #include "../include/Logger.h"
 #include "../include/Test.h"
 #include "../include/interface.h"
 #include "../include/Page.h"
 #include "../include/PageList.h"
+#include "../include/CodeBlock.h"
 
 using namespace std;
 
@@ -22,8 +24,6 @@ const double Test::DEFAULT_P_FREE = 0.2;
  */
 
 int Test::test(int argc, char** argv) {
-
-#define DEBUG
 
     unsigned int seed = DEFAULT_SEED;
 
@@ -41,6 +41,10 @@ int Test::test(int argc, char** argv) {
     maxSize = DEFAULT_MAX_SIZE;
 
     Test::readArguments(argc, argv, &amountNewVariables, &pDynamic, &pFree, &minSize, &averageSize, &maxSize, &maxIterations, &seed);
+
+    // todo remove
+    amountNewVariables = 20;
+
 
     std::vector<unsigned long*> dynamicPointers;
 
@@ -81,13 +85,13 @@ int Test::test(int argc, char** argv) {
                 unsigned long* toDelete = dynamicPointers.at(deletedIndex);
                 dynamicDelete(toDelete);
                 dynamicPointers.erase(dynamicPointers.begin() + deletedIndex);
-                Logger::debug("Freed dynamic memory");
+                Logger::debug((std::string("Freed dynamic memory: ") + std::to_string((unsigned long)toDelete)).c_str());
             }
         }
         // todo test shit
         checkPages();
     }
-
+/*
     printf("dynamic pointers in use: %u\n", (unsigned int) dynamicPointers.size());
 
     for (auto pointer : dynamicPointers) {
@@ -96,22 +100,39 @@ int Test::test(int argc, char** argv) {
              //<< "*pointer: " << *pointer << "\n"
                 ;
     }
-
+*/
     return 0;
 }
 
 void Test::writeIntoBlock(unsigned long * address, size_t size) {
-    cout << address << endl;
     // todo make content configurable (write full value vs. only complete addresses)
     for(unsigned int i = 0; i < size/8; i++) {
         unsigned long valueAtAddress = (unsigned long) (address);
         *(address+i) = valueAtAddress;
     }
+    Logger::debug((std::string("Wrote values to address: ") + std::to_string((unsigned long)address)).c_str());
 }
 
 int Test::checkPages() {
-    Page * firstPage = PageList::getFirstPage();
+    Logger::info("Checking pages");
+    Page * page = PageList::getFirstPage();
+    do {
+        byte * startOfPage = (byte *) page->getStartOfPage();
+        byte * blockPointer = startOfPage;
+        byte * dynamicEnd = page->getDynamicEnd();
+        while (blockPointer < dynamicEnd) {
+            size_t memorySize = CodeBlock::readFromLeft(startOfPage);
+            size_t codeBlockSize = CodeBlock::getBlockSize(startOfPage);
+            if (CodeBlock::isFree(blockPointer) == 0) {
+                unsigned long * memoryStart = (unsigned long *) (startOfPage + codeBlockSize);
+                for (int i = 0; i < memorySize / 8; i++) {
+                    assert(*(memoryStart + i) == (unsigned long) memoryStart);
+                }
+            }
+            blockPointer = blockPointer + memorySize + 2 * codeBlockSize;
+        }
 
+    } while ((page = page->getNextPage()) != nullptr);
 }
 
 int testBlock() {

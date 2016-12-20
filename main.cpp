@@ -4,6 +4,7 @@
 #include "include/Test.h"
 #include "include/Page.h"
 #include "include/interface.h"
+#include "include/MemDump.h"
 #include <stdlib.h>
 
 void writeArray(char* array, size_t size, char content){
@@ -20,11 +21,9 @@ void printArray(char* array, size_t size){
 
 int main(int argc, char** argv) {
 
-    //Test::distributionTest();
-    //Test::testBucketList();
-
     if (argc >= 2 && strcmp(argv[1], "test") == 0) {
         Test::test(argc, argv);
     }
+
     return 0;
 }

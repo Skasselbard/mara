@@ -146,6 +146,10 @@ public:
 
     void * getStartOfPage();
 
+    byte * getStaticEnd();
+
+    byte * getDynamicEnd();
+
 };
 
 
