@@ -6,6 +6,8 @@
 #include "../include/Logger.h"
 #include "../include/Test.h"
 #include "../include/interface.h"
+#include "../include/Page.h"
+#include "../include/PageList.h"
 
 using namespace std;
 
@@ -82,6 +84,8 @@ int Test::test(int argc, char** argv) {
                 Logger::debug("Freed dynamic memory");
             }
         }
+        // todo test shit
+        checkPages();
     }
 
     printf("dynamic pointers in use: %u\n", (unsigned int) dynamicPointers.size());
@@ -98,10 +102,16 @@ int Test::test(int argc, char** argv) {
 
 void Test::writeIntoBlock(unsigned long * address, size_t size) {
     cout << address << endl;
+    // todo make content configurable (write full value vs. only complete addresses)
     for(unsigned int i = 0; i < size/8; i++) {
         unsigned long valueAtAddress = (unsigned long) (address);
         *(address+i) = valueAtAddress;
     }
+}
+
+int Test::checkPages() {
+    Page * firstPage = PageList::getFirstPage();
+
 }
 
 int testBlock() {

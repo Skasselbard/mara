@@ -28,6 +28,7 @@ public:
                               unsigned int * minSize, unsigned int * averageSize, unsigned int * maxSize,
                               unsigned int * maxIterations, unsigned int * seed);
     static void writeIntoBlock(unsigned long * address, size_t size);
+    static int checkPages();
 };
 
 #endif //MARA_TEST_H
