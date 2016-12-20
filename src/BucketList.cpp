@@ -21,7 +21,7 @@ FreeSpace *BucketList::getFreeSpace(size_t sizeInByte) {
         returnSpace = findFittingSpaceInBucket(sizeInByte, blSize-1);
     }
     if(returnSpace) {
-        assert(returnSpace->getSize() >= sizeInByte);
+        assert(CodeBlock::readFromLeft((byte*)returnSpace) >= sizeInByte);
     }
     return returnSpace;
 }
@@ -41,7 +41,7 @@ bool BucketList::addToList(FreeSpace *freeSpace) {
 
 FreeSpace *BucketList::searchInList(FreeSpace *freeSpace, FreeSpace* &predecessor) {
     predecessor = nullptr;
-    FreeSpace* currentElement = bucketList[lookupBucket(freeSpace->getSize())];
+    FreeSpace* currentElement = bucketList[lookupBucket(CodeBlock::readFromLeft((byte *) freeSpace))];
     while (currentElement != nullptr && currentElement != freeSpace ){
         predecessor = currentElement;
         currentElement = currentElement->getNext(startOfPage);
@@ -105,7 +105,7 @@ unsigned int BucketList::findNonEmptyBucket(unsigned int index) {
 
 FreeSpace *BucketList::findFittingSpaceInBucket(size_t minimumSize, unsigned int index) {
     FreeSpace* returnSpace = bucketList[index];
-    while(returnSpace && returnSpace->getSize() < minimumSize){
+    while(returnSpace && CodeBlock::readFromLeft((byte *) returnSpace) < minimumSize){
         returnSpace = returnSpace->getNext(startOfPage);
     }
     return returnSpace;

@@ -10,6 +10,7 @@
 #include "../include/Page.h"
 #include "../include/PageList.h"
 #include "../include/CodeBlock.h"
+#include "../include/MemDump.h"
 
 using namespace std;
 
@@ -42,8 +43,6 @@ int Test::test(int argc, char** argv) {
 
     Test::readArguments(argc, argv, &amountNewVariables, &pDynamic, &pFree, &minSize, &averageSize, &maxSize, &maxIterations, &seed);
 
-    // todo remove
-    amountNewVariables = 20;
 
 
     std::vector<unsigned long*> dynamicPointers;
