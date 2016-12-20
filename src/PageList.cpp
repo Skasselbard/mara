@@ -76,3 +76,7 @@ bool PageList::dynamicDelete(void *address) {
     currentPage->deleteBlock(address);
     return true;
 }
+
+Page *PageList::getFirstPage() {
+    return firstPage;
+}

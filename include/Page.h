@@ -28,11 +28,6 @@ private:
     Page *nextPage;
 
     /**
-     * the size in byte with which this page was initialized
-     */
-    const size_t pageSize;
-
-    /**
      * pointer to the leftmost byte of the static sector <br/>
      * the rightmost byte is the last byte of the page
      */
@@ -119,6 +114,11 @@ public:
     ~Page();
 
     /**
+    * the size in byte with which this page was initialized
+    */
+    const size_t pageSize;
+
+    /**
      * returns a new static block
      * @param sizeInByte
      * @return
@@ -143,6 +143,8 @@ public:
 
 
     bool deleteBlock(void* firstByte);
+
+    void * getStartOfPage();
 
 };
 

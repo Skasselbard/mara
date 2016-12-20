@@ -211,3 +211,7 @@ void Page::mergeWithLeft(Space *leftBlock, Space *middleBlock) {
     CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd - leftEnd + 1, codeBLockSize, true);
     middleBlock->copyCodeBlockToEnd(leftEnd, codeBLockSize);
 }
+
+void *Page::getStartOfPage() {
+    return startOfPage;
+}

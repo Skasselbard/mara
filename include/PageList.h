@@ -19,6 +19,7 @@ private:
 public:
     static int setPageSize(size_t sizeInByte);
     static size_t getPageSize();
+    static Page* getFirstPage();
 
     static void* staticNew(size_t sizeInByte);
     static void* dynamicNew(size_t sizeInByte);
