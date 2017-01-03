@@ -18,20 +18,17 @@ void Statistic::newDynamic(size_t size) {
     usedDynamicBlocks++;
     usedDynamicMemory += size;
     usedDynamicMemoryWithCodeblocks += size + 2*CodeBlock::getNeededCodeBlockSize(size);
-    logDynamic();
 }
 
 void Statistic::newStatic(size_t size) {
     usedStaticBlocks++;
     usedStaticMemory += size;
-    logStatic();
 }
 
 void Statistic::freeDynamic(size_t size) {
     usedDynamicBlocks--;
     usedDynamicMemory -= size;
     usedDynamicMemoryWithCodeblocks -= size - 2*CodeBlock::getNeededCodeBlockSize(size);
-    logDynamic();
 }
 
 void Statistic::logComplete() {
