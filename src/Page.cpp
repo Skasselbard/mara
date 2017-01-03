@@ -83,8 +83,12 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
                                                          sizeInByte + (2 * CodeBlock::getNeededCodeBlockSize(sizeInByte)));
         if (remainingSpace) {
             bucketList.addToList(remainingSpace);
+            returnBlock->toOccupied(sizeInByte);
+        }else{
+            //Edge Case: If the remaining space is too small to be used again, simply return a larger block
+            returnBlock->toOccupied(CodeBlock::readFromLeft((byte*)returnBlock));
         }
-        returnBlock->toOccupied(sizeInByte);
+
         if (returnBlock->getRightMostEnd() > dynamicEnd) {
             dynamicEnd = returnBlock->getRightMostEnd();
         }
