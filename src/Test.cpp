@@ -63,6 +63,8 @@ int Test::test(int argc, char** argv) {
                 varSize = varSize + (4-(varSize % 4));
             } while (varSize < minSize || varSize > maxSize);
 
+            printf("iterations=%u, variables=%u\n", iterations, v);
+
             unsigned long* address;
             if (prob_distribution(generator) <= pDynamic) {
                 // request address to dynamic memory and save the address for later deletion
@@ -75,8 +77,6 @@ int Test::test(int argc, char** argv) {
 
             // write address to address
             writeIntoBlock(address, varSize);
-
-            printf("iterations=%u, variables=%u\n", iterations, v);
 
             // maybe free a dynamic variable
             if (prob_distribution(generator) <= pFree) {
