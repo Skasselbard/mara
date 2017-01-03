@@ -17,6 +17,7 @@ public:
     static void logDynamic();
     static void logStatic();
     static void logComplete();
+    static void logTable();
 private:
     static unsigned int usedStaticMemory;
     static unsigned int usedStaticBlocks;
