@@ -92,16 +92,6 @@ int Test::test(int argc, char** argv) {
         // todo test shit
         checkPages();
     }
-/*
-    printf("dynamic pointers in use: %u\n", (unsigned int) dynamicPointers.size());
-
-    for (auto pointer : dynamicPointers) {
-        cout << "pointer: " << pointer << "\n"
-             << "&pointer: " << &pointer << "\n"
-             //<< "*pointer: " << *pointer << "\n"
-                ;
-    }
-*/
     return 0;
 }
 

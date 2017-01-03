@@ -25,6 +25,8 @@ public:
     static void* dynamicNew(size_t sizeInByte);
     static bool dynamicDelete(void *address);
 
+    static unsigned int getPageCount();
+
 };
 
 #endif //MARA_PAGE_LIST_H

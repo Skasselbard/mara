@@ -7,6 +7,7 @@
 #include "../include/Statistic.h"
 #include "../include/CodeBlock.h"
 #include "../include/Logger.h"
+#include "../include/PageList.h"
 
 unsigned int Statistic::usedStaticMemory = 0;
 unsigned int Statistic::usedStaticBlocks = 0;
@@ -35,7 +36,7 @@ void Statistic::logComplete() {
     unsigned int usedBlocks = usedDynamicBlocks + usedStaticBlocks;
     unsigned int usedMemory = usedDynamicMemory + usedStaticMemory;
     unsigned int usedBruttoMemory = usedDynamicMemoryWithCodeblocks + usedStaticMemory;
-    Logger::debug(("Statistic: using " + std::to_string(usedBlocks) + " blocks, taking up "
+    Logger::debug(("Statistic: using " + std::to_string(usedBlocks) + " blocks on " + std::to_string(PageList::getPageCount()) + " pages, taking up "
                   + std::to_string(usedMemory) + " bytes (" + std::to_string(usedBruttoMemory) + " brutto)").c_str());
 }
 
@@ -68,7 +69,7 @@ void Statistic::logTable() {
     separatorLine = std::string(column1width + column2width + column3width, '-');
     fillTotal = std::string(column1width - 5, ' ');
     fillTotalBlocks = std::string(column2width - (int) log10(usedDynamicBlocks+usedStaticBlocks) - 1, ' ');
-    Logger::debug(("Statistic:\n" + beforeBlocks + "Blocks" + betweenBlocksMemory + "Memory\n"
+    Logger::debug(("Statistic: " + std::to_string(PageList::getPageCount()) + " pages in use\n" + beforeBlocks + "Blocks" + betweenBlocksMemory + "Memory\n"
                   + "static" + fillStatic + std::to_string(usedStaticBlocks) + fillStaticBlocks + std::to_string(usedStaticMemory) + "B\n"
                   + "dynamic" + fillDynamic + std::to_string(usedDynamicBlocks) + fillDynamicBlocks + std::to_string(usedDynamicMemory) + "B\n"
                   + "codeblock" + fillCb + std::to_string(usedDynamicMemoryWithCodeblocks-usedDynamicMemory) + "B\n"

@@ -87,3 +87,13 @@ bool PageList::dynamicDelete(void *address) {
 Page *PageList::getFirstPage() {
     return firstPage;
 }
+
+unsigned int PageList::getPageCount() {
+    unsigned int count = 0;
+    Page* page = firstPage;
+    while (page != nullptr) {
+        count++;
+        page = page->getNextPage();
+    }
+    return count;
+}
