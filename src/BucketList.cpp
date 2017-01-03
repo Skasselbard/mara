@@ -42,7 +42,7 @@ bool BucketList::addToList(FreeSpace *freeSpace) {
 FreeSpace *BucketList::searchInList(FreeSpace *freeSpace, FreeSpace* &predecessor) {
     predecessor = nullptr;
     FreeSpace* currentElement = bucketList[lookupBucket(CodeBlock::readFromLeft((byte *) freeSpace))];
-    while (currentElement != nullptr && currentElement != freeSpace ){
+    while (currentElement->getNext(startOfPage) != nullptr && currentElement != freeSpace ){
         predecessor = currentElement;
         currentElement = currentElement->getNext(startOfPage);
     }
@@ -51,7 +51,8 @@ FreeSpace *BucketList::searchInList(FreeSpace *freeSpace, FreeSpace* &predecesso
 
 FreeSpace *BucketList::getLastInBucket(size_t size) {
     FreeSpace* currentElement = bucketList[size];
-    while(currentElement != nullptr){
+    if(currentElement == nullptr) return currentElement;
+    while(currentElement->getNext(startOfPage) != nullptr){
         currentElement = currentElement->getNext(startOfPage);
     }
     return currentElement;
