@@ -84,7 +84,9 @@ int Test::test(int argc, char** argv) {
                 unsigned long* toDelete = dynamicPointers.at(deletedIndex);
                 dynamicDelete(toDelete);
                 dynamicPointers.erase(dynamicPointers.begin() + deletedIndex);
-                Logger::debug((std::string("Freed dynamic memory: ") + std::to_string((unsigned long)toDelete)).c_str());
+                char addressBuffer[50];
+                std::sprintf(addressBuffer, "0x%lx", (unsigned long) toDelete);
+                Logger::debug((std::string("Freed dynamic memory: ") + addressBuffer).c_str());
             }
         }
         // todo test shit
@@ -109,7 +111,9 @@ void Test::writeIntoBlock(unsigned long * address, size_t size) {
         unsigned long valueAtAddress = (unsigned long) (address);
         *(address+i) = valueAtAddress;
     }
-    Logger::debug((std::string("Wrote values to address: ") + std::to_string((unsigned long)address)).c_str());
+    char addressBuffer[50];
+    std::sprintf(addressBuffer, "0x%lx", address);
+    Logger::debug((std::string("Wrote values to address: ") + addressBuffer).c_str());
 }
 
 int Test::checkPages() {
