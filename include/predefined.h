@@ -21,6 +21,7 @@
 #define MAX_CODE_BLOCK_ARRAY_SIZE 128 //TODO: probably enough?
 #define EXIT_ON_FATAL //call exit if LOGGER::fatal() was called
 #define DEBUG //mutes/unmutes debugLog
+#define STATISTIC
 typedef uint8_t byte;
 
 enum ERROR_CODES{

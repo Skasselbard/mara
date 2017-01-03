@@ -11,6 +11,7 @@
 #include "../include/PageList.h"
 #include "../include/OccupiedSpace.h"
 #include "../include/CodeBlock.h"
+#include "../include/Statistic.h"
 
 Page::Page(size_t sizeInBytes):pageSize(sizeInBytes){
     Logger::info("new page requested");
@@ -142,6 +143,9 @@ bool Page::deleteBlock(void *firstByte) {
     byte* codeBlockStart = nullptr;
     size_t memoryBlockSize = CodeBlock::readFromRight(((byte*)firstByte-1), codeBlockStart);
     size_t codBlockSize = CodeBlock::getBlockSize(codeBlockStart);
+#ifdef STATISTIC
+    Statistic::freeDynamic(memoryBlockSize);
+#endif
     assert((codeBlockStart+(2*codBlockSize)+memoryBlockSize) < staticEnd);
     if((codeBlockStart+(2*codBlockSize)+memoryBlockSize) >= staticEnd){
         Logger::fatal("dynamic block to delete overlaps with static sector", ERROR_CODES::STATIC_AND_DYNAMIC_SECTORS_OVERLAP);
