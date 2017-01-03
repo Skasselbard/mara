@@ -5,6 +5,7 @@
 #include <new>
 #include "../include/PageList.h"
 #include "../include/Logger.h"
+#include "../include/Statistic.h"
 
 size_t PageList::pageSize= 104857600;//100mb
 Page* PageList::firstPage = new Page(pageSize);
@@ -25,6 +26,9 @@ void *PageList::staticNew(size_t sizeInByte) {
             return nullptr;
         }
     }
+#ifdef STATISTIC
+    Statistic::newStatic(sizeInByte);
+#endif
     return returnBlock;
 }
 
@@ -50,6 +54,9 @@ void *PageList::dynamicNew(size_t sizeInByte) {
             return nullptr;
         }
     }
+#ifdef STATISTIC
+    Statistic::newDynamic(sizeInByte);
+#endif
     return ((Space*)returnBlock)->getStartOfSpace();
 }
 

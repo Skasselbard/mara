@@ -13,7 +13,7 @@ set(HEADER_FILES
         include/OccupiedSpace.h
         include/BucketList.h
         include/Space.h
-        include/predefined.h)
+        include/predefined.h src/Statistic.cpp include/Statistic.h)
 
 set(SOURCE_FILES
         ${HEADER_FILES}
@@ -28,7 +28,7 @@ set(SOURCE_FILES
         src/OccupiedSpace.cpp
         src/BucketList.cpp
         src/Space.cpp
-        src/MemDump.cpp include/MemDump.h)
+        src/MemDump.cpp include/MemDump.h src/Statistic.cpp include/Statistic.h)
 
 set(CMAKE_INCLUDE_PATH
         ${CMAKE_INCLUDE_PATH}
