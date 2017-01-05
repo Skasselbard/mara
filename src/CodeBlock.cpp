@@ -65,7 +65,7 @@ byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memor
     //calculate how many bytes are needed
     size_t t = (memoryBlockSize >> 6);
     returnArraySize = 2;
-    while(t>=127){
+    while(t>127){
         t >>= 7;
         returnArraySize++;
     }

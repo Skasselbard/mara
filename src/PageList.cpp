@@ -23,7 +23,7 @@ size_t PageList::getPageSize() {
 void *PageList::staticNew(size_t sizeInByte) {
     Page* currentPage = firstPage;
     void* returnBlock = nullptr;
-    while ( (returnBlock = firstPage->getStaticBlock(sizeInByte)) == nullptr){
+    while ( (returnBlock = currentPage->getStaticBlock(sizeInByte)) == nullptr){
         if(!iteratePage(currentPage)){
             return nullptr;
         }
