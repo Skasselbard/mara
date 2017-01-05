@@ -69,7 +69,7 @@ uint32_t *FreeSpace::getLeftNext(size_t codeBlockSize) {
 }
 
 uint32_t *FreeSpace::getRightNext(size_t codeBlockSize) {
-    return (uint32_t*)((getRightMostEnd()-(codeBlockSize))- sizeof(uint32_t));//uint32_t is 4 byte in contrast to the one byte rightMostEnd pointer
+    return (uint32_t*)((getRightMostEnd()-(codeBlockSize))- sizeof(uint32_t) + 1);//uint32_t is 4 byte in contrast to the one byte rightMostEnd pointer
 }
 
 FreeSpace *FreeSpace::getNext(byte *startOfPage) {

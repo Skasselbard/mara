@@ -27,6 +27,7 @@ FreeSpace *BucketList::getFreeSpace(size_t sizeInByte) {
 }
 
 bool BucketList::addToList(FreeSpace *freeSpace) {
+    //TODO: Add at front of bucketlist instead of end
     size_t size = CodeBlock::readFromLeft((byte*)freeSpace);
     Logger::info((std::string("adding element to bucketList position ")+std::to_string(lookupBucket(size))).c_str());
     FreeSpace* predecessor = getLastInBucket(lookupBucket(size));

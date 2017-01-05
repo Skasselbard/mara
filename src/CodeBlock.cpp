@@ -94,6 +94,8 @@ byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memor
 
 byte *CodeBlock::getCodeBlockForInternalSize(byte *leftStartOfBlock, size_t internallyNeededSize, size_t &returnArraySize,
                                              bool isFree) {
+
+
     size_t oldCodeBlockSize = 0;
     returnArraySize = 1;
     byte* resultingBlock;
