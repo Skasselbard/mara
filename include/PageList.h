@@ -27,6 +27,8 @@ public:
 
     static unsigned int getPageCount();
 
+    static void clearPages();
+
 };
 
 #endif //MARA_PAGE_LIST_H

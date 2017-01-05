@@ -5,6 +5,11 @@
 #ifndef MARA_TEST_H
 #define MARA_TEST_H
 
+#define FILL_REQUESTED_MEMORY 2
+// 0 = fill with zeros
+// 1 = fill with ones
+// 2 = fill with the address of the start of the memory array
+
 class Test {
 
 private:

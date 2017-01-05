@@ -3,6 +3,8 @@
 //
 
 #include <new>
+#include <stack>
+#include <string>
 #include "../include/PageList.h"
 #include "../include/Logger.h"
 #include "../include/Statistic.h"
@@ -96,4 +98,23 @@ unsigned int PageList::getPageCount() {
         page = page->getNextPage();
     }
     return count;
+}
+
+void PageList::clearPages() {
+    std::stack<Page *> pageStack;
+
+    Page * currentPage = firstPage;
+    while (currentPage != nullptr) {
+        pageStack.push(currentPage);
+        currentPage = currentPage->getNextPage();
+    }
+
+    Logger::debug(("Stacked " + std::to_string(pageStack.size()) + " pages to clear").c_str());
+
+    while (!pageStack.empty()) {
+        currentPage = pageStack.top();
+        pageStack.pop();
+        currentPage->~Page();
+    }
+
 }

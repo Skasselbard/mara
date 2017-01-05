@@ -11,6 +11,7 @@
 #include "../include/PageList.h"
 #include "../include/CodeBlock.h"
 #include "../include/MemDump.h"
+#include "../include/Statistic.h"
 
 using namespace std;
 
@@ -91,6 +92,7 @@ int Test::test(int argc, char** argv) {
         }
         // todo test shit
         checkPages();
+        Statistic::logTable();
     }
     return 0;
 }
@@ -98,8 +100,15 @@ int Test::test(int argc, char** argv) {
 void Test::writeIntoBlock(unsigned long * address, size_t size) {
     // todo make content configurable (write full value vs. only complete addresses)
     for(unsigned int i = 0; i < size/8; i++) {
+#if FILL_REQUESTED_MEMORY == 0
+        unsigned long valueAtAddress = 0;
+#elif FILL_REQUESTED_MEMORY == 1
+        unsigned long valueAtAddress = 1;
+#elif FILL_REQUESTED_MEMORY == 2
         unsigned long valueAtAddress = (unsigned long) (address);
+#endif
         *(address+i) = valueAtAddress;
+
     }
     char addressBuffer[50];
     std::sprintf(addressBuffer, "0x%lx", address);
@@ -118,28 +127,21 @@ int Test::checkPages() {
             size_t codeBlockSize = CodeBlock::getBlockSize(startOfPage);
             if (CodeBlock::isFree(blockPointer) == 0) {
                 unsigned long * memoryStart = (unsigned long *) (startOfPage + codeBlockSize);
+                //MemDump::dumpFullBlock(memoryStart);
                 for (int i = 0; i < memorySize / 8; i++) {
+#if FILL_REQUESTED_MEMORY == 0
+                    assert(*(memoryStart + i) == 0;
+#elif FILL_REQUESTED_MEMORY == 1
+                    assert(*(memoryStart + i) == 1;
+#elif FILL_REQUESTED_MEMORY == 2
                     assert(*(memoryStart + i) == (unsigned long) memoryStart);
+#endif
                 }
             }
             blockPointer = blockPointer + memorySize + 2 * codeBlockSize;
         }
 
     } while ((page = page->getNextPage()) != nullptr);
-}
-
-int testBlock() {
-    uint64_t zeiger = (uint64_t) dynamicNew(sizeof(uint64_t));
-    uint64_t* pointerAufZeiger = &zeiger;
-
-    *pointerAufZeiger = (uint64_t) pointerAufZeiger;
-
-
-    cout << "Zeiger: " << zeiger << "\n"
-         << "pointerAufZeiger: " << (uint64_t) pointerAufZeiger << "\n"
-         << "*pointerAufZeiger: " << *pointerAufZeiger << "\n";
-
-    return 0;
 }
 
 void Test::readArguments(int argc, char** argv, unsigned int * amountNewVariables,
