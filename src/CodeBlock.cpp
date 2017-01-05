@@ -94,20 +94,12 @@ byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memor
 
 byte *CodeBlock::getCodeBlockForInternalSize(byte *leftStartOfBlock, size_t internallyNeededSize, size_t &returnArraySize,
                                              bool isFree) {
-
-
-    size_t oldCodeBlockSize = 0;
     returnArraySize = 1;
-    byte* resultingBlock;
-    do {
-        oldCodeBlockSize = returnArraySize;
-        returnArraySize = getNeededCodeBlockSize(internallyNeededSize);
-        if(oldCodeBlockSize != returnArraySize || returnArraySize == 1){
-            internallyNeededSize = (internallyNeededSize - (2*returnArraySize));
-        }
-    }while (oldCodeBlockSize != returnArraySize);
-    resultingBlock = getCodeBlockForPayloadSize(leftStartOfBlock, internallyNeededSize, returnArraySize, isFree);
-    return resultingBlock;
+    while(CodeBlock::getNeededCodeBlockSize(internallyNeededSize - 2 * returnArraySize) > returnArraySize) {
+        returnArraySize++;
+    }
+    CodeBlock::getCodeBlockForPayloadSize(leftStartOfBlock, internallyNeededSize - 2 * returnArraySize, returnArraySize, isFree);
+
 }
 
 size_t CodeBlock::getBlockSize(byte *firstByte) {
