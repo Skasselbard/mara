@@ -79,7 +79,7 @@ int Test::test(int argc, char** argv) {
             // write address to address
             writeIntoBlock(address, varSize);
 
-            //checkPages();
+            checkPages();
 
             // maybe free a dynamic variable
             if (prob_distribution(generator) <= pFree) {
