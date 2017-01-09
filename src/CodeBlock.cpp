@@ -73,6 +73,13 @@ byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memor
 
 byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memoryBlockSize,
                                             bool isFree, size_t codeBlockSize) {
+
+    if(codeBlockSize == 1){
+        *leftStartOfBlock = memoryBlockSize | 128;
+        setFree(leftStartOfBlock, isFree);
+        return leftStartOfBlock;
+    }
+
     //write the bytes right to left
     byte* current = leftStartOfBlock+(codeBlockSize-1);
     int last = 1;
