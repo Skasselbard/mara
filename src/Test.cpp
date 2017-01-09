@@ -223,3 +223,9 @@ int Test::distributionTest() {
                   << std::string((unsigned long) (p.second / 100), '*') << '\n';
     }
 }
+
+void Test::generateCodeBlocks(size_t start, size_t end, int step, bool isFree) {
+    for (size_t i = start; i <= end; i += step) {
+        
+    }
+}

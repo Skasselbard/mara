@@ -26,20 +26,6 @@ int main(int argc, char** argv) {
     if (argc >= 2 && strcmp(argv[1], "test") == 0) {
         Test::test(argc, argv);
     }
-     /*
-    for (unsigned int i = 0; i <= 12000; i++) {
-        Test::writeIntoBlock((unsigned long *) dynamicNew(10000), 10000);
-        Logger::debug(("Iteration: " + std::to_string(i)).c_str());
-    }
 
-    Test::checkPages();
-
-    Logger::debug(("Pages before clear: " + std::to_string(PageList::getPageCount())).c_str());
-
-    PageList::clearPages();
-
-    Logger::debug(("Pages after clear: " + std::to_string(PageList::getPageCount())).c_str());
-
-     */
     return 0;
 }

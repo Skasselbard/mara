@@ -4,6 +4,9 @@
 
 #include <string>
 #include <cmath>
+#include <list>
+#include <vector>
+#include <assert.h>
 #include "../include/Statistic.h"
 #include "../include/CodeBlock.h"
 #include "../include/Logger.h"
@@ -15,21 +18,35 @@ unsigned int Statistic::usedDynamicMemory = 0;
 unsigned int Statistic::usedDynamicBlocks = 0;
 unsigned int Statistic::usedDynamicMemoryWithCodeblocks = 0;
 
-void Statistic::newDynamic(size_t size) {
+#ifdef STATISTIC_VERBOSE
+std::map<void *, size_t> Statistic::dynamicMemoryMap;
+std::map<void *, size_t> Statistic::staticMemoryMap;
+#endif
+
+void Statistic::newDynamic(size_t size, void * address) {
     usedDynamicBlocks++;
     usedDynamicMemory += size;
     usedDynamicMemoryWithCodeblocks += size + 2*CodeBlock::getNeededCodeBlockSize(size);
+#ifdef STATISTIC_VERBOSE
+    dynamicMemoryMap.insert(std::pair<void *, size_t>(address, size));
+#endif
 }
 
-void Statistic::newStatic(size_t size) {
+void Statistic::newStatic(size_t size, void * address) {
     usedStaticBlocks++;
     usedStaticMemory += size;
+#ifdef STATISTIC_VERBOSE
+    staticMemoryMap.insert(std::pair<void *, size_t>(address, size));
+#endif
 }
 
-void Statistic::freeDynamic(size_t size) {
+void Statistic::freeDynamic(size_t size, void * address) {
     usedDynamicBlocks--;
     usedDynamicMemory -= size;
     usedDynamicMemoryWithCodeblocks -= size - 2*CodeBlock::getNeededCodeBlockSize(size);
+#ifdef STATISTIC_VERBOSE
+    dynamicMemoryMap.erase(address);
+#endif
 }
 
 void Statistic::logComplete() {
@@ -76,4 +93,56 @@ void Statistic::logTable() {
                   + separatorLine + "\n"
                   + "total" + fillTotal + std::to_string(usedDynamicBlocks+usedStaticBlocks) + fillTotalBlocks + std::to_string(usedDynamicMemory+usedStaticMemory)
                   + "B (" + std::to_string(usedDynamicMemoryWithCodeblocks+usedStaticMemory) + "B)").c_str());
+
+
+#ifdef STATISTIC_VERBOSE
+    std::list<void *> addressList;
+    for (std::map<void *, size_t>::iterator it = dynamicMemoryMap.begin(); it != dynamicMemoryMap.end(); ++it) {
+        addressList.push_back(it->first);
+    }
+
+    for (std::map<void *, size_t>::iterator it = staticMemoryMap.begin(); it != staticMemoryMap.end(); ++it) {
+        addressList.push_back(it->first);
+    }
+
+    addressList.sort();
+
+    std::string output = "\n#Cb    Address       Size        End            #Cb  Type\n";
+    while (addressList.size() != 0) {
+        unsigned long * address = (unsigned long *) addressList.front();
+        addressList.pop_front();
+        byte * codeBlockStart;
+        size_t calculatedSize = CodeBlock::readFromRight(((byte *)address) - 1, codeBlockStart);
+        size_t codeBlockSize = ((byte*)address) - codeBlockStart;
+
+        //assert(calculatedSize == dynamicMemoryMap.find(address)->first || calculatedSize == staticMemoryMap.find(address));
+
+        char addressBuffer[50];
+        std::sprintf(addressBuffer, "0x%lx", (unsigned long) address);
+        std::string addressString(addressBuffer);
+
+
+        std::string memoryType = "error";
+        size_t actualSize = 0;
+        std::string codeBlockString = "-";
+        if (dynamicMemoryMap.count(address)) {
+            memoryType = "dynamic";
+            actualSize = dynamicMemoryMap[address];
+            codeBlockString = std::to_string(codeBlockSize);
+        } else if (staticMemoryMap.count(address)) {
+            memoryType = "static";
+            actualSize = staticMemoryMap[address];
+        }
+
+        std::sprintf(addressBuffer, "0x%lx", (unsigned long) (((byte *)address) + actualSize));
+        std::string endAddressString(addressBuffer);
+
+        std::string fillAfterSize(12 - (int) log10((actualSize == 0) ? 1 : actualSize) - 1, ' ');
+
+        output = output + " " + codeBlockString + "  "
+                 + addressString + "   " + std::to_string(actualSize) + fillAfterSize
+                 + endAddressString + "  " + codeBlockString + "   " + memoryType + "\n";
+    }
+    Logger::info(output.c_str());
+#endif
 }

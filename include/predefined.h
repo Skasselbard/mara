@@ -22,6 +22,7 @@
 #define EXIT_ON_FATAL //call exit if LOGGER::fatal() was called
 #define DEBUG //mutes/unmutes debugLog
 #define STATISTIC
+#define STATISTIC_VERBOSE
 #define ERROR_NEXT_POINTER (uint32_t)~0 // just ones from front to back (0b11111111111111111111111111111111111111111111....)
 typedef uint8_t byte;
 
