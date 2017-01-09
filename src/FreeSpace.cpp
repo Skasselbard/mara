@@ -51,8 +51,8 @@ void FreeSpace::setNext(FreeSpace *next, byte *startOfPage) {
     uint32_t *leftNext = getLeftNext(codeBlockSize);
     uint32_t *rightNext = getRightNext(codeBlockSize);
     if (next == nullptr){
-        *leftNext = 0;
-        *rightNext = 0;
+        *leftNext = ERROR_NEXT_POINTER;
+        *rightNext = ERROR_NEXT_POINTER;
         return;
     }
     assert((byte*)next >= startOfPage);
@@ -75,7 +75,7 @@ uint32_t *FreeSpace::getRightNext(size_t codeBlockSize) {
 FreeSpace *FreeSpace::getNext(byte *startOfPage) {
     size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
     uint32_t *leftNext = getLeftNext(codeBlockSize);
-    if (*leftNext == 0){
+    if (*leftNext == ERROR_NEXT_POINTER){
         return nullptr;
     }
     return (FreeSpace*)(startOfPage+(*leftNext));
