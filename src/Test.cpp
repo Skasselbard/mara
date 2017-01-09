@@ -90,7 +90,7 @@ int Test::test(int argc, char** argv) {
                 size_t size = CodeBlock::readFromRight(((byte *) toDelete)-1, codeBlockStart);
 
                 for(unsigned int i = 0; i < size; i++) {
-                    *(((byte *) address)+i) = 0b00000000;
+                    *(((byte *) toDelete)+i) = 0b00000000;
                 }
 
 
