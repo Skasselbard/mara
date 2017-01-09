@@ -118,3 +118,8 @@ BucketList::BucketList() {
         bucketList[i] = nullptr;
     }
 }
+
+FreeSpace *BucketList::getFromBucketList(int index) {
+    return bucketList[index];
+}
+

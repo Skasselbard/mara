@@ -79,6 +79,8 @@ int Test::test(int argc, char** argv) {
             // write address to address
             writeIntoBlock(address, varSize);
 
+            checkPages();
+
             // maybe free a dynamic variable
             if (prob_distribution(generator) <= pFree) {
                 unsigned long deletedIndex = (unsigned long) dynamicVariable_distribution(generator) % dynamicPointers.size();
@@ -118,15 +120,16 @@ void Test::writeIntoBlock(unsigned long * address, size_t size) {
 int Test::checkPages() {
     Logger::info("Checking pages");
     Page * page = PageList::getFirstPage();
+    BucketList * bucketList = page->getBucketList();
     do {
         byte * startOfPage = (byte *) page->getStartOfPage();
         byte * blockPointer = startOfPage;
         byte * dynamicEnd = page->getDynamicEnd();
         while (blockPointer < dynamicEnd) {
-            size_t memorySize = CodeBlock::readFromLeft(startOfPage);
-            size_t codeBlockSize = CodeBlock::getBlockSize(startOfPage);
+            size_t memorySize = CodeBlock::readFromLeft(blockPointer);
+            size_t codeBlockSize = CodeBlock::getBlockSize(blockPointer);
             if (CodeBlock::isFree(blockPointer) == 0) {
-                unsigned long * memoryStart = (unsigned long *) (startOfPage + codeBlockSize);
+                unsigned long * memoryStart = (unsigned long *) (blockPointer + codeBlockSize);
                 //MemDump::dumpFullBlock(memoryStart);
                 for (int i = 0; i < memorySize / 8; i++) {
 #if FILL_REQUESTED_MEMORY == 0
@@ -137,6 +140,16 @@ int Test::checkPages() {
                     assert(*(memoryStart + i) == (unsigned long) memoryStart);
 #endif
                 }
+            } else {
+                int blIndex = BucketList::lookupBucket(memorySize);
+                FreeSpace * freeSpace = bucketList->getFromBucketList(blIndex);
+                FreeSpace * currentElement;
+                for (currentElement = freeSpace;
+                     currentElement != (FreeSpace *) blockPointer;
+                     currentElement = currentElement->getNext(startOfPage)) {
+                    if (currentElement == nullptr) break;
+                }
+                assert(currentElement != nullptr);
             }
             blockPointer = blockPointer + memorySize + 2 * codeBlockSize;
         }

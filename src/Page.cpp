@@ -231,3 +231,7 @@ byte *Page::getStaticEnd() {
 byte *Page::getDynamicEnd() {
     return dynamicEnd;
 }
+
+BucketList * Page::getBucketList() {
+    return &bucketList;
+}

@@ -150,6 +150,8 @@ public:
 
     byte * getDynamicEnd();
 
+    BucketList * getBucketList();
+
 };
 
 

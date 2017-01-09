@@ -32,21 +32,10 @@ private:
     byte* startOfPage;
 
     /**
-     * @param freeSpace the Space to search for
-     * @return null if not i list, same pointer if found.
-     */
-    FreeSpace* searchInList(FreeSpace* freeSpace, FreeSpace* &predecessor);
-
-    /**
      * @param size
      * @return null if bucket is empty, the last element otherwise
      */
     FreeSpace* getLastInBucket(size_t size);
-
-    /**
-     * Get the correct index in the bucket list for a block with the given size
-     */
-    static unsigned int lookupBucket(size_t size) ;
 
     /**
      * @param index start index to search. The returned index will greater or equal to this index.
@@ -76,6 +65,18 @@ public:
 
     void setStartOfPage(byte *startOfPage);
 
+    FreeSpace * getFromBucketList(int index);
+
+    /**
+     * Get the correct index in the bucket list for a block with the given memory size (without codeblocks)
+     */
+    static unsigned int lookupBucket(size_t size) ;
+
+/**
+ * @param freeSpace the Space to search for
+ * @return null if not i list, same pointer if found.
+ */
+FreeSpace* searchInList(FreeSpace* freeSpace, FreeSpace* &predecessor);
 };
 
 
