@@ -86,7 +86,8 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
             returnBlock->toOccupied(sizeInByte);
         }else{
             //Edge Case: If the remaining space is too small to be used again, simply return a larger block
-            returnBlock->toOccupied(CodeBlock::readFromLeft((byte*)returnBlock));
+            CodeBlock::setFree((byte *) returnBlock, false);
+            returnBlock->copyCodeBlockToEnd((byte *) returnBlock, CodeBlock::getBlockSize((byte *) returnBlock));
         }
 
         if (returnBlock->getRightMostEnd() > dynamicEnd) {
