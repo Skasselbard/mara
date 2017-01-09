@@ -85,6 +85,15 @@ int Test::test(int argc, char** argv) {
             if (prob_distribution(generator) <= pFree) {
                 unsigned long deletedIndex = (unsigned long) dynamicVariable_distribution(generator) % dynamicPointers.size();
                 unsigned long* toDelete = dynamicPointers.at(deletedIndex);
+
+                byte * codeBlockStart;
+                size_t size = CodeBlock::readFromRight((byte *) toDelete, codeBlockStart);
+
+                for(unsigned int i = 0; i < size; i++) {
+                    *(((byte *) address)+i) = 0b00000000;
+                }
+
+
                 dynamicDelete(toDelete);
                 dynamicPointers.erase(dynamicPointers.begin() + deletedIndex);
                 char addressBuffer[50];
