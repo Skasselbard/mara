@@ -131,7 +131,8 @@ int Test::checkPages() {
             if (CodeBlock::isFree(blockPointer) == 0) {
                 unsigned long * memoryStart = (unsigned long *) (blockPointer + codeBlockSize);
                 //MemDump::dumpFullBlock(memoryStart);
-                for (int i = 0; i < memorySize / 8; i++) {
+                for (int i = 0; i < memorySize / 8 - 1; i++) {
+                    // TODO if less than 6 bytes are left, those are attached to the array. CHECK!
 #if FILL_REQUESTED_MEMORY == 0
                     assert(*(memoryStart + i) == 0;
 #elif FILL_REQUESTED_MEMORY == 1
