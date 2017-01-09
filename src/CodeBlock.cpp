@@ -22,7 +22,6 @@ size_t CodeBlock::readFromLeft(byte *firstByte) {
             size <<= 7; //shift the old byte 7  bits to the left to make space for the next 7 bits
         }
         size |= (*currentByte & 127); //insert the last 7 bits of the current byte at the end of size
-        assert(size>63); //Size encoded should be at least 64 to require multiple bytes
     }
     return size;
 }
@@ -69,10 +68,15 @@ byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memor
         t >>= 7;
         returnArraySize++;
     }
+    return CodeBlock::getCodeBlockForPayloadSize(leftStartOfBlock, memoryBlockSize, isFree, returnArraySize);
+}
+
+byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memoryBlockSize,
+                                            bool isFree, size_t codeBlockSize) {
     //write the bytes right to left
-    byte* current = leftStartOfBlock+(returnArraySize-1);
+    byte* current = leftStartOfBlock+(codeBlockSize-1);
     int last = 1;
-    for(int i = 0; i< returnArraySize; i++){
+    for(int i = 0; i< codeBlockSize; i++){
         if(last){ //current is the rightmost byte
             *current = (byte) (memoryBlockSize & 127);
             memoryBlockSize >>= 7;

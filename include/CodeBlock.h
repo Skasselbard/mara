@@ -73,6 +73,16 @@ public:
                                                 bool isFree);
 
     /**
+     * Build a CodeBlock for a payload with the given size and a given size of the code block
+     * @param leftStartOfBlock the beginning of the codeBlock starting from the left (return and this pointer should be the same)
+     * @param memoryBlockSize size of the memory block which should be represented by the CodeBlock
+     * @param isFree wether the codeBlock encode a free or used space
+     * @param codeBlockSize size of the CodeBlock in Bytes
+     * @return an array of bytes, containing the codeBlock representing the memory block size.
+     */
+    private static byte *getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memoryBlockSize, bool isFree, size_t codeBlockSize);
+
+    /**
      * Build a CodeBlock for space that is managed internally (from the left side of the left codeBlock to the right side
      * of the right code block). Useful to allocate the memory for a new free space.
      * @param leftStartOfBlock the beginning of the codeBlock starting from the left (return and this pointer should be the same)
@@ -108,6 +118,7 @@ public:
      * @return the size of the resulting code block
      */
     static size_t getNeededCodeBlockSize(size_t sizeToEncode);
+
 };
 
 
