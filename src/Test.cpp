@@ -87,7 +87,7 @@ int Test::test(int argc, char** argv) {
                 unsigned long* toDelete = dynamicPointers.at(deletedIndex);
 
                 byte * codeBlockStart;
-                size_t size = CodeBlock::readFromRight((byte *) toDelete, codeBlockStart);
+                size_t size = CodeBlock::readFromRight(((byte *) toDelete)-1, codeBlockStart);
 
                 for(unsigned int i = 0; i < size; i++) {
                     *(((byte *) address)+i) = 0b00000000;
