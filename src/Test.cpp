@@ -79,7 +79,7 @@ int Test::test(int argc, char** argv) {
             // write address to address
             writeIntoBlock(address, varSize);
 
-            checkPages();
+            //checkPages();
 
             // maybe free a dynamic variable
             if (prob_distribution(generator) <= pFree) {
@@ -134,6 +134,7 @@ int Test::checkPages() {
         byte * startOfPage = (byte *) page->getStartOfPage();
         byte * blockPointer = startOfPage;
         byte * dynamicEnd = page->getDynamicEnd();
+        byte * previousBlockPointer = nullptr;
         while (blockPointer < dynamicEnd) {
             size_t memorySize = CodeBlock::readFromLeft(blockPointer);
             size_t codeBlockSize = CodeBlock::getBlockSize(blockPointer);
@@ -161,6 +162,7 @@ int Test::checkPages() {
                 }
                 assert(currentElement != nullptr);
             }
+            previousBlockPointer = blockPointer;
             blockPointer = blockPointer + memorySize + 2 * codeBlockSize;
         }
 
