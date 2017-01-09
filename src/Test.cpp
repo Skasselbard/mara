@@ -79,7 +79,7 @@ int Test::test(int argc, char** argv) {
             // write address to address
             writeIntoBlock(address, varSize);
 
-            checkPages();
+            //checkPages();
 
             // maybe free a dynamic variable
             if (prob_distribution(generator) <= pFree) {
@@ -221,5 +221,11 @@ int Test::distributionTest() {
         std::cout << p.first*4 << ' '
                   << '(' << p.second << ") "
                   << std::string((unsigned long) (p.second / 100), '*') << '\n';
+    }
+}
+
+void Test::generateCodeBlocks(size_t start, size_t end, int step, bool isFree) {
+    for (size_t i = start; i <= end; i += step) {
+        
     }
 }

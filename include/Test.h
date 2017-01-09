@@ -34,6 +34,8 @@ public:
                               unsigned int * maxIterations, unsigned int * seed);
     static void writeIntoBlock(unsigned long * address, size_t size);
     static int checkPages();
+
+    static void generateCodeBlocks(size_t start, size_t end, int step, bool isFree);
 };
 
 #endif //MARA_TEST_H

@@ -29,7 +29,7 @@ void *PageList::staticNew(size_t sizeInByte) {
         }
     }
 #ifdef STATISTIC
-    Statistic::newStatic(sizeInByte);
+    Statistic::newStatic(sizeInByte, returnBlock);
 #endif
     return returnBlock;
 }
@@ -56,10 +56,11 @@ void *PageList::dynamicNew(size_t sizeInByte) {
             return nullptr;
         }
     }
+    void * startOfSpace = ((Space*)returnBlock)->getStartOfSpace();
 #ifdef STATISTIC
-    Statistic::newDynamic(sizeInByte);
+    Statistic::newDynamic(sizeInByte, startOfSpace);
 #endif
-    return ((Space*)returnBlock)->getStartOfSpace();
+    return startOfSpace;
 }
 
 bool PageList::iteratePage(Page* &currentPage) {

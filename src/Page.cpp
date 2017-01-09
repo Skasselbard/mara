@@ -147,17 +147,17 @@ bool Page::deleteBlock(void *firstByte) {
     Logger::info("deleting block");
     byte* codeBlockStart = nullptr;
     size_t memoryBlockSize = CodeBlock::readFromRight(((byte*)firstByte-1), codeBlockStart);
-    size_t codBlockSize = CodeBlock::getBlockSize(codeBlockStart);
+    size_t codeBlockSize = CodeBlock::getBlockSize(codeBlockStart);
 #ifdef STATISTIC
-    Statistic::freeDynamic(memoryBlockSize);
+    Statistic::freeDynamic(memoryBlockSize, firstByte);
 #endif
-    assert((codeBlockStart+(2*codBlockSize)+memoryBlockSize) < staticEnd);
-    if((codeBlockStart+(2*codBlockSize)+memoryBlockSize) >= staticEnd){
+    assert((codeBlockStart+(2*codeBlockSize)+memoryBlockSize) < staticEnd);
+    if((codeBlockStart+(2*codeBlockSize)+memoryBlockSize) >= staticEnd){
         Logger::fatal("dynamic block to delete overlaps with static sector", ERROR_CODES::STATIC_AND_DYNAMIC_SECTORS_OVERLAP);
         return false;
     }
     Space* leftNeighbor = nullptr;
-    Space* rightNeighbor = (Space*)(codeBlockStart+(2*codBlockSize)+memoryBlockSize);
+    Space* rightNeighbor = (Space*)(codeBlockStart+(2*codeBlockSize)+memoryBlockSize);
     if( (byte*)rightNeighbor > staticEnd){
         Logger::fatal("dynamic block to delete overlaps with static sector", ERROR_CODES::STATIC_AND_DYNAMIC_SECTORS_OVERLAP);
         return false;
