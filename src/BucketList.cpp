@@ -47,6 +47,7 @@ FreeSpace *BucketList::searchInList(FreeSpace *freeSpace, FreeSpace* &predecesso
         predecessor = currentElement;
         currentElement = currentElement->getNext(startOfPage);
     }
+
     return currentElement;
 }
 

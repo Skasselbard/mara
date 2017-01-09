@@ -23,7 +23,7 @@ void Logger::writeToLog() {
     fflush(stdout);
     if (logFile != nullptr){
         fprintf((FILE*)logFile, "%s", buffer);
-        fflush((FILE*)logFile);
+        //fflush((FILE*)logFile);
     }
     clearBuffer();
 }

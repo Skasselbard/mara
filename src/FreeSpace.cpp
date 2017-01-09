@@ -28,12 +28,15 @@ FreeSpace *FreeSpace::pushBeginningRight(byte *firstByte) {
 }
 
 FreeSpace *FreeSpace::pushEndLeft(byte *lastByte) {
-    size_t codeBlockSize = 0;
+    size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
+    uint32_t currentNext = *getLeftNext(codeBlockSize);//Needed incase the new CodeBlocks are smaller
     CodeBlock::getCodeBlockForInternalSize(getLeftMostEnd(), (lastByte - getLeftMostEnd()) + 1, codeBlockSize, true);//get the needed size
     copyCodeBlockToEnd(
             getLeftMostEnd(),
             codeBlockSize
     );
+    uint32_t* leftNext = getLeftNext(codeBlockSize);
+    *leftNext = currentNext; //Edge Case: if the code block gets smaller the nextpointer moves left
     copyNextPointerFromFrontToEnd(
             getLeftNext(codeBlockSize),
             getRightNext(codeBlockSize)
