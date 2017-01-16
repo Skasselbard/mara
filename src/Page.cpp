@@ -42,24 +42,36 @@ Page::~Page() {
 
 void* Page::getStaticBlock(size_t sizeInByte) {
     Logger::info("static block requested");
+#ifdef PRECONDITION
+    assert(sizeInByte!=0);
+    assert(staticEnd>dynamicEnd);//static end should come after the dynamic end
+#endif
 #ifdef ALIGN_STATIC
     sizeInByte = align(sizeInByte);
 #endif
     if (staticBlockFitInPage(sizeInByte)) {
         byte* codeBlockLeft = nullptr;
-        //TODO: catch if dynamic space (left from static end) is less than 6 byte
-        FreeSpace* lastFreeSpace = (FreeSpace*)(staticEnd - CodeBlock::readFromRight(staticEnd-1, codeBlockLeft)-(2*CodeBlock::getBlockSize(codeBlockLeft)));
+        FreeSpace* lastFreeSpace = (FreeSpace*)(staticEnd - CodeBlock::readFromRight(staticEnd-1, codeBlockLeft)-
+                (2*CodeBlock::getBlockSize(codeBlockLeft)));
         cutRightFromFreeSpace(lastFreeSpace, sizeInByte);
         this->staticEnd = this->staticEnd - sizeInByte;
+#ifdef POSTCONDITION
+        assert(staticEnd>dynamicEnd);//see above
+#endif
         return this->staticEnd;
     }else{
-        Logger::error("requested block does not fit in page");
+        Logger::warning("requested block does not fit in page");
+#ifdef POSTCONDITION
+        assert(staticEnd>dynamicEnd);//see above
+        assert(staticEnd - dynamicEnd - 1 < sizeInByte);//there actually shouldn't be enough space
+#endif
         return nullptr;
     }
 }
 
 bool Page::staticBlockFitInPage(size_t blockSizeInByte) {
-    return (blockSizeInByte <= (staticEnd - dynamicEnd - 1));
+    //no assertions because state isn't altered
+    return (blockSizeInByte <= (staticEnd - dynamicEnd - 1) && (staticEnd - dynamicEnd >= 6 + blockSizeInByte));
 }
 
 size_t Page::align(size_t requestedSizeInByte) {
@@ -69,6 +81,9 @@ size_t Page::align(size_t requestedSizeInByte) {
 
 OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
     Logger::info("dynamic block requested");
+#ifdef PRECONDITION
+    assert(sizeInByte > 0);
+#endif
 #ifdef ALIGN_DYNAMIC
     sizeInByte = align(sizeInByte);
 #endif
@@ -76,6 +91,9 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
     OccupiedSpace* returnBlock = (OccupiedSpace*)freeSpace;
     if(freeSpace == nullptr){
         Logger::info("no applicable freeSpace in this page. Switching to the next one");
+#ifdef POSTCONDITION
+
+#endif
         return nullptr;
     }else {
         bucketList.deleteFromList(freeSpace);
@@ -94,16 +112,33 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
             dynamicEnd = returnBlock->getRightMostEnd();
         }
     }
+#ifdef POSTCONDITION
+    assert(returnBlock != nullptr);
+    assert(dynamicEnd < staticEnd);
+    assert(dynamicEnd > startOfPage);
+    assert(returnBlock >= startOfPage);
+    assert(!CodeBlock::isFree((byte*) returnBlock));
+#endif
     return returnBlock;
 }
 
 FreeSpace *Page::cutLeftFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
     Logger::info("cut left");
+#ifdef PRECONDITION
+    assert(freeSpace >= startOfPage && (byte*)freeSpace < getStaticEnd());
     assert(freeSpace->getSize()>=bytesToCutOf);
+#endif
     if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREE_SPACE) {
+#ifdef POSTCONDITION
+
+#endif
         return nullptr;
     }else{
         freeSpace = freeSpace->pushBeginningRight(((byte *) freeSpace) + bytesToCutOf);
+#ifdef POSTCONDITION
+        assert(freeSpace->getNext((byte*) startOfPage) >= startOfPage && (byte*) freeSpace->getNext((byte*) startOfPage) < staticEnd);
+        assert(freeSpace->getSize() >= 6);
+#endif
         return freeSpace;
     }
 }
@@ -134,11 +169,25 @@ bool Page::blockIsInSpace(void *firstByte) {
 
 FreeSpace *Page::cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf) {
     Logger::info("cut right");
-    assert(freeSpace->getSize()>=bytesToCutOf);
-    if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREE_SPACE) {
+#ifdef PRECONDITION
+    assert(freeSpace->getSize()>=bytesToCutOf);//there must be enough space in the freespace
+    assert(freeSpace > startOfPage && freeSpace < startOfPage + pageSize);//the freespace must be in the page
+#endif
+    if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREE_SPACE){
+#ifdef POSTCONDITION
+    //see if clause
+#endif
         return nullptr;
     }else{
         freeSpace = freeSpace->pushEndLeft((freeSpace->getRightMostEnd()) - bytesToCutOf);
+#ifdef POSTCONDITION
+        //the next pointer must either be the invalid pointer or must point into the page
+        assert(freeSpace->getNext((byte*) startOfPage) == nullptr
+               || (freeSpace->getNext((byte*) startOfPage) >= startOfPage
+                                 && (byte*) freeSpace->getNext((byte*) startOfPage) < staticEnd));
+        assert(freeSpace > startOfPage);//freespace must still be in the page
+        assert(freeSpace->getRightMostEnd() < staticEnd);//freespace may not go into the static area
+#endif
         return freeSpace;
     }
 }
@@ -179,7 +228,6 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
     Logger::info("merge block");
     if ( leftBlock == nullptr){
         if (rightBlock != nullptr){
-            CodeBlock::setFree((byte*)rightBlock, false);
             bucketList.deleteFromList((FreeSpace*)rightBlock);
             mergeWithRight(middleBlock, rightBlock);
         }
@@ -189,11 +237,9 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
         return (FreeSpace*)middleBlock;
     } else{
         if(rightBlock != nullptr){
-            CodeBlock::setFree((byte*)rightBlock, false);
             bucketList.deleteFromList((FreeSpace*)rightBlock);
             mergeWithRight(middleBlock, rightBlock);
         }
-        CodeBlock::setFree((byte*)leftBlock, false);
         bucketList.deleteFromList((FreeSpace*)leftBlock);
         mergeWithLeft(leftBlock,middleBlock);
         CodeBlock::setFree((byte*)leftBlock, true);

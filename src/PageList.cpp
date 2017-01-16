@@ -5,6 +5,7 @@
 #include <new>
 #include <stack>
 #include <string>
+#include <assert.h>
 #include "../include/PageList.h"
 #include "../include/Logger.h"
 #include "../include/Statistic.h"
@@ -21,15 +22,24 @@ size_t PageList::getPageSize() {
 }
 
 void *PageList::staticNew(size_t sizeInByte) {
+#ifdef PRECONDITION
+    assert(sizeInByte!=0); //self-explainatory
+#endif
     Page* currentPage = firstPage;
     void* returnBlock = nullptr;
     while ( (returnBlock = currentPage->getStaticBlock(sizeInByte)) == nullptr){
         if(!iteratePage(currentPage)){
-            return nullptr;
+            returnBlock = nullptr;
+            break;
         }
     }
 #ifdef STATISTIC
     Statistic::newStatic(sizeInByte, returnBlock);
+#endif
+#ifdef POSTCONDITION
+    assert(returnBlock == currentPage->getStaticEnd());//the returned block must be at the top of the static area
+    assert((byte*) returnBlock + sizeInByte <= (byte*) currentPage->getStartOfPage() + pageSize); //the returned block may not go over the page boundaries
+
 #endif
     return returnBlock;
 }
@@ -49,6 +59,9 @@ bool PageList::addPageToList(Page *currentPage) {
 }
 
 void *PageList::dynamicNew(size_t sizeInByte) {
+#ifdef PRECONDITION
+    assert(sizeInByte > 0);
+#endif
     Page* currentPage = firstPage;
     OccupiedSpace* returnBlock = nullptr;
     while ( (returnBlock = currentPage->getDynamicBlock(sizeInByte)) == nullptr){
@@ -59,6 +72,9 @@ void *PageList::dynamicNew(size_t sizeInByte) {
     void * startOfSpace = ((Space*)returnBlock)->getStartOfSpace();
 #ifdef STATISTIC
     Statistic::newDynamic(sizeInByte, startOfSpace);
+#endif
+#ifdef POSTCONDITION
+    assert(returnBlock >= currentPage->getStartOfPage() && (byte*) returnBlock < currentPage->getStaticEnd());
 #endif
     return startOfSpace;
 }

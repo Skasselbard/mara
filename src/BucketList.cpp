@@ -9,6 +9,9 @@
 #include <string>
 
 FreeSpace *BucketList::getFreeSpace(size_t sizeInByte) {
+#ifdef PRECONDITION
+    assert(sizeInByte > 0);
+#endif
     Logger::info((std::string("free space requested with size: ")+std::to_string(sizeInByte)).c_str());
     unsigned int bucketIndex = lookupBucket(sizeInByte);
     FreeSpace* returnSpace = nullptr;
@@ -20,34 +23,49 @@ FreeSpace *BucketList::getFreeSpace(size_t sizeInByte) {
     if (bucketIndex == blSize-1){
         returnSpace = findFittingSpaceInBucket(sizeInByte, blSize-1);
     }
+#ifdef POSTCONDITION
     if(returnSpace) {
         assert(CodeBlock::readFromLeft((byte*)returnSpace) >= sizeInByte);
+        FreeSpace* foo = nullptr;
+        assert(searchInList(returnSpace, foo));
     }
+#endif
     return returnSpace;
 }
 
 bool BucketList::addToList(FreeSpace *freeSpace) {
-    //TODO: Add at front of bucketlist instead of end
+#ifdef PRECONDITION
+    assert((byte*)freeSpace >= startOfPage);
+    FreeSpace* foo = nullptr;
+    assert(searchInList(freeSpace, foo) == nullptr);
+#endif
     size_t size = CodeBlock::readFromLeft((byte*)freeSpace);
     Logger::info((std::string("adding element to bucketList position ")+std::to_string(lookupBucket(size))).c_str());
-    FreeSpace* predecessor = getLastInBucket(lookupBucket(size));
-    if (predecessor == nullptr){
-        bucketList[lookupBucket(size)] = freeSpace;
-    } else {
-        predecessor->setNext(freeSpace, startOfPage);
-    }
-    freeSpace->setNext(nullptr, startOfPage);
+    FreeSpace* successor = bucketList[lookupBucket(size)];
+    freeSpace->setNext(successor, startOfPage);
+    bucketList[lookupBucket(size)] = freeSpace;
+#ifdef POSTCONDITION
+    FreeSpace* bar = nullptr;
+    assert(searchInList(freeSpace, bar) != nullptr);
+#endif
     return true;
 }
 
 FreeSpace *BucketList::searchInList(FreeSpace *freeSpace, FreeSpace* &predecessor) {
+#ifdef PRECONDITION
+    assert(CodeBlock::isFree((byte*)freeSpace));
+#endif
     predecessor = nullptr;
     FreeSpace* currentElement = bucketList[lookupBucket(CodeBlock::readFromLeft((byte *) freeSpace))];
+    if(currentElement == nullptr) return nullptr;
     while (currentElement->getNext(startOfPage) != nullptr && currentElement != freeSpace ){
         predecessor = currentElement;
         currentElement = currentElement->getNext(startOfPage);
     }
-
+#ifdef POSTCONDITION
+    assert(freeSpace == nullptr || predecessor == nullptr || predecessor->getNext(startOfPage) == freeSpace);
+    assert(currentElement == freeSpace);
+#endif
     return currentElement;
 }
 
@@ -61,6 +79,9 @@ FreeSpace *BucketList::getLastInBucket(size_t size) {
 }
 
 bool BucketList::deleteFromList(FreeSpace *freeSpace) {
+#ifdef PRECONDITION
+
+#endif
     size_t size = CodeBlock::readFromLeft((byte*)freeSpace);
     Logger::info((std::string("deleting element from bucketList position ")+std::to_string(lookupBucket(size))).c_str());
     FreeSpace* predecessor = nullptr;
@@ -70,9 +91,15 @@ bool BucketList::deleteFromList(FreeSpace *freeSpace) {
         }else{
             predecessor->setNext(freeSpace->getNext(startOfPage), startOfPage);
         }
+#ifdef POSTCONDITION
+    assert(searchInList(freeSpace, predecessor) == nullptr);
+#endif
         return true;
     }
-    Logger::warning("element not found in bucketList");
+    Logger::error("element not found in bucketList");
+#ifdef POSTCONDITION
+    assert(false);
+#endif
     return false;
 }
 
@@ -83,7 +110,9 @@ void BucketList::setStartOfPage(byte *startOfPage) {
 
 
 unsigned int BucketList::lookupBucket(size_t size) {
-    assert(size != 0);
+#ifdef PRECONDITION
+    assert(size > 0);
+#endif
     if (size <= lastLinear4Scaling) {
         return (unsigned int)((size-1) / 4);
     } else if (size <= lastLinear16Scaling) {
@@ -96,21 +125,34 @@ unsigned int BucketList::lookupBucket(size_t size) {
 }
 
 unsigned int BucketList::findNonEmptyBucket(unsigned int index) {
+#ifdef PRECONDITION
+    assert(index < blSize);
+#endif
     while (bucketList[index] == nullptr){
         if(index < blSize-1){
             index++;
         }else{
-            return index;
+            break;
         }
     }
+#ifdef POSTCONDITION
+    assert(bucketList[index] != nullptr);
+#endif
     return index;
 }
 
 FreeSpace *BucketList::findFittingSpaceInBucket(size_t minimumSize, unsigned int index) {
+#ifdef PRECONDITION
+    assert(minimumSize > 0);
+    assert(index < blSize);
+#endif
     FreeSpace* returnSpace = bucketList[index];
     while(returnSpace && CodeBlock::readFromLeft((byte *) returnSpace) < minimumSize){
         returnSpace = returnSpace->getNext(startOfPage);
     }
+#ifdef POSTCONDITION
+    assert(returnSpace == nullptr || CodeBlock::readFromLeft((byte*) returnSpace) >= minimumSize);
+#endif
     return returnSpace;
 }
 

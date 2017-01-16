@@ -58,7 +58,7 @@ public:
      * @param outLeftByte output for the leftmost byte of the block
      * @return the size of the memory block
      */
-    static size_t readFromRight(byte* firstByte, byte* &outLeftByte);
+    static size_t readFromRight(const byte* const firstByte, byte* &outLeftByte);
 
     /**
      * Build a CodeBlock for a payload with the given size (from the right side of the left codeBlock to the left side

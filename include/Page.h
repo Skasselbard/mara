@@ -126,6 +126,7 @@ public:
     void* getStaticBlock(size_t sizeInByte);
     /**
      * returns if a requested block size would fit in the page
+     * checks if there is enough space to begin with and if there would be enough space for a freespace(>6 byte) after insertion
      */
     bool staticBlockFitInPage(size_t blockSizeInByte);
 

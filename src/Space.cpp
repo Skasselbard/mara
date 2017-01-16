@@ -2,6 +2,7 @@
 // Created by tom on 20.11.16.
 //
 
+#include <assert.h>
 #include "../include/Space.h"
 #include "../include/CodeBlock.h"
 #include "../include/Logger.h"
@@ -13,7 +14,11 @@ byte *Space::getLeftMostEnd() const {
 byte *Space::getRightMostEnd() const {
     size_t memoryBlockSize = CodeBlock::readFromLeft(getLeftMostEnd());
     size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
-    return ((getLeftMostEnd()+(2*codeBlockSize)+memoryBlockSize)-1);
+    byte* rightMostEnd = ((getLeftMostEnd()+(2*codeBlockSize)+memoryBlockSize)-1);
+#ifdef POSTCONDITION
+    assert(rightMostEnd > getLeftMostEnd());//trivial.
+#endif
+    return rightMostEnd;
 }
 
 size_t Space::getSize() {
@@ -21,16 +26,27 @@ size_t Space::getSize() {
 }
 
 bool Space::copyCodeBlockToEnd(byte *startOfBlock, size_t sizeOfBlock) {
+#ifdef PRECONDITION
+    assert(sizeOfBlock > 0);
+#endif
     byte* currentPosition = (getRightMostEnd()-sizeOfBlock)+1;
     for (int i = 0; i < sizeOfBlock; i++){
         if(currentPosition <= getRightMostEnd()) {
             *currentPosition = *(startOfBlock + i);
         }else{
             Logger::error("trying to write over the space boundary");
+#ifdef POSTCONDITION
+            assert(false);
+#endif
             return false;
         }
         currentPosition++;
     }
+#ifdef POSTCONDITION
+    assert(currentPosition - 1 == getRightMostEnd());
+    byte* foo = nullptr;
+    assert(CodeBlock::readFromLeft(startOfBlock) == CodeBlock::readFromRight(currentPosition-1, foo));
+#endif
     return true;
 }
 
@@ -39,6 +55,11 @@ void Space::toOccupied(size_t newSize) {
     size_t codeBlockSize = 0;
     CodeBlock::getCodeBlockForPayloadSize(getLeftMostEnd(), newSize, codeBlockSize, false);
     copyCodeBlockToEnd(getLeftMostEnd(), codeBlockSize);
+#ifdef POSTCONDITION
+    assert(!CodeBlock::isFree(getLeftMostEnd()));
+    byte* foo= nullptr;
+    assert(CodeBlock::readFromLeft(getLeftMostEnd()) == CodeBlock::readFromRight(getRightMostEnd(), foo));
+#endif
 }
 
 void *Space::getStartOfSpace() {

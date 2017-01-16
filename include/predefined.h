@@ -24,6 +24,8 @@
 #define STATISTIC
 #define STATISTIC_VERBOSE
 #define ERROR_NEXT_POINTER (uint32_t)~0 // just ones from front to back (0b11111111111111111111111111111111111111111111....)
+#define PRECONDITION
+#define POSTCONDITION
 typedef uint8_t byte;
 
 enum ERROR_CODES{
