@@ -53,7 +53,9 @@ void* Page::getStaticBlock(size_t sizeInByte) {
         byte* codeBlockLeft = nullptr;
         FreeSpace* lastFreeSpace = (FreeSpace*)(staticEnd - CodeBlock::readFromRight(staticEnd-1, codeBlockLeft)-
                 (2*CodeBlock::getBlockSize(codeBlockLeft)));
+        bucketList.deleteFromList(lastFreeSpace);
         cutRightFromFreeSpace(lastFreeSpace, sizeInByte);
+        bucketList.addToList(lastFreeSpace);//lastFreeSpace might get too small for its current bucket
         this->staticEnd = this->staticEnd - sizeInByte;
 #ifdef POSTCONDITION
         assert(staticEnd>dynamicEnd);//see above
@@ -63,7 +65,7 @@ void* Page::getStaticBlock(size_t sizeInByte) {
         Logger::warning("requested block does not fit in page");
 #ifdef POSTCONDITION
         assert(staticEnd>dynamicEnd);//see above
-        assert(staticEnd - dynamicEnd - 1 < sizeInByte);//there actually shouldn't be enough space
+        assert(staticEnd - dynamicEnd < 6 + sizeInByte);//there actually shouldn't be enough space
 #endif
         return nullptr;
     }
@@ -173,7 +175,7 @@ FreeSpace *Page::cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf
     Logger::info("cut right");
 #ifdef PRECONDITION
     assert(freeSpace->getSize()>=bytesToCutOf);//there must be enough space in the freespace
-    assert(freeSpace > startOfPage && freeSpace < startOfPage + pageSize);//the freespace must be in the page
+    assert(freeSpace >= startOfPage && freeSpace < startOfPage + pageSize);//the freespace must be in the page
 #endif
     if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREE_SPACE){
 #ifdef POSTCONDITION
@@ -187,7 +189,7 @@ FreeSpace *Page::cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf
         assert(freeSpace->getNext((byte*) startOfPage) == nullptr
                || (freeSpace->getNext((byte*) startOfPage) >= startOfPage
                                  && (byte*) freeSpace->getNext((byte*) startOfPage) < staticEnd));
-        assert(freeSpace > startOfPage);//freespace must still be in the page
+        assert(freeSpace >= startOfPage);//freespace must still be in the page
         assert(freeSpace->getRightMostEnd() < staticEnd);//freespace may not go into the static area
 #endif
         return freeSpace;

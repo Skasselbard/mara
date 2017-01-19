@@ -57,7 +57,8 @@ FreeSpace *FreeSpace::pushEndLeft(byte *lastByte) {
     //the new code blocks must have the same value
     assert(CodeBlock::readFromLeft(getLeftMostEnd()) == CodeBlock::readFromRight(getRightMostEnd(),foo));
     //the next pointers must be the same
-    assert(*getLeftNext(CodeBlock::getBlockSize(getLeftMostEnd())) == *getRightNext(CodeBlock::getBlockSize(getLeftMostEnd())));
+    assert(CodeBlock::readFromLeft(getLeftMostEnd()) < 8
+           ||*getLeftNext(CodeBlock::getBlockSize(getLeftMostEnd())) == *getRightNext(CodeBlock::getBlockSize(getLeftMostEnd())));
 #endif
     return (FreeSpace*)getLeftMostEnd();
 }
