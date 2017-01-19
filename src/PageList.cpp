@@ -11,7 +11,7 @@
 #include "../include/Statistic.h"
 
 size_t PageList::pageSize= 104857600;//100mb
-Page* PageList::firstPage = new Page(pageSize);
+Page* PageList::firstPage = new Page(pageSize, true);
 int PageList::setPageSize(size_t sizeInByte) {
     pageSize = sizeInByte;
     return 0;
@@ -54,6 +54,7 @@ bool PageList::addPageToList(Page *currentPage) {
         Logger::error(ba.what());
         return false;
     }
+    nextPage->setNextPage(currentPage->getNextPage());
     currentPage->setNextPage(nextPage);
     return true;
 }
@@ -76,20 +77,22 @@ void *PageList::dynamicNew(size_t sizeInByte) {
 #ifdef POSTCONDITION
     assert(returnBlock >= currentPage->getStartOfPage() && (byte*) returnBlock < currentPage->getStaticEnd());
 #endif
+    firstPage = currentPage;
     return startOfSpace;
 }
 
 bool PageList::iteratePage(Page* &currentPage) {
-    if (currentPage->getNextPage()){
-        currentPage = currentPage->getNextPage();
-    } else{
+    if(currentPage->getNextPage() == firstPage){
         if (addPageToList(currentPage)){
             currentPage = currentPage->getNextPage();
         }else{
             return false;
         }
+    }else{
+        currentPage = currentPage->getNextPage();
     }
     return true;
+
 }
 
 bool PageList::dynamicDelete(void *address) {

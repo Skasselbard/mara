@@ -17,9 +17,10 @@ class OccupiedSpace;
 
 class Page {
 private:
+
     /**
-     * Pointer to the first byte of the page
-     */
+         * Pointer to the first byte of the page
+         */
     void *startOfPage;
 
     /**
@@ -107,6 +108,7 @@ private:
 
 public:
     Page(size_t sizeInBytes);
+    Page(size_t sizeInBytes, bool isFirst);
 
     /**
      * should be private destructor because we dont expect pages to be deleted before program termination
