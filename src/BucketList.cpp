@@ -140,7 +140,7 @@ unsigned int BucketList::findNonEmptyBucket(unsigned int index) {
         }
     }
 #ifdef POSTCONDITION
-    assert(bucketList[index] != nullptr);
+    assert(bucketList[index] != nullptr || index == blSize -1);
 #endif
     return index;
 }
