@@ -112,7 +112,6 @@ void Statistic::logTable() {
         unsigned long * address = (unsigned long *) addressList.front();
         addressList.pop_front();
         byte * codeBlockStart;
-        size_t calculatedSize = CodeBlock::readFromRight(((byte *)address) - 1, codeBlockStart);
         size_t codeBlockSize = ((byte*)address) - codeBlockStart;
 
         //assert(calculatedSize == dynamicMemoryMap.find(address)->first || calculatedSize == staticMemoryMap.find(address));
