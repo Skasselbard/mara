@@ -29,6 +29,10 @@ Page::Page(size_t sizeInBytes):pageSize(sizeInBytes){
     initializeBucketList();
 }
 
+Page::Page(size_t sizeInBytes, bool isFirst):Page(sizeInBytes) {
+    if(isFirst) nextPage = this;
+}
+
 void Page::initializeBucketList() {
     Logger::info("initialize bucket list");
     bucketList.setStartOfPage((byte*) startOfPage);

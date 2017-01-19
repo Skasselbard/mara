@@ -168,7 +168,7 @@ int Test::checkPages() {
             blockPointer = blockPointer + memorySize + 2 * codeBlockSize;
         }
 
-    } while ((page = page->getNextPage()) != nullptr);
+    } while ((page = page->getNextPage()) != PageList::getFirstPage());
 }
 
 void Test::readArguments(int argc, char** argv, unsigned int * amountNewVariables,

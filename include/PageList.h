@@ -11,6 +11,9 @@
 class PageList{
 private:
     static size_t pageSize;
+    /**
+     * the first page in the ring that will be searched
+     */
     static Page *firstPage;
 
     static bool addPageToList(Page *currentPage);
