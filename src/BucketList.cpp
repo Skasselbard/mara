@@ -62,9 +62,13 @@ FreeSpace *BucketList::searchInList(FreeSpace *freeSpace, FreeSpace* &predecesso
         predecessor = currentElement;
         currentElement = currentElement->getNext(startOfPage);
     }
+    if(currentElement!=freeSpace) currentElement = nullptr;
 #ifdef POSTCONDITION
-    assert(freeSpace == nullptr || predecessor == nullptr || predecessor->getNext(startOfPage) == freeSpace);
-    assert(currentElement == freeSpace);
+    assert(currentElement == nullptr
+           ||freeSpace == nullptr
+           || predecessor == nullptr
+           || predecessor->getNext(startOfPage) == freeSpace);
+    assert(currentElement == nullptr || currentElement == freeSpace);
 #endif
     return currentElement;
 }

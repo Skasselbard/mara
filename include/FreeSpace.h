@@ -47,6 +47,13 @@ public:
      * @return a pointer to the left most byte of the free space
      */
     FreeSpace* pushEndLeft(byte *lastByte);
+
+    /**
+     * Writes the next Pointer(s) to the correct position(s). Intended as replacement for the copyNextPointer*-functions.
+     * @param nextPointer the offset to be written
+     * @param leftCodeBlock the left CodeBlock of the Space whose pointers shall be written
+     */
+    static void writeNextPointer(uint32_t nextPointer, byte *leftCodeBlock);
 };
 
 

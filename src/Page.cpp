@@ -136,7 +136,9 @@ FreeSpace *Page::cutLeftFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf)
     }else{
         freeSpace = freeSpace->pushBeginningRight(((byte *) freeSpace) + bytesToCutOf);
 #ifdef POSTCONDITION
-        assert(freeSpace->getNext((byte*) startOfPage) >= startOfPage && (byte*) freeSpace->getNext((byte*) startOfPage) < staticEnd);
+        assert(freeSpace->getNext((byte*)startOfPage) == nullptr
+               || (freeSpace->getNext((byte*) startOfPage) >= startOfPage
+                   && (byte*) freeSpace->getNext((byte*) startOfPage) < staticEnd));
         assert(freeSpace->getSize() >= 6);
 #endif
         return freeSpace;

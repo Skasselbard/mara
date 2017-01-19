@@ -12,20 +12,21 @@
 FreeSpace *FreeSpace::pushBeginningRight(byte *firstByte) {
 #ifdef PRECONDITION
     assert(firstByte > getLeftMostEnd() && firstByte < getRightMostEnd());
-#endif
-    size_t codeBlockSize = 0;
     assert(firstByte<getRightMostEnd()); //Never cross the pointers!
+#endif
+    size_t codeBlockSize = CodeBlock::getBlockSize(getLeftMostEnd());
+    byte* rightMostEnd = getRightMostEnd();
+    uint32_t nextPointer = *getRightNext(codeBlockSize);
     if (firstByte ==
-            CodeBlock::getCodeBlockForInternalSize(firstByte, (getRightMostEnd() - firstByte) + 1, codeBlockSize, true)){
+            CodeBlock::getCodeBlockForInternalSize(firstByte, (rightMostEnd - firstByte) + 1, codeBlockSize, true)){
         copyCodeBlockToEnd(firstByte, codeBlockSize);
-        copyNextPointerFromEndToFront(
-                getLeftNext(codeBlockSize),
-                getRightNext(codeBlockSize)
-        );
+        writeNextPointer(nextPointer, firstByte);
 #ifdef POSTCONDITION
         byte* foo = nullptr;
-        assert(CodeBlock::readFromLeft(firstByte) == CodeBlock::readFromRight(getRightMostEnd(), foo));
-        assert(*getLeftNext(CodeBlock::getBlockSize(firstByte)) == *getRightNext(CodeBlock::getBlockSize(firstByte)));
+        FreeSpace* newFreeSpace = (FreeSpace*) firstByte;
+        assert(CodeBlock::readFromLeft(firstByte) == CodeBlock::readFromRight(rightMostEnd, foo));
+        assert(CodeBlock::readFromLeft(firstByte)<8 || *(newFreeSpace->getLeftNext(CodeBlock::getBlockSize(firstByte)))
+               == *(newFreeSpace->getRightNext(CodeBlock::getBlockSize(firstByte))));
 #endif
         return (FreeSpace*)firstByte;
     }else{
@@ -49,12 +50,9 @@ FreeSpace *FreeSpace::pushEndLeft(byte *lastByte) {
             getLeftMostEnd(),
             codeBlockSize
     );
-    uint32_t* leftNext = getLeftNext(codeBlockSize);
-    *leftNext = currentNext; //Edge Case: if the code block gets smaller the nextpointer moves left
-    copyNextPointerFromFrontToEnd(
-            getLeftNext(codeBlockSize),
-            getRightNext(codeBlockSize)
-    );
+    uint32_t nextPointer = *getLeftNext(codeBlockSize);
+    writeNextPointer(nextPointer, getLeftMostEnd());
+
 #ifdef POSTCONDITION
     byte* foo = nullptr;
     //the new code blocks must have the same value
@@ -118,6 +116,26 @@ FreeSpace *FreeSpace::getNext(byte *startOfPage) {
 bool FreeSpace::copyNextPointerFromFrontToEnd(uint32_t *front, uint32_t *end) {
     *end = *front;
     return true;
+}
+
+void FreeSpace::writeNextPointer(uint32_t nextPointer, byte* leftCodeBlock){
+#ifdef PRECONDITION
+    assert(CodeBlock::isFree(leftCodeBlock));//We shouldn't write NextPointers in used areas
+#endif
+    size_t codeBlockSize = CodeBlock::getBlockSize(leftCodeBlock);
+    size_t spaceSize = CodeBlock::readFromLeft(leftCodeBlock);
+    uint32_t * leftNext = (uint32_t *) (leftCodeBlock + codeBlockSize);
+    uint32_t * rightNext = (uint32_t*) (leftCodeBlock+spaceSize+codeBlockSize- sizeof(uint32_t));
+    *leftNext = nextPointer;
+    if(spaceSize >= 8){
+        *rightNext = nextPointer;
+    }
+#ifdef POSTCONDITION
+    assert(CodeBlock::isFree(leftCodeBlock));
+    assert(CodeBlock::readFromLeft(leftCodeBlock) == CodeBlock::readFromLeft(leftCodeBlock+spaceSize+codeBlockSize));
+    assert(spaceSize < 8 || *leftNext == *rightNext);
+#endif
+
 }
 
 
