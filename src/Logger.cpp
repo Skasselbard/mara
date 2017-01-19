@@ -11,13 +11,16 @@ FILE const *Logger::logFile = fopen(".mara.log", "w");
 char Logger::buffer[LOG_BUFFER_SIZE];
 
 void Logger::warning(const char *message) {
+#ifdef MARA_LOG
     writeTimeStamp();
     strcat(buffer,"Warning: ");
     strcat(buffer, message);
     writeToLog();
+#endif
 }
 
 void Logger::writeToLog() {
+#ifdef MARA_LOG
     strcat(buffer,"\n");
     printf("%s",buffer);
     fflush(stdout);
@@ -26,16 +29,20 @@ void Logger::writeToLog() {
         //fflush((FILE*)logFile);
     }
     clearBuffer();
+#endif
 }
 
 int Logger::clearBuffer() {
+#ifdef MARA_LOG
     for (int i = 0; i < LOG_BUFFER_SIZE; ++i) {
         buffer[i] = '\0';
     }
     return 0;
+#endif
 }
 
 void Logger::writeTimeStamp() {
+#ifdef MARA_LOG
     time_t t = time(0);   // get time now
     struct tm *now = localtime( & t );
     sprintf(buffer,
@@ -47,37 +54,46 @@ void Logger::writeTimeStamp() {
             now->tm_min,
             now->tm_sec
     );
+#endif
 }
 
 void Logger::info(const char *message) {
+#ifdef MARA_LOG
     writeTimeStamp();
     strcat(buffer,"Info: ");
-    strcat(buffer, message);
-    writeToLog();
-}
-
-void Logger::error(const char *message) {
-    writeTimeStamp();
-    strcat(buffer,"Error: ");
-    strcat(buffer, message);
-    writeToLog();
-}
-
-void Logger::debug(const char *message) {
-#ifdef DEBUG
-    writeTimeStamp();
-    strcat(buffer,"Debug: ");
     strcat(buffer, message);
     writeToLog();
 #endif
 }
 
+void Logger::error(const char *message) {
+#ifdef MARA_LOG
+    writeTimeStamp();
+    strcat(buffer,"Error: ");
+    strcat(buffer, message);
+    writeToLog();
+#endif
+}
+
+void Logger::debug(const char *message) {
+#ifdef MARA_LOG
+#ifdef MARA_DEBUG
+    writeTimeStamp();
+    strcat(buffer,"Debug: ");
+    strcat(buffer, message);
+    writeToLog();
+#endif
+#endif
+}
+
 void Logger::fatal(const char *message, int exitcode) {
+#ifdef MARA_LOG
     writeTimeStamp();
     strcat(buffer,"Fatal Error: ");
     strcat(buffer, message);
     writeToLog();
 #ifdef EXIT_ON_FATAL
     exit(exitcode);
+#endif
 #endif
 }
