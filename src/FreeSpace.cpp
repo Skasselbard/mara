@@ -50,8 +50,7 @@ FreeSpace *FreeSpace::pushEndLeft(byte *lastByte) {
             getLeftMostEnd(),
             codeBlockSize
     );
-    uint32_t nextPointer = *getLeftNext(codeBlockSize);
-    writeNextPointer(nextPointer, getLeftMostEnd());
+    writeNextPointer(currentNext, getLeftMostEnd());
 
 #ifdef POSTCONDITION
     byte* foo = nullptr;
