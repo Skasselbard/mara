@@ -64,7 +64,9 @@ int Test::test(int argc, char** argv) {
                 varSize = varSize + (4-(varSize % 4));
             } while (varSize < minSize || varSize > maxSize);
 
-            Logger::info(("iterations=" + std::to_string(iterations) + ", variables=" + std::to_string(v)).c_str());
+            Logger::info(("iterations=" + std::to_string(iterations) + ", " +
+                    "variables=" + std::to_string(v) + ", " +
+                    "varSize=" + std::to_string(varSize)).c_str());
 
             unsigned long* address;
             if (prob_distribution(generator) <= pDynamic) {
