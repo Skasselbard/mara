@@ -260,8 +260,8 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
     Logger::info("merge block");
     if ( leftBlock == nullptr){
         if (rightBlock != nullptr){
-            mergeWithRight(middleBlock, rightBlock);
             bucketList.deleteFromList((FreeSpace*)rightBlock);
+            mergeWithRight(middleBlock, rightBlock);
         }
         CodeBlock::setFree((byte*)middleBlock, true);
         middleBlock->copyCodeBlockToEnd((byte*)middleBlock, CodeBlock::getBlockSize((byte*)middleBlock));
@@ -269,22 +269,21 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
 #ifdef POSTCONDITION
         assert(CodeBlock::isFree((byte *)middleBlock));
         assert(bucketList.searchInList((FreeSpace*)middleBlock));
-        assert(rightBlock== nullptr||!bucketList.searchInList((FreeSpace*)rightBlock));
 #endif
         return (FreeSpace*)middleBlock;
     } else{
         if(rightBlock != nullptr){
-            mergeWithRight(middleBlock, rightBlock);
             bucketList.deleteFromList((FreeSpace*)rightBlock);
+            mergeWithRight(middleBlock, rightBlock);
         }
-        mergeWithLeft(leftBlock,middleBlock);
         bucketList.deleteFromList((FreeSpace*)leftBlock);
+
+        mergeWithLeft(leftBlock,middleBlock);
         CodeBlock::setFree((byte*)leftBlock, true);
         middleBlock->copyCodeBlockToEnd((byte*)leftBlock, CodeBlock::getBlockSize((byte*)leftBlock));
         bucketList.addToList((FreeSpace*)leftBlock);
 #ifdef POSTCONDITION
         assert(CodeBlock::isFree((byte *)leftBlock));
-        assert(rightBlock== nullptr||!bucketList.searchInList((FreeSpace*)rightBlock));
         assert(bucketList.searchInList((FreeSpace*)leftBlock));
 #endif
         return (FreeSpace*)leftBlock;
@@ -294,7 +293,6 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
 void Page::mergeWithRight(Space *middleBlock, Space *rightBlock) {
 #ifdef PRECONDITION
     assert(CodeBlock::isFree((byte *)rightBlock));
-    assert(bucketList.searchInList((FreeSpace*)rightBlock));
 #endif
     Logger::info("merge with right");
     byte* leftEnd = (byte*) middleBlock;
@@ -311,7 +309,6 @@ void Page::mergeWithRight(Space *middleBlock, Space *rightBlock) {
 void Page::mergeWithLeft(Space *leftBlock, Space *middleBlock) {
 #ifdef PRECONDITION
     assert(CodeBlock::isFree((byte *)leftBlock));
-    assert(bucketList.searchInList((FreeSpace*)leftBlock));
 #endif
     Logger::info("merge with left");
     byte* leftEnd = (byte*) leftBlock;
