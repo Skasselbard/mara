@@ -153,7 +153,7 @@ int Test::checkPages() {
 #elif FILL_REQUESTED_MEMORY == 1
                     assert(*(memoryStart + i) == 1;
 #elif FILL_REQUESTED_MEMORY == 2
-                    //assert(*(memoryStart + i) == (unsigned long) memoryStart);
+                    assert(*(memoryStart + i) == (unsigned long) memoryStart);
 #endif
                 }
             } else {
