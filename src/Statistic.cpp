@@ -71,21 +71,25 @@ void Statistic::logStatic() {
 void Statistic::logTable() {
     std::string beforeBlocks, betweenBlocksMemory, fillStatic, fillStaticBlocks, fillDynamic, fillDynamicBlocks, fillCb, separatorLine, fillTotal, fillTotalBlocks;
     unsigned int column1width = 12 + 2;
-    unsigned int column2width = (unsigned int) (log10((usedDynamicBlocks >= usedStaticBlocks) ? usedDynamicBlocks : usedStaticBlocks) + 1);
+    unsigned int column2width = (unsigned int) log10((usedDynamicBlocks >= usedStaticBlocks)
+                                                      ? ((usedDynamicBlocks > 0) ? usedDynamicBlocks : 1)
+                                                      : ((usedStaticBlocks > 0) ? usedStaticBlocks : 1) + 1);
     column2width = ((column2width < 6) ? 6 : column2width) + 4;
-    unsigned int column3width = 2 * (unsigned int) (log10((usedDynamicMemory >= usedStaticMemory) ? usedDynamicMemory : usedStaticMemory) + 1);
+    unsigned int column3width = 2 * (unsigned int) log10((usedDynamicMemory >= usedStaticMemory)
+                                                         ? ((usedDynamicMemory > 0) ? usedDynamicMemory : 1)
+                                                         : ((usedStaticMemory > 0) ? usedStaticMemory : 1) + 1);
     column3width = ((column3width < 6) ? 6 : column3width);
 
     beforeBlocks = std::string(column1width, ' ');
     betweenBlocksMemory = std::string(column2width - 6, ' ');
     fillStatic = std::string(column1width - 6, ' ');
-    fillStaticBlocks = std::string(column2width - (int) log10(usedStaticBlocks) - 1, ' ');
+    fillStaticBlocks = std::string(column2width - (int) log10((usedStaticBlocks > 0) ? usedStaticBlocks : 1) - 1, ' ');
     fillDynamic = std::string(column1width - 7, ' ');
-    fillDynamicBlocks = std::string(column2width - (int) log10(usedDynamicBlocks) - 1, ' ');
+    fillDynamicBlocks = std::string(column2width - (int) log10((usedDynamicBlocks > 0) ? usedDynamicBlocks : 1) - 1, ' ');
     fillCb = std::string(column1width - 9 + column2width, ' ');
     separatorLine = std::string(column1width + column2width + column3width, '-');
     fillTotal = std::string(column1width - 5, ' ');
-    fillTotalBlocks = std::string(column2width - (int) log10(usedDynamicBlocks+usedStaticBlocks) - 1, ' ');
+    fillTotalBlocks = std::string(column2width - (int) log10((usedDynamicBlocks+usedStaticBlocks) > 0 ? usedDynamicBlocks+usedStaticBlocks : 1) - 1, ' ');
     Logger::debug(("Statistic: " + std::to_string(PageList::getPageCount()) + " pages in use\n" + beforeBlocks + "Blocks" + betweenBlocksMemory + "Memory\n"
                   + "static" + fillStatic + std::to_string(usedStaticBlocks) + fillStaticBlocks + std::to_string(usedStaticMemory) + "B\n"
                   + "dynamic" + fillDynamic + std::to_string(usedDynamicBlocks) + fillDynamicBlocks + std::to_string(usedDynamicMemory) + "B\n"
