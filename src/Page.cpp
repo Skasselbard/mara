@@ -38,9 +38,11 @@ void Page::initializeBucketList() {
     bucketList.setStartOfPage((byte*) startOfPage);
     bucketList.addToList(generateFirstBucketEntry());
 #ifdef POSTCONDITION
-    for ( int i = 0; i < bucketList.blSize; i++){
+    for ( int i = 0; i < bucketList.blSize-1; i++){
         assert(bucketList.getFromBucketList(i)== nullptr);
     }
+    size_t blockSize = CodeBlock::getBlockSize((byte*)bucketList.getFromBucketList(bucketList.blSize-1));
+    assert(CodeBlock::readFromLeft((byte*)bucketList.getFromBucketList(bucketList.blSize-1))== pageSize-2*blockSize);
 #endif
 }
 
@@ -258,8 +260,8 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
     Logger::info("merge block");
     if ( leftBlock == nullptr){
         if (rightBlock != nullptr){
-            bucketList.deleteFromList((FreeSpace*)rightBlock);
             mergeWithRight(middleBlock, rightBlock);
+            bucketList.deleteFromList((FreeSpace*)rightBlock);
         }
         CodeBlock::setFree((byte*)middleBlock, true);
         middleBlock->copyCodeBlockToEnd((byte*)middleBlock, CodeBlock::getBlockSize((byte*)middleBlock));
@@ -272,11 +274,11 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
         return (FreeSpace*)middleBlock;
     } else{
         if(rightBlock != nullptr){
-            bucketList.deleteFromList((FreeSpace*)rightBlock);
             mergeWithRight(middleBlock, rightBlock);
+            bucketList.deleteFromList((FreeSpace*)rightBlock);
         }
-        bucketList.deleteFromList((FreeSpace*)leftBlock);
         mergeWithLeft(leftBlock,middleBlock);
+        bucketList.deleteFromList((FreeSpace*)leftBlock);
         CodeBlock::setFree((byte*)leftBlock, true);
         middleBlock->copyCodeBlockToEnd((byte*)leftBlock, CodeBlock::getBlockSize((byte*)leftBlock));
         bucketList.addToList((FreeSpace*)leftBlock);
@@ -302,7 +304,7 @@ void Page::mergeWithRight(Space *middleBlock, Space *rightBlock) {
     middleBlock->copyCodeBlockToEnd(leftEnd, codeBLockSize);
 #ifdef POSTCONDITION
     assert(CodeBlock::isFree((byte *)middleBlock));
-    assert(CodeBlock::readFromLeft(leftEnd)==rightEnd-leftEnd-2*codeBLockSize);
+    assert(CodeBlock::readFromLeft(leftEnd)==rightEnd-leftEnd-2*codeBLockSize+1);
 #endif
 }
 
@@ -319,7 +321,7 @@ void Page::mergeWithLeft(Space *leftBlock, Space *middleBlock) {
     middleBlock->copyCodeBlockToEnd(leftEnd, codeBLockSize);
 #ifdef POSTCONDITION
     assert(CodeBlock::isFree(leftEnd));
-    assert(CodeBlock::readFromLeft(leftEnd)==rightEnd-leftEnd-2*codeBLockSize);
+    assert(CodeBlock::readFromLeft(leftEnd)==rightEnd-leftEnd-2*codeBLockSize+1);
 #endif
 }
 

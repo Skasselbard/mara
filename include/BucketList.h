@@ -15,7 +15,12 @@ private:
     static const size_t lastLinear4Scaling = 32;
     static const size_t lastLinear16Scaling = 128;
     static const size_t largestBucketSize = 1024;
-
+public:
+    static const size_t blSize = lastLinear4Scaling/4
+                                 + (lastLinear16Scaling-lastLinear4Scaling+4)/16
+                                 + (const size_t) (log2(largestBucketSize)-log2(lastLinear16Scaling))
+                                 + 1;
+private:
 
 
     /**
@@ -49,10 +54,7 @@ private:
 
 
 public:
-    static const size_t blSize = lastLinear4Scaling/4
-                                 + (lastLinear16Scaling-lastLinear4Scaling+4)/16
-                                 + (const size_t) (log2(largestBucketSize)-log2(lastLinear16Scaling))
-                                 + 1;
+
     BucketList();
     /**
      * This function does only give a freeSpace of the page. It does not alter the list itself.
