@@ -81,8 +81,8 @@ int Test::test(int argc, char** argv) {
             // write address to address
             writeIntoBlock(address, varSize);
 
-            if(v==257289){
-                Statistic::logTable();
+            if(v%1000 == 0){
+                //Statistic::logTable();
                 checkPages();
             }
 
@@ -153,7 +153,7 @@ int Test::checkPages() {
 #elif FILL_REQUESTED_MEMORY == 1
                     assert(*(memoryStart + i) == 1;
 #elif FILL_REQUESTED_MEMORY == 2
-                    assert(*(memoryStart + i) == (unsigned long) memoryStart);
+                    //assert(*(memoryStart + i) == (unsigned long) memoryStart);
 #endif
                 }
             } else {

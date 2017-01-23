@@ -32,6 +32,8 @@ public:
 
     static void clearPages();
 
+    static FreeSpace* foo;//TODO: Delete
+
 };
 
 #endif //MARA_PAGE_LIST_H

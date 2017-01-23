@@ -41,6 +41,7 @@ void *PageList::staticNew(size_t sizeInByte) {
     assert((byte*) returnBlock + sizeInByte <= (byte*) currentPage->getStartOfPage() + pageSize); //the returned block may not go over the page boundaries
 
 #endif
+    firstPage = currentPage;
     return returnBlock;
 }
 
