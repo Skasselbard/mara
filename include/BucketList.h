@@ -72,11 +72,18 @@ public:
      */
     static unsigned int lookupBucket(size_t size) ;
 
-/**
- * @param freeSpace the Space to search for
- * @return null if not i list, same pointer if found.
- */
-FreeSpace* searchInList(FreeSpace* freeSpace, FreeSpace* &predecessor);
+    /**
+     * @param freeSpace the Space to search for
+     * @param predecessor the predecessor, if one is found(Output)
+     * @return null if not i list, same pointer if found.
+     */
+    FreeSpace* searchInList(FreeSpace* freeSpace, FreeSpace* &predecessor);
+
+    /**
+     * @param freeSpace the Space to search for
+     * @return null if not i list, same pointer if found.
+     */
+    FreeSpace *searchInList(FreeSpace *freeSpace);
 };
 
 

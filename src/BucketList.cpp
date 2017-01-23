@@ -73,6 +73,11 @@ FreeSpace *BucketList::searchInList(FreeSpace *freeSpace, FreeSpace* &predecesso
     return currentElement;
 }
 
+FreeSpace *BucketList::searchInList(FreeSpace *freeSpace){
+    FreeSpace* foo = nullptr;
+    return searchInList(freeSpace, foo);
+}
+
 FreeSpace *BucketList::getLastInBucket(size_t size) {
     FreeSpace* currentElement = bucketList[size];
     if(currentElement == nullptr) return currentElement;

@@ -81,7 +81,7 @@ int Test::test(int argc, char** argv) {
             // write address to address
             writeIntoBlock(address, varSize);
 
-            if(v%1000 == 0){
+            if(v== 258001){
                 //Statistic::logTable();
                 checkPages();
             }
@@ -134,8 +134,8 @@ void Test::writeIntoBlock(unsigned long * address, size_t size) {
 int Test::checkPages() {
     Logger::info("Checking pages");
     Page * page = PageList::getFirstPage();
-    BucketList * bucketList = page->getBucketList();
     do {
+        BucketList * bucketList = page->getBucketList();
         byte * startOfPage = (byte *) page->getStartOfPage();
         byte * blockPointer = startOfPage;
         byte * dynamicEnd = page->getDynamicEnd();
