@@ -24,7 +24,8 @@ Page::Page(size_t sizeInBytes):pageSize(sizeInBytes){
     if (startOfPage == nullptr){
         Logger::error("unable to allocate memory for new page");
     }
-    this->staticEnd = (byte*)this->startOfPage+sizeInBytes;
+    this->staticEnd = (byte*)startOfPage+sizeInBytes;
+    this->dynamicEnd = (byte*)startOfPage;
     CodeBlock::setFree((byte*)startOfPage, true);
     initializeBucketList();
 }
