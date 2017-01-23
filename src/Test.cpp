@@ -127,7 +127,7 @@ void Test::writeIntoBlock(unsigned long * address, size_t size) {
 
     }
     char addressBuffer[50];
-    std::sprintf(addressBuffer, "0x%lx", address);
+    std::sprintf(addressBuffer, "0x%lx", (unsigned long) address);
     Logger::debug((std::string("Wrote values to address: ") + addressBuffer).c_str());
 }
 
