@@ -6,6 +6,7 @@
 #define MARA_TEST_H
 
 #define FILL_REQUESTED_MEMORY 2
+//-1 = don't fill at all
 // 0 = fill with zeros
 // 1 = fill with ones
 // 2 = fill with the address of the start of the memory array
@@ -26,7 +27,7 @@ public:
     static const unsigned int DEFAULT_SEED         = 123456789;
 
     static int test(int argc, char** argv);
-    static int distributionTest();
+    static void distributionTest();
     static int testBucketList();
     static void readArguments(int argc, char** argv, unsigned int * amountNewVariables,
                               double * pDynamic, double * pFree,

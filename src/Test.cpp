@@ -52,7 +52,7 @@ int Test::test(int argc, char** argv) {
     std::uniform_real_distribution<double> prob_distribution(0, 1);
     std::uniform_int_distribution<unsigned int> dynamicVariable_distribution(0, amountNewVariables-1);
 
-    //std::poisson_distribution<unsigned int> size_distribution(averageSize);
+    // TODO maybe think of better distribution, maybe not
     std::uniform_int_distribution<unsigned int> size_distribution(minSize, maxSize);
 
     for (int iterations = 1; iterations <= maxIterations; iterations++) {
@@ -61,41 +61,39 @@ int Test::test(int argc, char** argv) {
 
             do { // generate a random size in the given boundaries
                 varSize = size_distribution(generator);
-                varSize = varSize + (4-(varSize % 4));
+                varSize = varSize + (4 - (varSize % 4));
             } while (varSize < minSize || varSize > maxSize);
 
             Logger::info(("iterations=" + std::to_string(iterations) + ", " +
-                    "variables=" + std::to_string(v) + ", " +
-                    "varSize=" + std::to_string(varSize)).c_str());
+                          "variables=" + std::to_string(v) + ", " +
+                          "varSize=" + std::to_string(varSize)).c_str());
 
-            unsigned long* address;
+            unsigned long *address;
             if (prob_distribution(generator) <= pDynamic) {
                 // request address to dynamic memory and save the address for later deletion
-                address = (unsigned long*) dynamicNew(varSize);
+                address = (unsigned long *) dynamicNew(varSize);
                 dynamicPointers.push_back(address);
             } else {
                 // request address to static memory
                 address = (unsigned long *) staticNew(varSize);
             }
 
+#if FILL_REQUESTED_MEMORY != -1
             // write address to address
             writeIntoBlock(address, varSize);
-
-            if(v== 258001){
-                Statistic::logTable();
-                checkPages();
-            }
+#endif
 
             // maybe free a dynamic variable
             if (dynamicPointers.size() > 0 && prob_distribution(generator) <= pFree) {
-                unsigned long deletedIndex = (unsigned long) dynamicVariable_distribution(generator) % dynamicPointers.size();
-                unsigned long* toDelete = dynamicPointers.at(deletedIndex);
+                unsigned long deletedIndex =
+                        (unsigned long) dynamicVariable_distribution(generator) % dynamicPointers.size();
+                unsigned long *toDelete = dynamicPointers.at(deletedIndex);
 
-                byte * codeBlockStart;
-                size_t size = CodeBlock::readFromRight(((byte *) toDelete)-1, codeBlockStart);
+                byte *codeBlockStart;
+                size_t size = CodeBlock::readFromRight(((byte *) toDelete) - 1, codeBlockStart);
 
-                for(unsigned int i = 0; i < size; i++) {
-                    *(((byte *) toDelete)+i) = 0b00000000;
+                for (unsigned int i = 0; i < size; i++) {
+                    *(((byte *) toDelete) + i) = 0b00000000;
                 }
 
 
@@ -106,7 +104,6 @@ int Test::test(int argc, char** argv) {
                 Logger::debug((std::string("Freed dynamic memory: ") + addressBuffer).c_str());
             }
         }
-        // todo test shit
         checkPages();
         Statistic::logTable();
     }
@@ -114,7 +111,6 @@ int Test::test(int argc, char** argv) {
 }
 
 void Test::writeIntoBlock(unsigned long * address, size_t size) {
-    // todo make content configurable (write full value vs. only complete addresses)
     for(unsigned int i = 0; i < size/8; i++) {
 #if FILL_REQUESTED_MEMORY == 0
         unsigned long valueAtAddress = 0;
@@ -139,13 +135,12 @@ int Test::checkPages() {
         byte * startOfPage = (byte *) page->getStartOfPage();
         byte * blockPointer = startOfPage;
         byte * dynamicEnd = page->getDynamicEnd();
-        byte * previousBlockPointer = nullptr;
         while (blockPointer < dynamicEnd) {
             size_t memorySize = CodeBlock::readFromLeft(blockPointer);
             size_t codeBlockSize = CodeBlock::getBlockSize(blockPointer);
             if (CodeBlock::isFree(blockPointer) == 0) {
+#if FILL_REQUESTED_MEMORY != -1
                 unsigned long * memoryStart = (unsigned long *) (blockPointer + codeBlockSize);
-                //MemDump::dumpFullBlock(memoryStart);
                 for (int i = 0; i < memorySize / 8 - 1; i++) {
                     // TODO if less than 6 bytes are left, those are attached to the array. CHECK!
 #if FILL_REQUESTED_MEMORY == 0
@@ -154,6 +149,7 @@ int Test::checkPages() {
                     assert(*(memoryStart + i) == 1;
 #elif FILL_REQUESTED_MEMORY == 2
                     assert(*(memoryStart + i) == (unsigned long) memoryStart);
+#endif
 #endif
                 }
             } else {
@@ -167,11 +163,11 @@ int Test::checkPages() {
                 }
                 assert(currentElement != nullptr);
             }
-            previousBlockPointer = blockPointer;
             blockPointer = blockPointer + memorySize + 2 * codeBlockSize;
         }
 
     } while ((page = page->getNextPage()) != PageList::getFirstPage());
+    return 0;
 }
 
 void Test::readArguments(int argc, char** argv, unsigned int * amountNewVariables,
@@ -190,7 +186,7 @@ void Test::readArguments(int argc, char** argv, unsigned int * amountNewVariable
     }
 }
 
-int Test::distributionTest() {
+void Test::distributionTest() {
 
     unsigned int seed = 123456789;
 
@@ -226,11 +222,5 @@ int Test::distributionTest() {
         std::cout << p.first*4 << ' '
                   << '(' << p.second << ") "
                   << std::string((unsigned long) (p.second / 100), '*') << '\n';
-    }
-}
-
-void Test::generateCodeBlocks(size_t start, size_t end, int step, bool isFree) {
-    for (size_t i = start; i <= end; i += step) {
-        
     }
 }
