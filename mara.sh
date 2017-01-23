@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 echo "Clean build? Press 'y' to clean!"
 read -n1 c
