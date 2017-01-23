@@ -113,10 +113,10 @@ Page *PageList::getFirstPage() {
 unsigned int PageList::getPageCount() {
     unsigned int count = 0;
     Page* page = firstPage;
-    while (page != nullptr) {
+    do {
         count++;
         page = page->getNextPage();
-    }
+    }while (page != firstPage);
     return count;
 }
 

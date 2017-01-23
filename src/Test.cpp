@@ -81,7 +81,10 @@ int Test::test(int argc, char** argv) {
             // write address to address
             writeIntoBlock(address, varSize);
 
-            //checkPages();
+            if(v==257289){
+                Statistic::logTable();
+                checkPages();
+            }
 
             // maybe free a dynamic variable
             if (prob_distribution(generator) <= pFree) {
