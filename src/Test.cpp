@@ -82,12 +82,12 @@ int Test::test(int argc, char** argv) {
             writeIntoBlock(address, varSize);
 
             if(v== 258001){
-                //Statistic::logTable();
+                Statistic::logTable();
                 checkPages();
             }
 
             // maybe free a dynamic variable
-            if (prob_distribution(generator) <= pFree) {
+            if (dynamicPointers.size() > 0 && prob_distribution(generator) <= pFree) {
                 unsigned long deletedIndex = (unsigned long) dynamicVariable_distribution(generator) % dynamicPointers.size();
                 unsigned long* toDelete = dynamicPointers.at(deletedIndex);
 
