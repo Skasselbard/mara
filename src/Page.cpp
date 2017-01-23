@@ -37,6 +37,11 @@ void Page::initializeBucketList() {
     Logger::info("initialize bucket list");
     bucketList.setStartOfPage((byte*) startOfPage);
     bucketList.addToList(generateFirstBucketEntry());
+#ifdef POSTCONDITION
+    for ( int i = 0; i < bucketList.blSize; i++){
+        assert(bucketList.getFromBucketList(i)== nullptr);
+    }
+#endif
 }
 
 Page::~Page() {
@@ -89,6 +94,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
     Logger::info("dynamic block requested");
 #ifdef PRECONDITION
     assert(sizeInByte > 0);
+    assert(staticEnd>dynamicEnd);
 #endif
 #ifdef ALIGN_DYNAMIC
     sizeInByte = align(sizeInByte);
@@ -98,7 +104,7 @@ OccupiedSpace * Page::getDynamicBlock(size_t sizeInByte) {
     if(freeSpace == nullptr){
         Logger::info("no applicable freeSpace in this page. Switching to the next one");
 #ifdef POSTCONDITION
-
+        assert(staticEnd>dynamicEnd);
 #endif
         return nullptr;
     }else {
@@ -201,6 +207,9 @@ FreeSpace *Page::cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf
 }
 
 bool Page::deleteBlock(void *firstByte) {
+#ifdef PRECONDITION
+    assert(staticEnd>dynamicEnd);
+#endif
     Logger::info("deleting block");
     byte* codeBlockStart = nullptr;
     size_t memoryBlockSize = CodeBlock::readFromRight(((byte*)firstByte-1), codeBlockStart);
@@ -211,12 +220,14 @@ bool Page::deleteBlock(void *firstByte) {
     assert((codeBlockStart+(2*codeBlockSize)+memoryBlockSize) < staticEnd);
     if((codeBlockStart+(2*codeBlockSize)+memoryBlockSize) >= staticEnd){
         Logger::fatal("dynamic block to delete overlaps with static sector", ERROR_CODES::STATIC_AND_DYNAMIC_SECTORS_OVERLAP);
+        assert(false);
         return false;
     }
     Space* leftNeighbor = nullptr;
     Space* rightNeighbor = (Space*)(codeBlockStart+(2*codeBlockSize)+memoryBlockSize);
     if( (byte*)rightNeighbor > staticEnd){
         Logger::fatal("dynamic block to delete overlaps with static sector", ERROR_CODES::STATIC_AND_DYNAMIC_SECTORS_OVERLAP);
+        assert(false);
         return false;
     }
     if(startOfPage < codeBlockStart){
@@ -229,10 +240,21 @@ bool Page::deleteBlock(void *firstByte) {
         rightNeighbor = nullptr;
     }
     mergeFreeSpace(leftNeighbor,(Space*)codeBlockStart,rightNeighbor);
+#ifdef POSTCONDITION
+    assert((leftNeighbor == nullptr && bucketList.searchInList((FreeSpace*)codeBlockStart)&&CodeBlock::isFree(codeBlockStart))
+           ||(bucketList.searchInList((FreeSpace*)leftNeighbor)&&CodeBlock::isFree((byte*)leftNeighbor)));
+    assert(staticEnd>dynamicEnd);
+#endif
     return true;
+
 }
 
 FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *rightBlock) {
+#ifdef PRECONDITION
+    assert(!CodeBlock::isFree((byte *)middleBlock));
+    assert(rightBlock== nullptr||bucketList.searchInList((FreeSpace*)rightBlock));
+    assert(leftBlock== nullptr||bucketList.searchInList((FreeSpace*)leftBlock));
+#endif
     Logger::info("merge block");
     if ( leftBlock == nullptr){
         if (rightBlock != nullptr){
@@ -242,6 +264,11 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
         CodeBlock::setFree((byte*)middleBlock, true);
         middleBlock->copyCodeBlockToEnd((byte*)middleBlock, CodeBlock::getBlockSize((byte*)middleBlock));
         bucketList.addToList((FreeSpace*)middleBlock);
+#ifdef POSTCONDITION
+        assert(CodeBlock::isFree((byte *)middleBlock));
+        assert(bucketList.searchInList((FreeSpace*)middleBlock));
+        assert(rightBlock== nullptr||!bucketList.searchInList((FreeSpace*)rightBlock));
+#endif
         return (FreeSpace*)middleBlock;
     } else{
         if(rightBlock != nullptr){
@@ -253,26 +280,47 @@ FreeSpace * Page::mergeFreeSpace(Space *leftBlock, Space *middleBlock, Space *ri
         CodeBlock::setFree((byte*)leftBlock, true);
         middleBlock->copyCodeBlockToEnd((byte*)leftBlock, CodeBlock::getBlockSize((byte*)leftBlock));
         bucketList.addToList((FreeSpace*)leftBlock);
+#ifdef POSTCONDITION
+        assert(CodeBlock::isFree((byte *)leftBlock));
+        assert(rightBlock== nullptr||!bucketList.searchInList((FreeSpace*)rightBlock));
+        assert(bucketList.searchInList((FreeSpace*)leftBlock));
+#endif
         return (FreeSpace*)leftBlock;
     }
 }
 
 void Page::mergeWithRight(Space *middleBlock, Space *rightBlock) {
+#ifdef PRECONDITION
+    assert(CodeBlock::isFree((byte *)rightBlock));
+    assert(bucketList.searchInList((FreeSpace*)rightBlock));
+#endif
     Logger::info("merge with right");
     byte* leftEnd = (byte*) middleBlock;
     byte* rightEnd = rightBlock->getRightMostEnd();
     size_t codeBLockSize = 0;
     CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd - leftEnd + 1, codeBLockSize, true);
     middleBlock->copyCodeBlockToEnd(leftEnd, codeBLockSize);
+#ifdef POSTCONDITION
+    assert(CodeBlock::isFree((byte *)middleBlock));
+    assert(CodeBlock::readFromLeft(leftEnd)==rightEnd-leftEnd-2*codeBLockSize);
+#endif
 }
 
 void Page::mergeWithLeft(Space *leftBlock, Space *middleBlock) {
+#ifdef PRECONDITION
+    assert(CodeBlock::isFree((byte *)leftBlock));
+    assert(bucketList.searchInList((FreeSpace*)leftBlock));
+#endif
     Logger::info("merge with left");
     byte* leftEnd = (byte*) leftBlock;
     byte* rightEnd = middleBlock->getRightMostEnd();
     size_t codeBLockSize = 0;
     CodeBlock::getCodeBlockForInternalSize(leftEnd, rightEnd - leftEnd + 1, codeBLockSize, true);
     middleBlock->copyCodeBlockToEnd(leftEnd, codeBLockSize);
+#ifdef POSTCONDITION
+    assert(CodeBlock::isFree(leftEnd));
+    assert(CodeBlock::readFromLeft(leftEnd)==rightEnd-leftEnd-2*codeBLockSize);
+#endif
 }
 
 void *Page::getStartOfPage() {
