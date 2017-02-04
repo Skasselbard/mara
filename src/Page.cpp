@@ -188,7 +188,7 @@ FreeSpace *Page::cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf
     Logger::info("cut right");
 #ifdef PRECONDITION
     assert(freeSpace->getSize()>=bytesToCutOf);//there must be enough space in the freespace
-    assert(freeSpace >= startOfPage && freeSpace < startOfPage + pageSize);//the freespace must be in the page
+    assert(freeSpace >= startOfPage && (byte*) freeSpace < (byte*) startOfPage + pageSize);//the freespace must be in the page
 #endif
     if ((freeSpace->getSize() - bytesToCutOf) < SMALLEST_POSSIBLE_FREE_SPACE){
 #ifdef POSTCONDITION

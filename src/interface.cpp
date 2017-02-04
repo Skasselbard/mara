@@ -11,13 +11,26 @@ int setDefaultBlockSize(size_t sizeInByte) {
 }
 
 void *staticNew(size_t sizeInByte) {
+#ifdef USE_MARA
     return PageList::staticNew(sizeInByte);
+#else
+    return malloc(sizeInByte);
+#endif
 }
 
 void *dynamicNew(size_t sizeInByte) {
+#ifdef USE_MARA
     return PageList::dynamicNew(sizeInByte);
+#else
+    return malloc(sizeInByte);
+#endif
 }
 
 int dynamicDelete(void *address) {
+#ifdef USE_MARA
     return PageList::dynamicDelete(address);
+#else
+    free(address);
+    return 0;
+#endif
 }

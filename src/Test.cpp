@@ -27,6 +27,11 @@ const double Test::DEFAULT_P_FREE = 0.2;
 
 int Test::test(int argc, char** argv) {
 
+    clock_t begin = clock();
+
+    Logger::info(("Starting time: " + std::to_string(begin)).c_str());
+    cout << ("Starting time: " + std::to_string(begin)).c_str() << endl;
+
     unsigned int seed = DEFAULT_SEED;
 
 
@@ -89,13 +94,14 @@ int Test::test(int argc, char** argv) {
                         (unsigned long) dynamicVariable_distribution(generator) % dynamicPointers.size();
                 unsigned long *toDelete = dynamicPointers.at(deletedIndex);
 
+#ifdef USE_MARA
                 byte *codeBlockStart;
                 size_t size = CodeBlock::readFromRight(((byte *) toDelete) - 1, codeBlockStart);
 
                 for (unsigned int i = 0; i < size; i++) {
                     *(((byte *) toDelete) + i) = 0b00000000;
                 }
-
+#endif
 
                 dynamicDelete(toDelete);
                 dynamicPointers.erase(dynamicPointers.begin() + deletedIndex);
@@ -106,6 +112,11 @@ int Test::test(int argc, char** argv) {
         }
         checkPages();
         Statistic::logTable();
+
+        clock_t end = clock();
+        double time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
+        Logger::info(("Test completed: Time spent=" + std::to_string(time_spent)).c_str());
+        cout << ("Test completed: Time spent=" + std::to_string(time_spent)).c_str() << endl;
     }
     return 0;
 }

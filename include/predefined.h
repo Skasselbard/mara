@@ -9,6 +9,8 @@
 
 #define LOG_BUFFER_SIZE 4096
 
+#define USE_MARA
+
 // enables/disables the alignment
 //#define ALIGNMENT
 #ifdef ALIGNMENT
