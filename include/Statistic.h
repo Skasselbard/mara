@@ -19,6 +19,21 @@ public:
     static void logStatic();
     static void logComplete();
     static void logTable();
+
+    static unsigned int getUsedStaticMemory();
+
+    static unsigned int getUsedStaticBlocks();
+
+    static unsigned int getUsedDynamicMemory();
+
+    static unsigned int getUsedDynamicBlocks();
+
+    static unsigned int getUsedDynamicMemoryWithCodeblocks();
+
+    static unsigned int getDynamicMemoryPeak();
+
+    static unsigned int getDynamicBlocksPeak();
+
 private:
     static unsigned int usedStaticMemory;
     static unsigned int usedStaticBlocks;
@@ -26,6 +41,10 @@ private:
     static unsigned int usedDynamicMemory;
     static unsigned int usedDynamicBlocks;
     static unsigned int usedDynamicMemoryWithCodeblocks;
+
+    static unsigned int usedDynamicMemoryPeak;
+    static unsigned int usedDynamicBlocksPeak;
+
 
     static std::map<void *, size_t> dynamicMemoryMap;
     static std::map<void *, size_t> staticMemoryMap;

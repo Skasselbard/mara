@@ -27,17 +27,7 @@ const double Test::DEFAULT_P_FREE = 0.2;
 
 int Test::test(int argc, char** argv) {
 
-    std::string type;
-#ifdef USE_MARA
-    type = "MARA";
-#else
-    type = "malloc";
-#endif
-
     clock_t begin = clock();
-
-    Logger::info(("Starting time: " + std::to_string(begin) + " using " + type).c_str());
-    cout << ("Starting time: " + std::to_string(begin) + " using " + type).c_str() << endl;
 
     unsigned int seed = DEFAULT_SEED;
 
@@ -120,10 +110,21 @@ int Test::test(int argc, char** argv) {
         checkPages();
         Statistic::logTable();
 
+        std::string type;
+
+
+#ifdef USE_MARA
+        type = "MARA";
+#else
+        type = "malloc";
+#endif
         clock_t end = clock();
         double time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
         Logger::info(("Test completed! Time spent:\n" + std::to_string(time_spent)).c_str());
-        cout << ("Test completed! Time spent:\n" + std::to_string(time_spent)).c_str() << endl;
+        // type     seed        time    dynamicMemoryPeak dynamicBlocksPeak staticMemoryPeak staticBlockPeak
+        printf("%s    %u    %f    %u    %u    %u    %u", type, seed, time_spent,
+            Statistic::getDynamicMemoryPeak(), Statistic::getDynamicBlocksPeak(),
+            Statistic::getUsedStaticMemory(), Statistic::getUsedStaticBlocks());
     }
     return 0;
 }

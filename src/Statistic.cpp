@@ -18,15 +18,35 @@ unsigned int Statistic::usedDynamicMemory = 0;
 unsigned int Statistic::usedDynamicBlocks = 0;
 unsigned int Statistic::usedDynamicMemoryWithCodeblocks = 0;
 
+unsigned int Statistic::usedDynamicMemoryPeak = 0;
+unsigned int Statistic::usedDynamicBlocksPeak = 0;
+
 #ifdef STATISTIC_VERBOSE
 std::map<void *, size_t> Statistic::dynamicMemoryMap;
 std::map<void *, size_t> Statistic::staticMemoryMap;
 #endif
 
+unsigned int Statistic::getUsedStaticMemory() {    return usedStaticMemory;}
+
+unsigned int Statistic::getUsedStaticBlocks() {    return usedStaticBlocks;}
+
+unsigned int Statistic::getUsedDynamicMemory() {    return usedDynamicMemory;}
+
+unsigned int Statistic::getUsedDynamicBlocks() {    return usedDynamicBlocks;}
+
+unsigned int Statistic::getUsedDynamicMemoryWithCodeblocks() {    return usedDynamicMemoryWithCodeblocks;}
+
+unsigned int Statistic::getDynamicMemoryPeak() {    return usedDynamicMemoryPeak;}
+
+unsigned int Statistic::getDynamicBlocksPeak() {    return usedDynamicBlocksPeak;}
+
 void Statistic::newDynamic(size_t size, void * address) {
     usedDynamicBlocks++;
     usedDynamicMemory += size;
     usedDynamicMemoryWithCodeblocks += size + 2*CodeBlock::getNeededCodeBlockSize(size);
+    
+    if (usedDynamicBlocks > usedDynamicBlocksPeak) usedDynamicBlocksPeak = usedDynamicBlocks;
+    if (usedDynamicMemory > usedDynamicMemoryPeak) usedDynamicMemoryPeak = usedDynamicMemory;
 #ifdef STATISTIC_VERBOSE
     dynamicMemoryMap.insert(std::pair<void *, size_t>(address, size));
 #endif
