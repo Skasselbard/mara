@@ -19,6 +19,9 @@ using namespace std;
 const double Test::DEFAULT_P_DYNAMIC = 0.85;
 const double Test::DEFAULT_P_FREE = 0.2;
 
+unsigned int Test::freeSpaceNotInBucketList = 0;
+unsigned int Test::corruptedBlocks = 0;
+
 
 /**
  * Syntax: {@code test amountNewVariables pDynamic pFree minSize averageSize maxSize iterations seed}
@@ -107,6 +110,9 @@ int Test::test(int argc, char** argv) {
                 Logger::debug((std::string("Freed dynamic memory: ") + addressBuffer).c_str());
             }
         }
+
+        clock_t end = clock();
+
         checkPages();
         Statistic::logTable();
 
@@ -118,13 +124,14 @@ int Test::test(int argc, char** argv) {
 #else
         type = "malloc";
 #endif
-        clock_t end = clock();
+
         double time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
         Logger::info(("Test completed! Time spent:\n" + std::to_string(time_spent)).c_str());
-        // type     seed        time    dynamicMemoryPeak dynamicBlocksPeak staticMemoryPeak staticBlockPeak
-        printf("%s    %u    %f    %u    %u    %u    %u\n", type.c_str(), seed, time_spent,
+        // type     seed        time    dynamicMemoryPeak dynamicBlocksPeak staticMemoryPeak staticBlockPeak corruptedBlocks freeSpaceNotInBL
+        printf("%s    %u    %f    %u    %u    %u    %u    %u    %u\n", type.c_str(), seed, time_spent,
             Statistic::getDynamicMemoryPeak(), Statistic::getDynamicBlocksPeak(),
-            Statistic::getUsedStaticMemory(), Statistic::getUsedStaticBlocks());
+            Statistic::getUsedStaticMemory(), Statistic::getUsedStaticBlocks(),
+            corruptedBlocks, freeSpaceNotInBucketList);
     }
     return 0;
 }
@@ -147,6 +154,10 @@ void Test::writeIntoBlock(unsigned long * address, size_t size) {
 }
 
 int Test::checkPages() {
+
+    freeSpaceNotInBucketList = 0;
+    corruptedBlocks = 0;
+
     Logger::info("Checking pages");
     Page * page = PageList::getFirstPage();
     do {
@@ -162,13 +173,17 @@ int Test::checkPages() {
                 unsigned long * memoryStart = (unsigned long *) (blockPointer + codeBlockSize);
                 for (int i = 0; i < memorySize / 8 - 1; i++) {
                     // TODO if less than 6 bytes are left, those are attached to the array. CHECK!
+                    bool valid;
 #if FILL_REQUESTED_MEMORY == 0
-                    assert(*(memoryStart + i) == 0;
+                    valid = *(memoryStart + i) == 0;
 #elif FILL_REQUESTED_MEMORY == 1
-                    assert(*(memoryStart + i) == 1;
+                    valid = *(memoryStart + i) == 1;
 #elif FILL_REQUESTED_MEMORY == 2
-                    assert(*(memoryStart + i) == (unsigned long) memoryStart);
+                    valid = (*(memoryStart + i) == (unsigned long) memoryStart);
 #endif
+                    if (!valid) {
+                        corruptedBlocks++;
+                    }
 #endif
                 }
             } else {
@@ -180,12 +195,15 @@ int Test::checkPages() {
                      currentElement = currentElement->getNext(startOfPage)) {
                     if (currentElement == nullptr) break;
                 }
-                assert(currentElement != nullptr);
+                if (currentElement == nullptr) {
+                    freeSpaceNotInBucketList++;
+                }
             }
             blockPointer = blockPointer + memorySize + 2 * codeBlockSize;
         }
 
     } while ((page = page->getNextPage()) != PageList::getFirstPage());
+
     return 0;
 }
 
