@@ -114,7 +114,7 @@ int Test::test(int argc, char** argv) {
 
 
 #ifdef USE_MARA
-        type = "MARA";
+        type = "mara";
 #else
         type = "malloc";
 #endif
@@ -122,7 +122,7 @@ int Test::test(int argc, char** argv) {
         double time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
         Logger::info(("Test completed! Time spent:\n" + std::to_string(time_spent)).c_str());
         // type     seed        time    dynamicMemoryPeak dynamicBlocksPeak staticMemoryPeak staticBlockPeak
-        printf("%s    %u    %f    %u    %u    %u    %u", type, seed, time_spent,
+        printf("%s    %u    %f    %u    %u    %u    %u\n", type.c_str(), seed, time_spent,
             Statistic::getDynamicMemoryPeak(), Statistic::getDynamicBlocksPeak(),
             Statistic::getUsedStaticMemory(), Statistic::getUsedStaticBlocks());
     }
