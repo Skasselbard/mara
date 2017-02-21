@@ -8,7 +8,7 @@ pFree=0.5
 maxSize=1000
 nIterations=1
 
-race=n
+race="n"
 
 function cleanBuild {
     rm mara Makefile
@@ -52,7 +52,6 @@ fi
 
 echo "Maximum parallel instances (give or take 1-2)? Default: 10"
 read c
-echo
 
 re='^[0-9]+$'
 if ! [[ ${c} =~ ${re} ]]
@@ -64,7 +63,6 @@ fi
 
 echo "Amount of variables per iteration? Default: ${nVariablesPerIteration}"
 read c
-echo
 
 re='^[0-9]+$'
 
@@ -77,7 +75,6 @@ fi
 
 echo "Maximum Seed? Default: ${maxSeed}"
 read c
-echo
 
 re='^[0-9]+$'
 
@@ -90,7 +87,6 @@ fi
 
 echo "Probability of dynamic allocation? Default: ${pDynamic}"
 read c
-echo
 
 re='^(0\.[0-9]+|1(\.0)?)$'
 
@@ -103,7 +99,6 @@ fi
 
 echo "Probability of freeing memory each allocation? Default: ${pFree}"
 read c
-echo
 
 re='^(0\.[0-9]+|1(\.0)?)$'
 
@@ -116,7 +111,6 @@ fi
 
 echo "Maximum size allocated? Default: ${maxSize}"
 read c
-echo
 
 re='^[0-9]+$'
 
@@ -128,13 +122,8 @@ then
 fi
 
 function maraTest {
-  cf=$2
-  #n=$(tail -n 1 ${cf})
-  #echo $((n+1)) >> ${cf}
   echo "started mara with seed $1"
-  ./mara test ${nVariablesPerIteration} ${pDynamic} ${pFree} 4 16 ${maxSize} ${nIterations} $1 >> ${logPath}/$1.log
-  #n=$(tail -n 1 ${cf})
-  #echo $((n-1)) >> ${cf}
+  ./mara test ${nVariablesPerIteration} ${pDynamic} ${pFree} 4 16 ${maxSize} ${nIterations} $1 >> ${logPath}
 }
 
 startTime=`date +%Y-%m-%d_%H-%M-%S`
@@ -144,36 +133,34 @@ simpleLogPath=testlogs/${startTime}
 if [ ${race} == "y" ]
 then
     setFlag "include/predefined.h" "USE_MARA" "y"
-    logPath=${simpleLogPath}-mara
+    logPath=${simpleLogPath}.log
     cleanBuild
 else
-    logPath=${simpleLogPath}
+    logPath=${simpleLogPath}.log
 fi
 
 function testLoop {
 
-    counterFile=${logPath}/running.txt
     mkdir testlogs
-    mkdir ${logPath}
-    touch ${counterFile}
-    echo "0" >> ${counterFile}
+    touch ${logPath}
 
     n=0
     for i in `seq 1 ${maxSeed}`
     do
-      #n=$(tail -n 1 ${counterFile})
       n=$(ps aux | grep -c "./mara test")
+      n=$((n-1))
       while [ ${n} -ge ${nParallel} ]
       do
         oldN=${n}
         n=$(ps aux | grep -c "./mara test")
-        #n=$(tail -n 1 ${counterFile})
-        if [ ${oldN} -ne ${n} ]
+        n=$((n-1))
+        if [ ${oldN} -ne ${n} ] && [ ${n} -ge ${nParallel} ]
         then
           echo "waiting for terminations: running=$n"
+          sleep 1
         fi
       done
-      maraTest ${i} ${counterFile} &
+      maraTest ${i} &
     done
 }
 
@@ -184,22 +171,29 @@ function compareResults {
     totalTimeMara=0
     totalTimeMalloc=0
     totalDifference=0
-    for n in `seq 1 ${maxSeed}`
+
+    while read -r type seed t dynMemPeak dynBlocksPeak staticMemPeak staticBlockPeak
     do
-        timeSpentMara=$(tail -n1 < ${simpleLogPath}-mara/${n}.log)
-        timeSpentMalloc=$(tail -n1 < ${simpleLogPath}-malloc/${n}.log)
-        difference=$(echo ${timeSpentMara} - ${timeSpentMalloc} | bc)
-        totalTimeMara=$(echo ${totalTimeMara} + ${timeSpentMara} | bc)
-        totalTimeMalloc=$(echo ${totalTimeMalloc} + ${timeSpentMalloc} | bc)
-        totalDifference=$(echo ${totalDifference} + ${difference} | bc)
-        echo Seed ${n}: mara=${timeSpentMara}, malloc=${timeSpentMalloc}
-    done
+        if [ "${type}" == "mara" ]
+        then
+            totalTimeMara=$(echo ${totalTimeMara} + ${t} | bc)
+        elif [ "${type}" == "malloc" ]
+        then
+            totalTimeMalloc=$(echo ${totalTimeMalloc} + ${t} | bc)
+        else
+            echo "Invalid line: ${type} ${seed} ${t} ${dynMemPeak} ${dynBlocksPeak} ${staticMemPeak} ${staticBlockPeak}"
+        fi
+    done < "${logPath}"
+
+    totalDifference=$(echo "scale = 8; ${totalTimeMara} - ${totalTimeMalloc}" | bc)
+    factor=$(echo "scale = 6; ${totalTimeMara} / ${totalTimeMalloc}" | bc)
+
     avrgMara=$(echo "scale = 8; ${totalTimeMara} / ${maxSeed}" | bc)
     avrgMalloc=$(echo "scale = 8; ${totalTimeMalloc} / ${maxSeed}" | bc)
     avrgDifference=$(echo "scale = 8; ${totalDifference} / ${maxSeed}" | bc)
-    printf "%-10s %-10s %-10s\n" " " "total" "average"
-    printf "%-10s %-10s %-10s\n" "mara" ${totalTimeMara} ${avrgMara}
-    printf "%-10s %-10s %-10s\n" "malloc" ${totalTimeMalloc} ${avrgMalloc}
+    printf "%-10s %-10s %-10s %-10s\n" " " "total" "average" "factor"
+    printf "%-10s %-10s %-10s %-10s\n" "mara" ${totalTimeMara} ${avrgMara} ${factor}
+    printf "%-10s %-10s %-10s %-10s\n" "malloc" ${totalTimeMalloc} ${avrgMalloc} 1
     printf "%-10s %-10s %-10s\n" "difference" ${totalDifference} ${avrgDifference}
 
 }
@@ -209,8 +203,13 @@ if [ ${race} == "y" ]
 then
     setFlag "include/predefined.h" "USE_MARA" "n"
     cleanBuild
-    logPath=${simpleLogPath}-malloc
+    logPath=${simpleLogPath}.log
     testLoop
 
+    echo "Waiting for last instances to finish"
+    while [ $(ps aux | grep -c "./mara test") -gt 1 ]
+    do
+    sleep 1
+    done
     compareResults
 fi
