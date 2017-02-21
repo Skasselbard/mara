@@ -172,18 +172,39 @@ function compareResults {
     totalTimeMalloc=0
     totalDifference=0
 
-    while read -r type seed t dynMemPeak dynBlocksPeak staticMemPeak staticBlockPeak
+    corruptedTotal=0
+    corruptedRuns=0
+    leakedBlocksTotal=0
+    leakedRuns=0
+    errorRunsTotal=0
+
+
+    { while read -r type seed t dynMemPeak dynBlocksPeak staticMemPeak staticBlockPeak corruptedBlocks freeSpaceNotInBucketList
     do
         if [ "${type}" == "mara" ]
         then
             totalTimeMara=$(echo ${totalTimeMara} + ${t} | bc)
+            corruptedTotal=$((corruptedTotal + corruptedBlocks))
+            leakedBlocksTotal=$((leakedBlocksTotal + freeSpaceNotInBucketList))
+            if [ "${corruptedBlocks}" -ne "0" ] || [ "${freeSpaceNotInBucketList}" -ne "0" ]
+            then
+                errorRunsTotal=$((errorRunsTotal+1))
+                if [ "${corruptedBlocks}" -ne "0" ]
+                then
+                    corruptedRuns=$((corruptedRuns + 1))
+                fi
+                if [ "${freeSpaceNotInBucketList}" -ne "0" ]
+                then
+                    leakedRuns=$((leakedRuns + 1))
+                fi
+            fi
         elif [ "${type}" == "malloc" ]
         then
             totalTimeMalloc=$(echo ${totalTimeMalloc} + ${t} | bc)
         else
             echo "Invalid line: ${type} ${seed} ${t} ${dynMemPeak} ${dynBlocksPeak} ${staticMemPeak} ${staticBlockPeak}"
         fi
-    done < "${logPath}"
+    done } < "${logPath}"
 
     totalDifference=$(echo "scale = 8; ${totalTimeMara} - ${totalTimeMalloc}" | bc)
     factor=$(echo "scale = 6; ${totalTimeMara} / ${totalTimeMalloc}" | bc)
@@ -195,6 +216,8 @@ function compareResults {
     printf "%-10s %-10s %-10s %-10s\n" "mara" ${totalTimeMara} ${avrgMara} ${factor}
     printf "%-10s %-10s %-10s %-10s\n" "malloc" ${totalTimeMalloc} ${avrgMalloc} 1
     printf "%-10s %-10s %-10s\n" "difference" ${totalDifference} ${avrgDifference}
+    echo
+    echo "Errors: $errorRunsTotal (Corrupt: ${corruptedRuns}/${corruptedTotal}, Leaked: ${leakedRuns}/${leakedBlocksTotal})"
 
 }
 
@@ -209,7 +232,7 @@ then
     echo "Waiting for last instances to finish"
     while [ $(ps aux | grep -c "./mara test") -gt 1 ]
     do
-    sleep 1
+        sleep 1
     done
     compareResults
 fi

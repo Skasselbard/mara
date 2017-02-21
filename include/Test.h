@@ -15,6 +15,8 @@ class Test {
 
 private:
 
+    static unsigned int freeSpaceNotInBucketList;
+    static unsigned int corruptedBlocks;
 public:
 
     static const unsigned int DEFAULT_ITERATIONS   = 1;
