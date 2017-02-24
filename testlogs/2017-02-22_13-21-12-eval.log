@@ -1,0 +1,6 @@
+           total      average    factor    
+mara       955864.740000 95.58647400 2.224737  
+malloc     429652.860000 42.96528600 1         
+difference 526211.880000 52.62118800
+
+Errors: 0 (Corrupt: 0/0, Leaked: 0/0)
