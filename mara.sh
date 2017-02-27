@@ -143,6 +143,7 @@ fi
 mkdir testlogs
 touch ${logPath}
 
+echo type     seed        time    dynamicMemoryPeak dynamicBlocksPeak staticMemoryPeak staticBlockPeak corruptedBlocks freeSpaceNotInBL >> "${simpleLogPath}.log"
 echo requests=${nVariablesPerIteration} pDyn=${pDynamic} pFree=${pFree} maxSize=${maxSize} maxSeed=${maxSeed} >> "${simpleLogPath}-eval.log"
 
 function testLoop {
@@ -181,12 +182,12 @@ function compareResults {
     leakedRuns=0
     errorRunsTotal=0
 
-
     { while read -r type seed t dynMemPeak dynBlocksPeak staticMemPeak staticBlockPeak corruptedBlocks freeSpaceNotInBucketList
     do
         if [ "${type}" == "mara" ]
         then
             totalTimeMara=$(echo ${totalTimeMara} + ${t} | bc)
+		echo $totalTimeMara
             corruptedTotal=$((corruptedTotal + corruptedBlocks))
             leakedBlocksTotal=$((leakedBlocksTotal + freeSpaceNotInBucketList))
             if [ "${corruptedBlocks}" -ne "0" ] || [ "${freeSpaceNotInBucketList}" -ne "0" ]
@@ -204,10 +205,11 @@ function compareResults {
         elif [ "${type}" == "malloc" ]
         then
             totalTimeMalloc=$(echo ${totalTimeMalloc} + ${t} | bc)
+		echo $totalTimeMalloc
         else
             echo "Invalid line: ${type} ${seed} ${t} ${dynMemPeak} ${dynBlocksPeak} ${staticMemPeak} ${staticBlockPeak}"
         fi
-    done } < "${logPath}"
+    done } < ${simpleLogPath}.log
 
     totalDifference=$(echo "scale = 8; ${totalTimeMara} - ${totalTimeMalloc}" | bc)
     factor=$(echo "scale = 6; ${totalTimeMara} / ${totalTimeMalloc}" | bc)
