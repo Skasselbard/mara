@@ -139,10 +139,13 @@ else
     logPath=${simpleLogPath}.log
 fi
 
-function testLoop {
 
-    mkdir testlogs
-    touch ${logPath}
+mkdir testlogs
+touch ${logPath}
+
+echo requests=${nVariablesPerIteration} pDyn=${pDynamic} pFree=${pFree} maxSize=${maxSize} maxSeed=${maxSeed} >> "${simpleLogPath}-eval.log"
+
+function testLoop {
 
     n=0
     for i in `seq 1 ${maxSeed}`
@@ -239,3 +242,7 @@ then
     done
     compareResults
 fi
+
+git add testlogs
+git commit -m "updated testlogs"
+git push
