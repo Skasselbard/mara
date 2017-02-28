@@ -245,6 +245,6 @@ then
     compareResults
 fi
 
-git add testlogs
+git add ${simpleLogPath}.log ${simpleLogPath}-eval.log
 git commit -m "updated testlogs"
 git push
