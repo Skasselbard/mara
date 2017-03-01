@@ -129,10 +129,10 @@ function maraTest {
 startTime=`date +%Y-%m-%d_%H-%M-%S`
 
 simpleLogPath=testlogs/${startTime}
+setFlag "include/predefined.h" "USE_MARA" "y"
 
 if [ ${race} == "y" ]
 then
-    setFlag "include/predefined.h" "USE_MARA" "y"
     logPath=${simpleLogPath}.log
     cleanBuild
 else
