@@ -124,7 +124,10 @@ fi
 function maraTest {
   echo "started mara with seed $1"
   ./mara test ${nVariablesPerIteration} ${pDynamic} ${pFree} 4 16 ${maxSize} ${nIterations} $1 >> ${logPath} 2>> ${simpleLogPath}_$1.err
-  if [ -s ${simpleLogPath}_$1.err ] then rm ${simpleLogPath}_$1.err fi
+  if ! [ -s ${simpleLogPath}_$1.err ]
+  then
+     rm ${simpleLogPath}_$1.err
+  fi
 }
 
 startTime=`date +%Y-%m-%d_%H-%M-%S`
