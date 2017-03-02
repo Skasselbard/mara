@@ -2,7 +2,6 @@
 // Created by tom on 15.11.16.
 //
 #include <assert.h>
-#include "../include/Logger.h"
 #include "../include/CodeBlock.h"
 
 size_t CodeBlock::readFromLeft(byte *firstByte) {
@@ -135,7 +134,6 @@ byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memor
             current--;
         }
     }
-    Logger::error("This code should never be reached!");
 #ifdef POSTCONDITION
     assert(false);
 #endif
@@ -165,10 +163,10 @@ size_t CodeBlock::getBlockSize(byte *firstByte) {
 #ifdef PRECONDITION
 
 #endif
-    if(*firstByte >= 128) return 1;
+    if(*firstByte & 128) return 1;
     byte *currentByte = firstByte+1;
     size_t size = 2;
-    while(*currentByte >127){
+    while(*currentByte & 128){
         currentByte++;
         size++;
     }
