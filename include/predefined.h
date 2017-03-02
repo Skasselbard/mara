@@ -10,6 +10,7 @@
 #define LOG_BUFFER_SIZE 4096
 
 //#define USE_MARA
+#define NDEBUG
 
 // enables/disables the alignment
 //#define ALIGNMENT
