@@ -2,7 +2,6 @@
 // Created by tom on 15.11.16.
 //
 #include <assert.h>
-#include "../include/Logger.h"
 #include "../include/CodeBlock.h"
 
 size_t CodeBlock::readFromLeft(byte *firstByte) {
@@ -135,7 +134,6 @@ byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memor
             current--;
         }
     }
-    Logger::error("This code should never be reached!");
 #ifdef POSTCONDITION
     assert(false);
 #endif
