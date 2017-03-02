@@ -145,8 +145,8 @@ void Test::writeIntoBlock(unsigned long *address, size_t size) {
 
 int Test::checkPages() {
 
-    freeSpaceNotInBucketList = 0;
-    corruptedBlocks = 0;
+    Test::freeSpaceNotInBucketList = 0;
+    Test::corruptedBlocks = 0;
 
     Page *page = PageList::getFirstPage();
     do {
@@ -171,7 +171,7 @@ int Test::checkPages() {
                     valid = (*(memoryStart + i) == (unsigned long) memoryStart);
 #endif
                     if (!valid) {
-                        corruptedBlocks++;
+                        Test::corruptedBlocks++;
                     }
 #endif
                 }
@@ -185,7 +185,7 @@ int Test::checkPages() {
                     if (currentElement == nullptr) break;
                 }
                 if (currentElement == nullptr) {
-                    freeSpaceNotInBucketList++;
+                    Test::freeSpaceNotInBucketList++;
                 }
             }
             blockPointer = blockPointer + memorySize + 2 * codeBlockSize;
