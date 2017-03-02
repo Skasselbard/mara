@@ -9,7 +9,7 @@ size_t CodeBlock::readFromLeft(byte *firstByte) {
 
 #endif
     size_t size = 0;
-    if(*firstByte >= 128){
+    if(*firstByte & 128){
         //block is single byte
         size = *firstByte & 63;
 #ifdef POSTCONDITION
@@ -22,7 +22,7 @@ size_t CodeBlock::readFromLeft(byte *firstByte) {
         byte *currentByte = firstByte+1;
         size = *firstByte & 63;
         size <<= 7;
-        while(*currentByte >=128){
+        while(*currentByte & 128){
             size |= (*currentByte & 127); //insert the last 7 bits of the current byte at the end of size
             currentByte++;
             size <<= 7; //shift the old byte 7  bits to the left to make space for the next 7 bits
@@ -42,7 +42,7 @@ size_t CodeBlock::readFromRight(const byte *const firstByte, byte* &outLeftByte)
 #endif
     outLeftByte = (byte *) firstByte;
     size_t size = 0;
-    if(*firstByte >= 128){
+    if(*firstByte & 128){
         //block is single byte
         size = *firstByte & 63;
 #ifdef POSTCONDITION
@@ -55,7 +55,7 @@ size_t CodeBlock::readFromRight(const byte *const firstByte, byte* &outLeftByte)
         byte *currentByte = (byte *) (firstByte - 1);
         size = *firstByte & 127;
         int m = 1;
-        while(*currentByte >=128){
+        while(*currentByte & 128){
             size_t tmp = *currentByte & 127; //stuff the 7 bits into a temporary size_t
             tmp <<= (7*m);//shift them to the appropriate position
             size |= tmp; //merge size and tmp
@@ -87,7 +87,7 @@ byte *CodeBlock::getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memor
     //calculate how many bytes are needed
     size_t t = (memoryBlockSize >> 6);
     returnArraySize = 2;
-    while(t>127){
+    while(t & 128){
         t >>= 7;
         returnArraySize++;
     }
