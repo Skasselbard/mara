@@ -23,7 +23,7 @@
 #define SMALLEST_POSSIBLE_FREE_SPACE 6 //6 byte
 #define MAX_CODE_BLOCK_ARRAY_SIZE 128 //TODO: probably enough?
 #define EXIT_ON_FATAL //call exit if LOGGER::fatal() was called
-//#define MARA_LOG
+#define MARA_LOG
 #define MARA_DEBUG //mutes/unmutes debugLog
 #define STATISTIC
 //#define STATISTIC_VERBOSE
