@@ -7,7 +7,6 @@ set(HEADER_FILES
     include/interface.h
         include/PageList.h
         include/Page.h
-        include/Logger.h
         include/CodeBlock.h
         include/FreeSpace.h
         include/OccupiedSpace.h
@@ -21,7 +20,6 @@ set(SOURCE_FILES
         src/interface.cpp
         src/PageList.cpp
         src/Page.cpp
-        src/Logger.cpp
         src/CodeBlock.cpp
         src/Test.cpp
         src/FreeSpace.cpp
