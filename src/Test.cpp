@@ -3,14 +3,11 @@
 #include <iostream>
 #include <random>
 #include <map>
-#include <assert.h>
-#include "../include/Logger.h"
 #include "../include/Test.h"
 #include "../include/interface.h"
 #include "../include/Page.h"
 #include "../include/PageList.h"
 #include "../include/CodeBlock.h"
-#include "../include/MemDump.h"
 #include "../include/Statistic.h"
 
 using namespace std;
@@ -28,7 +25,7 @@ unsigned int Test::corruptedBlocks = 0;
  * Example arguments: test 50000 0.85 0.2 4 16 1000 1 123456789
  */
 
-int Test::test(int argc, char** argv) {
+int Test::test(int argc, char **argv) {
 
     clock_t begin = clock();
 
@@ -47,15 +44,15 @@ int Test::test(int argc, char** argv) {
     averageSize = DEFAULT_AVERAGE_SIZE;
     maxSize = DEFAULT_MAX_SIZE;
 
-    Test::readArguments(argc, argv, &amountNewVariables, &pDynamic, &pFree, &minSize, &averageSize, &maxSize, &maxIterations, &seed);
+    Test::readArguments(argc, argv, &amountNewVariables, &pDynamic, &pFree, &minSize, &averageSize, &maxSize,
+                        &maxIterations, &seed);
 
 
-
-    std::vector<unsigned long*> dynamicPointers;
+    std::vector<unsigned long *> dynamicPointers;
 
     std::mt19937 generator(seed);
     std::uniform_real_distribution<double> prob_distribution(0, 1);
-    std::uniform_int_distribution<unsigned int> dynamicVariable_distribution(0, amountNewVariables-1);
+    std::uniform_int_distribution<unsigned int> dynamicVariable_distribution(0, amountNewVariables - 1);
 
     // TODO maybe think of better distribution, maybe not
     std::uniform_int_distribution<unsigned int> size_distribution(minSize, maxSize);
@@ -68,10 +65,6 @@ int Test::test(int argc, char** argv) {
                 varSize = size_distribution(generator);
                 varSize = varSize + (4 - (varSize % 4));
             } while (varSize < minSize || varSize > maxSize);
-
-            Logger::info(("iterations=" + std::to_string(iterations) + ", " +
-                          "variables=" + std::to_string(v) + ", " +
-                          "varSize=" + std::to_string(varSize)).c_str());
 
             unsigned long *address;
             if (prob_distribution(generator) <= pDynamic) {
@@ -107,14 +100,13 @@ int Test::test(int argc, char** argv) {
                 dynamicPointers.erase(dynamicPointers.begin() + deletedIndex);
                 char addressBuffer[50];
                 std::sprintf(addressBuffer, "0x%lx", (unsigned long) toDelete);
-                Logger::debug((std::string("Freed dynamic memory: ") + addressBuffer).c_str());
             }
         }
 
         clock_t end = clock();
 
         checkPages();
-        Statistic::logTable();
+        //Statistic::logTable();
 
         std::string type;
 
@@ -126,18 +118,17 @@ int Test::test(int argc, char** argv) {
 #endif
 
         double time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
-        Logger::info(("Test completed! Time spent:\n" + std::to_string(time_spent)).c_str());
         // type     seed        time    dynamicMemoryPeak dynamicBlocksPeak staticMemoryPeak staticBlockPeak corruptedBlocks freeSpaceNotInBL
         printf("%s    %u    %f    %u    %u    %u    %u    %u    %u\n", type.c_str(), seed, time_spent,
-            Statistic::getDynamicMemoryPeak(), Statistic::getDynamicBlocksPeak(),
-            Statistic::getUsedStaticMemory(), Statistic::getUsedStaticBlocks(),
-            corruptedBlocks, freeSpaceNotInBucketList);
+               Statistic::getDynamicMemoryPeak(), Statistic::getDynamicBlocksPeak(),
+               Statistic::getUsedStaticMemory(), Statistic::getUsedStaticBlocks(),
+               corruptedBlocks, freeSpaceNotInBucketList);
     }
     return 0;
 }
 
-void Test::writeIntoBlock(unsigned long * address, size_t size) {
-    for(unsigned int i = 0; i < size/8; i++) {
+void Test::writeIntoBlock(unsigned long *address, size_t size) {
+    for (unsigned int i = 0; i < size / 8; i++) {
 #if FILL_REQUESTED_MEMORY == 0
         unsigned long valueAtAddress = 0;
 #elif FILL_REQUESTED_MEMORY == 1
@@ -145,12 +136,11 @@ void Test::writeIntoBlock(unsigned long * address, size_t size) {
 #elif FILL_REQUESTED_MEMORY == 2
         unsigned long valueAtAddress = (unsigned long) (address);
 #endif
-        *(address+i) = valueAtAddress;
+        *(address + i) = valueAtAddress;
 
     }
     char addressBuffer[50];
     std::sprintf(addressBuffer, "0x%lx", (unsigned long) address);
-    Logger::debug((std::string("Wrote values to address: ") + addressBuffer).c_str());
 }
 
 int Test::checkPages() {
@@ -158,19 +148,18 @@ int Test::checkPages() {
     freeSpaceNotInBucketList = 0;
     corruptedBlocks = 0;
 
-    Logger::info("Checking pages");
-    Page * page = PageList::getFirstPage();
+    Page *page = PageList::getFirstPage();
     do {
-        BucketList * bucketList = page->getBucketList();
-        byte * startOfPage = (byte *) page->getStartOfPage();
-        byte * blockPointer = startOfPage;
-        byte * dynamicEnd = page->getDynamicEnd();
+        BucketList *bucketList = page->getBucketList();
+        byte *startOfPage = (byte *) page->getStartOfPage();
+        byte *blockPointer = startOfPage;
+        byte *dynamicEnd = page->getDynamicEnd();
         while (blockPointer < dynamicEnd) {
             size_t memorySize = CodeBlock::readFromLeft(blockPointer);
             size_t codeBlockSize = CodeBlock::getBlockSize(blockPointer);
             if (CodeBlock::isFree(blockPointer) == 0) {
 #if FILL_REQUESTED_MEMORY != -1
-                unsigned long * memoryStart = (unsigned long *) (blockPointer + codeBlockSize);
+                unsigned long *memoryStart = (unsigned long *) (blockPointer + codeBlockSize);
                 for (int i = 0; i < memorySize / 8 - 1; i++) {
                     // TODO if less than 6 bytes are left, those are attached to the array. CHECK!
                     bool valid;
@@ -188,8 +177,8 @@ int Test::checkPages() {
                 }
             } else {
                 int blIndex = BucketList::lookupBucket(memorySize);
-                FreeSpace * freeSpace = bucketList->getFromBucketList(blIndex);
-                FreeSpace * currentElement;
+                FreeSpace *freeSpace = bucketList->getFromBucketList(blIndex);
+                FreeSpace *currentElement;
                 for (currentElement = freeSpace;
                      currentElement != (FreeSpace *) blockPointer;
                      currentElement = currentElement->getNext(startOfPage)) {
@@ -207,10 +196,10 @@ int Test::checkPages() {
     return 0;
 }
 
-void Test::readArguments(int argc, char** argv, unsigned int * amountNewVariables,
-                         double * pDynamic, double * pFree,
-                         unsigned int * minSize, unsigned int * averageSize, unsigned int * maxSize,
-                         unsigned int * maxIterations, unsigned int * seed){
+void Test::readArguments(int argc, char **argv, unsigned int *amountNewVariables,
+                         double *pDynamic, double *pFree,
+                         unsigned int *minSize, unsigned int *averageSize, unsigned int *maxSize,
+                         unsigned int *maxIterations, unsigned int *seed) {
     if (argc == 10) {
         sscanf(argv[2], "%u", amountNewVariables);
         sscanf(argv[3], "%lf", pDynamic);
@@ -238,11 +227,11 @@ void Test::distributionTest() {
     averageSize = 16;
     maxSize = 1000;
 
-    std::vector<unsigned long*> dynamicPointers;
+    std::vector<unsigned long *> dynamicPointers;
 
     std::mt19937 generator(seed);
 
-    float stddev = (float) 5*(min(averageSize - maxSize, averageSize - minSize));
+    float stddev = (float) 5 * (min(averageSize - maxSize, averageSize - minSize));
     std::normal_distribution<> d(averageSize, stddev);
 
     std::map<int, int> hist;
@@ -250,13 +239,13 @@ void Test::distributionTest() {
         //cout << d(generator) << endl;
         int r;
         do {
-            r = (int) d(generator)/4;
+            r = (int) d(generator) / 4;
             cout << r << endl;
-        } while (r < minSize/4 || r > maxSize/4);
+        } while (r < minSize / 4 || r > maxSize / 4);
         ++hist[r];
     }
     for (auto p : hist) {
-        std::cout << p.first*4 << ' '
+        std::cout << p.first * 4 << ' '
                   << '(' << p.second << ") "
                   << std::string((unsigned long) (p.second / 100), '*') << '\n';
     }

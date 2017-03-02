@@ -7,11 +7,11 @@
 #include <string>
 #include <assert.h>
 #include "../include/PageList.h"
-#include "../include/Logger.h"
 #include "../include/Statistic.h"
 
-size_t PageList::pageSize= 104857600;//100mb
-Page* PageList::firstPage = new Page(pageSize, true);
+size_t PageList::pageSize = 104857600;//100mb
+Page *PageList::firstPage = new Page(pageSize, true);
+
 int PageList::setPageSize(size_t sizeInByte) {
     pageSize = sizeInByte;
     return 0;
@@ -23,12 +23,12 @@ size_t PageList::getPageSize() {
 
 void *PageList::staticNew(size_t sizeInByte) {
 #ifdef PRECONDITION
-    assert(sizeInByte!=0); //self-explainatory
+    assert(sizeInByte != 0); //self-explainatory
 #endif
-    Page* currentPage = firstPage;
-    void* returnBlock = nullptr;
-    while ( (returnBlock = currentPage->getStaticBlock(sizeInByte)) == nullptr){
-        if(!iteratePage(currentPage)){
+    Page *currentPage = firstPage;
+    void *returnBlock = nullptr;
+    while ((returnBlock = currentPage->getStaticBlock(sizeInByte)) == nullptr) {
+        if (!iteratePage(currentPage)) {
             returnBlock = nullptr;
             break;
         }
@@ -38,7 +38,8 @@ void *PageList::staticNew(size_t sizeInByte) {
 #endif
 #ifdef POSTCONDITION
     assert(returnBlock == currentPage->getStaticEnd());//the returned block must be at the top of the static area
-    assert((byte*) returnBlock + sizeInByte <= (byte*) currentPage->getStartOfPage() + pageSize); //the returned block may not go over the page boundaries
+    assert((byte *) returnBlock + sizeInByte <=
+           (byte *) currentPage->getStartOfPage() + pageSize); //the returned block may not go over the page boundaries
 
 #endif
     firstPage = currentPage;
@@ -46,13 +47,10 @@ void *PageList::staticNew(size_t sizeInByte) {
 }
 
 bool PageList::addPageToList(Page *currentPage) {
-    Logger::info("last page. Creating new one.");
-    Page* nextPage = nullptr;
-    try{
+    Page *nextPage = nullptr;
+    try {
         nextPage = new Page(PageList::getPageSize());
-    }catch (std::bad_alloc& ba){
-        Logger::error("unable to allocate new Page");
-        Logger::error(ba.what());
+    } catch (std::bad_alloc &ba) {
         return false;
     }
     nextPage->setNextPage(currentPage->getNextPage());
@@ -64,32 +62,32 @@ void *PageList::dynamicNew(size_t sizeInByte) {
 #ifdef PRECONDITION
     assert(sizeInByte > 0);
 #endif
-    Page* currentPage = firstPage;
-    OccupiedSpace* returnBlock = nullptr;
-    while ( (returnBlock = currentPage->getDynamicBlock(sizeInByte)) == nullptr){
-        if(!iteratePage(currentPage)){
+    Page *currentPage = firstPage;
+    OccupiedSpace *returnBlock = nullptr;
+    while ((returnBlock = currentPage->getDynamicBlock(sizeInByte)) == nullptr) {
+        if (!iteratePage(currentPage)) {
             return nullptr;
         }
     }
-    void * startOfSpace = ((Space*)returnBlock)->getStartOfSpace();
+    void *startOfSpace = ((Space *) returnBlock)->getStartOfSpace();
 #ifdef STATISTIC
     Statistic::newDynamic(sizeInByte, startOfSpace);
 #endif
 #ifdef POSTCONDITION
-    assert(returnBlock >= currentPage->getStartOfPage() && (byte*) returnBlock < currentPage->getStaticEnd());
+    assert(returnBlock >= currentPage->getStartOfPage() && (byte *) returnBlock < currentPage->getStaticEnd());
 #endif
     firstPage = currentPage;
     return startOfSpace;
 }
 
-bool PageList::iteratePage(Page* &currentPage) {
-    if(currentPage->getNextPage() == firstPage){
-        if (addPageToList(currentPage)){
+bool PageList::iteratePage(Page *&currentPage) {
+    if (currentPage->getNextPage() == firstPage) {
+        if (addPageToList(currentPage)) {
             currentPage = currentPage->getNextPage();
-        }else{
+        } else {
             return false;
         }
-    }else{
+    } else {
         currentPage = currentPage->getNextPage();
     }
     return true;
@@ -97,9 +95,9 @@ bool PageList::iteratePage(Page* &currentPage) {
 }
 
 bool PageList::dynamicDelete(void *address) {
-    Page* currentPage = firstPage;
-    while (!currentPage->blockIsInSpace(address)){
-        if(!iteratePage(currentPage)){
+    Page *currentPage = firstPage;
+    while (!currentPage->blockIsInSpace(address)) {
+        if (!iteratePage(currentPage)) {
             return false;
         }
     }
@@ -113,24 +111,23 @@ Page *PageList::getFirstPage() {
 
 unsigned int PageList::getPageCount() {
     unsigned int count = 0;
-    Page* page = firstPage;
+    Page *page = firstPage;
     do {
         count++;
         page = page->getNextPage();
-    }while (page != firstPage);
+    } while (page != firstPage);
     return count;
 }
 
 void PageList::clearPages() {
     std::stack<Page *> pageStack;
 
-    Page * currentPage = firstPage;
+    Page *currentPage = firstPage;
     while (currentPage != nullptr) {
         pageStack.push(currentPage);
         currentPage = currentPage->getNextPage();
     }
 
-    Logger::debug(("Stacked " + std::to_string(pageStack.size()) + " pages to clear").c_str());
 
     while (!pageStack.empty()) {
         currentPage = pageStack.top();
