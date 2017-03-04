@@ -206,8 +206,8 @@ bool Page::deleteBlock(void *firstByte) {
 #ifdef STATISTIC
     Statistic::freeDynamic(memoryBlockSize, firstByte);
 #endif
-    assert((codeBlockStart + (2 * codeBlockSize) + memoryBlockSize) < staticEnd);
-    if ((codeBlockStart + (2 * codeBlockSize) + memoryBlockSize) >= staticEnd) {
+    assert((codeBlockStart + (2 * codeBlockSize) + memoryBlockSize) <= staticEnd);
+    if ((codeBlockStart + (2 * codeBlockSize) + memoryBlockSize) staticEnd) {
         assert(false);
         return false;
     }
