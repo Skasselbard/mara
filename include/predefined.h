@@ -8,7 +8,6 @@
 #include <stdint.h>
 
 #define USE_MARA
-#define NDEBUG
 
 // enables/disables the alignment
 //#define ALIGNMENT
