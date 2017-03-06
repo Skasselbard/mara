@@ -8,6 +8,7 @@
 #include <assert.h>
 #include "../include/PageList.h"
 #include "../include/Statistic.h"
+#include "../include/CodeBlock.h" // todo remove, only used for passing accurate size to statistic
 
 size_t PageList::pageSize = 104857600;//100mb
 Page *PageList::firstPage = new Page(pageSize, true);
@@ -71,7 +72,8 @@ void *PageList::dynamicNew(size_t sizeInByte) {
     }
     void *startOfSpace = ((Space *) returnBlock)->getStartOfSpace();
 #ifdef STATISTIC
-    Statistic::newDynamic(sizeInByte, startOfSpace);
+    byte * hurr = nullptr;
+    Statistic::newDynamic(CodeBlock::readFromRight((byte *) (startOfSpace - 1), hurr), startOfSpace);
 #endif
 #ifdef POSTCONDITION
     assert(returnBlock >= currentPage->getStartOfPage() && (byte *) returnBlock < currentPage->getStaticEnd());
