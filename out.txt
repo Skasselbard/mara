@@ -1,0 +1,611 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+ 63.35     41.08    41.08 2049936403     0.00     0.00  CodeBlock::getBlockSize(unsigned char*)
+ 12.99     49.50     8.42 1907146139     0.00     0.00  FreeSpace::getNext(unsigned char*)
+  5.89     53.32     3.82 3895440064     0.00     0.00  Space::getLeftMostEnd() const
+  3.33     55.48     2.16                             Test::test(int, char**)
+  3.09     57.48     2.00 10628107     0.00     0.00  BucketList::deleteFromList(FreeSpace*)
+  1.95     58.74     1.27 10578390     0.00     0.00  CodeBlock::getCodeBlockForInternalSize(unsigned char*, unsigned long, unsigned long&, bool)
+  1.65     59.81     1.07 11628145     0.00     0.00  Space::copyCodeBlockToEnd(unsigned char*, unsigned long)
+  1.16     60.56     0.75 149877652     0.00     0.00  CodeBlock::readFromLeft(unsigned char*)
+  1.04     61.24     0.68   322188     0.00     0.00  BucketList::getFromBucketList(int)
+  1.03     61.91     0.67                             FreeSpace::getRightNext(unsigned long)
+  0.99     62.55     0.64        1     0.64    12.47  Test::checkPages()
+  0.66     62.98     0.43 51010842     0.00     0.00  std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>::operator()()
+  0.42     63.25     0.27 11009680     0.00     0.00  unsigned int std::uniform_int_distribution<unsigned int>::operator()<std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul> >(std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&, std::uniform_int_distribution<unsigned int>::param_type const&)
+  0.37     63.49     0.24 11000625     0.00     0.00  CodeBlock::readFromRight(unsigned char const*, unsigned char*&)
+  0.22     63.63     0.14  3321388     0.00     0.00  CodeBlock::isFree(unsigned char*)
+  0.20     63.76     0.13 10950274     0.00     0.00  BucketList::addToList(FreeSpace*)
+  0.15     63.86     0.10 27908849     0.00     0.00  Space::getRightMostEnd() const
+  0.15     63.96     0.10  1999316     0.00     0.00  BucketList::getFreeSpace(unsigned long)
+  0.14     64.05     0.09  8002026     0.00     0.00  Page::getStaticBlock(unsigned long)
+  0.13     64.14     0.09 10000001     0.00     0.00  Space::getSize()
+  0.12     64.22     0.08  8000699     0.00     0.00  PageList::staticNew(unsigned long)
+  0.12     64.29     0.08 12578643     0.00     0.00  Page::blockIsInSpace(void*)
+  0.11     64.36     0.07  8000699     0.00     0.00  FreeSpace::pushEndLeft(unsigned char*)
+  0.08     64.41     0.05  8000699     0.00     0.00  staticNew(unsigned long)
+  0.06     64.45     0.04  1949537     0.00     0.00  Space::toOccupied(unsigned long)
+  0.05     64.49     0.04  1999316     0.00     0.00  Page::getDynamicBlock(unsigned long)
+  0.05     64.52     0.03                             std::_Rb_tree<int, std::pair<int const, int>, std::_Select1st<std::pair<int const, int> >, std::less<int>, std::allocator<std::pair<int const, int> > >::_M_get_insert_hint_unique_pos(std::_Rb_tree_const_iterator<std::pair<int const, int> >, int const&)
+  0.05     64.55     0.03 11596678     0.00     0.00  FreeSpace::setNext(FreeSpace*, unsigned char*)
+  0.05     64.58     0.03   999990     0.00     0.00  Page::mergeFreeSpace(Space*, Space*, Space*)
+  0.05     64.61     0.03   999990     0.00     0.00  PageList::dynamicDelete(void*)
+  0.04     64.63     0.03 23160083     0.00     0.00  Page::getNextPage()
+  0.03     64.65     0.02  5998540     0.00     0.00  CodeBlock::getNeededCodeBlockSize(unsigned long)
+  0.03     64.67     0.02  2999340     0.00     0.00  CodeBlock::setFree(unsigned char*, int)
+  0.03     64.69     0.02  1999302     0.00     0.00  Statistic::newDynamic(unsigned long, void*)
+  0.03     64.71     0.02  1949537     0.00     0.00  FreeSpace::pushBeginningRight(unsigned char*)
+  0.03     64.73     0.02   999990     0.00     0.00  Page::deleteBlock(void*)
+  0.03     64.75     0.02       48     0.00     0.00  Page::getBucketList()
+  0.02     64.77     0.02  1999302     0.00     0.00  dynamicNew(unsigned long)
+  0.02     64.78     0.02                             setDefaultBlockSize(unsigned long)
+  0.02     64.80     0.02                             Page::align(unsigned long)
+  0.02     64.81     0.02   999990     0.00     0.00  Statistic::freeDynamic(unsigned long, void*)
+  0.02     64.82     0.01  8000699     0.00     0.00  Statistic::newStatic(unsigned long, void*)
+  0.02     64.83     0.01  1999302     0.00     0.00  PageList::dynamicNew(unsigned long)
+  0.02     64.84     0.01   322140     0.00     0.00  BucketList::lookupBucket(unsigned long)
+  0.02     64.85     0.01                             Page::~Page()
+  0.01     64.86     0.01        1     0.01     0.01  Statistic::getDynamicBlocksPeak()
+  0.00     64.86     0.00  1999302     0.00     0.00  Space::getStartOfSpace()
+  0.00     64.86     0.00  1949537     0.00     0.00  CodeBlock::getCodeBlockForPayloadSize(unsigned char*, unsigned long, unsigned long&, bool)
+  0.00     64.86     0.00   999990     0.00     0.00  dynamicDelete(void*)
+  0.00     64.86     0.00   999946     0.00     0.00  Space::getLeftNeighbor(unsigned char*)
+  0.00     64.86     0.00       94     0.00     0.00  Page::setNextPage(Page*)
+  0.00     64.86     0.00       49     0.00     0.00  PageList::getFirstPage()
+  0.00     64.86     0.00       48     0.00     0.00  BucketList::setStartOfPage(unsigned char*)
+  0.00     64.86     0.00       48     0.00     0.00  BucketList::BucketList()
+  0.00     64.86     0.00       48     0.00     0.00  Page::getDynamicEnd()
+  0.00     64.86     0.00       48     0.00     0.00  Page::getStartOfPage()
+  0.00     64.86     0.00       47     0.00     0.00  Page::Page(unsigned long)
+  0.00     64.86     0.00       21     0.00     0.00  void std::vector<unsigned long*, std::allocator<unsigned long*> >::_M_emplace_back_aux<unsigned long* const&>(unsigned long* const&)
+  0.00     64.86     0.00        1     0.00     0.00  _GLOBAL__sub_I__ZN4Test17DEFAULT_P_DYNAMICE
+  0.00     64.86     0.00        1     0.00     0.00  _GLOBAL__sub_I__ZN8PageList8pageSizeE
+  0.00     64.86     0.00        1     0.00     0.00  Statistic::getUsedStaticBlocks()
+  0.00     64.86     0.00        1     0.00     0.00  Statistic::getUsedStaticMemory()
+  0.00     64.86     0.00        1     0.00     0.00  Statistic::getDynamicMemoryPeak()
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+ 
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this 
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2014 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 0.02% of 64.86 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     98.9    2.16   61.96                 Test::test(int, char**) [1]
+                0.08   35.79 8000699/8000699     PageList::staticNew(unsigned long) [5]
+                0.64   11.83       1/1           Test::checkPages() [7]
+                0.01    9.48 1999302/1999302     PageList::dynamicNew(unsigned long) [8]
+                0.00    3.33  999990/999990      dynamicDelete(void*) [11]
+                0.27    0.09 11009680/11009680     unsigned int std::uniform_int_distribution<unsigned int>::operator()<std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul> >(std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&, std::uniform_int_distribution<unsigned int>::param_type const&) [26]
+                0.34    0.00 40000002/51010842     std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>::operator()() [25]
+                0.05    0.00 8000699/8000699     staticNew(unsigned long) [33]
+                0.02    0.00  999990/11000625     CodeBlock::readFromRight(unsigned char const*, unsigned char*&) [28]
+                0.02    0.00 1999302/1999302     dynamicNew(unsigned long) [43]
+                0.01    0.00       1/1           Statistic::getDynamicBlocksPeak() [49]
+                0.00    0.00      21/21          void std::vector<unsigned long*, std::allocator<unsigned long*> >::_M_emplace_back_aux<unsigned long* const&>(unsigned long* const&) [66]
+                0.00    0.00       1/1           Statistic::getUsedStaticBlocks() [69]
+                0.00    0.00       1/1           Statistic::getUsedStaticMemory() [70]
+                0.00    0.00       1/1           Statistic::getDynamicMemoryPeak() [71]
+-----------------------------------------------
+                0.01    0.05 2459287/1907146139     BucketList::getFreeSpace(unsigned long) [30]
+                1.85    9.19 417902948/1907146139     Test::checkPages() [7]
+                6.57   32.71 1486783904/1907146139     BucketList::deleteFromList(FreeSpace*) [3]
+[2]     77.7    8.42   41.96 1907146139         FreeSpace::getNext(unsigned char*) [2]
+               38.21    0.00 1907146139/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                3.74    0.00 3814292278/3895440064     Space::getLeftMostEnd() const [10]
+-----------------------------------------------
+                0.12    2.33  628106/10628107     Page::mergeFreeSpace(Space*, Space*, Space*) [15]
+                0.38    7.41 1999302/10628107     Page::getDynamicBlock(unsigned long) [9]
+                1.51   29.67 8000699/10628107     Page::getStaticBlock(unsigned long) [6]
+[3]     63.9    2.00   39.41 10628107         BucketList::deleteFromList(FreeSpace*) [3]
+                6.57   32.71 1486783904/1907146139     FreeSpace::getNext(unsigned char*) [2]
+                0.11    0.00 21256214/149877652     CodeBlock::readFromLeft(unsigned char*) [21]
+                0.00    0.03  646356/11596678     FreeSpace::setNext(FreeSpace*, unsigned char*) [24]
+-----------------------------------------------
+                0.00    0.00       1/2049936403     Page::Page(unsigned long, bool) [51]
+                0.00    0.00      47/2049936403     Page::Page(unsigned long) [50]
+                0.00    0.00   49765/2049936403     Page::getDynamicBlock(unsigned long) [9]
+                0.02    0.00  999990/2049936403     Page::mergeFreeSpace(Space*, Space*, Space*) [15]
+                0.02    0.00  999990/2049936403     Page::deleteBlock(void*) [13]
+                0.03    0.00 1321452/2049936403     Test::checkPages() [7]
+                0.04    0.00 1999302/2049936403     Space::getStartOfSpace() [34]
+                0.08    0.00 3899074/2049936403     FreeSpace::pushBeginningRight(unsigned char*) [18]
+                0.12    0.00 5767797/2049936403     Space::toOccupied(unsigned long) [29]
+                0.16    0.00 8000699/2049936403     Page::getStaticBlock(unsigned long) [6]
+                0.20    0.00 10000001/2049936403     Space::getSize() [27]
+                0.23    0.00 11596678/2049936403     FreeSpace::setNext(FreeSpace*, unsigned char*) [24]
+                0.32    0.00 16001398/2049936403     FreeSpace::pushEndLeft(unsigned char*) [14]
+                0.56    0.00 27908849/2049936403     Space::getRightMostEnd() const [19]
+                1.09    0.00 54245221/2049936403     Space::copyCodeBlockToEnd(unsigned char*, unsigned long) [16]
+               38.21    0.00 1907146139/2049936403     FreeSpace::getNext(unsigned char*) [2]
+[4]     63.3   41.08    0.00 2049936403         CodeBlock::getBlockSize(unsigned char*) [4]
+-----------------------------------------------
+                0.08   35.79 8000699/8000699     Test::test(int, char**) [1]
+[5]     55.3    0.08   35.79 8000699         PageList::staticNew(unsigned long) [5]
+                0.09   35.69 8002026/8002026     Page::getStaticBlock(unsigned long) [6]
+                0.01    0.00 8000699/8000699     Statistic::newStatic(unsigned long, void*) [46]
+                0.00    0.00      47/47          Page::Page(unsigned long) [50]
+                0.00    0.00    2701/23160083     Page::getNextPage() [38]
+                0.00    0.00      94/94          Page::setNextPage(Page*) [60]
+-----------------------------------------------
+                0.09   35.69 8002026/8002026     PageList::staticNew(unsigned long) [5]
+[6]     55.2    0.09   35.69 8002026         Page::getStaticBlock(unsigned long) [6]
+                1.51   29.67 8000699/10628107     BucketList::deleteFromList(FreeSpace*) [3]
+                0.07    3.04 8000699/8000699     FreeSpace::pushEndLeft(unsigned char*) [14]
+                0.10    0.47 8000699/10950274     BucketList::addToList(FreeSpace*) [20]
+                0.07    0.20 8000699/10000001     Space::getSize() [27]
+                0.03    0.20 8000699/27908849     Space::getRightMostEnd() const [19]
+                0.17    0.00 8000699/11000625     CodeBlock::readFromRight(unsigned char const*, unsigned char*&) [28]
+                0.16    0.00 8000699/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+-----------------------------------------------
+                0.64   11.83       1/1           Test::test(int, char**) [1]
+[7]     19.2    0.64   11.83       1         Test::checkPages() [7]
+                1.85    9.19 417902948/1907146139     FreeSpace::getNext(unsigned char*) [2]
+                0.68    0.00  322140/322188      BucketList::getFromBucketList(int) [22]
+                0.06    0.00 1321452/3321388     CodeBlock::isFree(unsigned char*) [31]
+                0.03    0.00 1321452/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                0.02    0.00      48/48          Page::getBucketList() [40]
+                0.01    0.00  322140/322140      BucketList::lookupBucket(unsigned long) [47]
+                0.01    0.00 1321452/149877652     CodeBlock::readFromLeft(unsigned char*) [21]
+                0.00    0.00      48/23160083     Page::getNextPage() [38]
+                0.00    0.00      49/49          PageList::getFirstPage() [61]
+                0.00    0.00      48/48          Page::getDynamicEnd() [64]
+                0.00    0.00      48/48          Page::getStartOfPage() [65]
+-----------------------------------------------
+                0.01    9.48 1999302/1999302     Test::test(int, char**) [1]
+[8]     14.6    0.01    9.48 1999302         PageList::dynamicNew(unsigned long) [8]
+                0.04    9.38 1999316/1999316     Page::getDynamicBlock(unsigned long) [9]
+                0.00    0.04 1999302/1999302     Space::getStartOfSpace() [34]
+                0.02    0.01 1999302/1999302     Statistic::newDynamic(unsigned long, void*) [36]
+                0.00    0.00      28/23160083     Page::getNextPage() [38]
+-----------------------------------------------
+                0.04    9.38 1999316/1999316     PageList::dynamicNew(unsigned long) [8]
+[9]     14.5    0.04    9.38 1999316         Page::getDynamicBlock(unsigned long) [9]
+                0.38    7.41 1999302/10628107     BucketList::deleteFromList(FreeSpace*) [3]
+                0.02    0.84 1949537/1949537     FreeSpace::pushBeginningRight(unsigned char*) [18]
+                0.04    0.16 1949537/1949537     Space::toOccupied(unsigned long) [29]
+                0.10    0.10 1999316/1999316     BucketList::getFreeSpace(unsigned long) [30]
+                0.02    0.12 1949537/10950274     BucketList::addToList(FreeSpace*) [20]
+                0.01    0.09 3784292/27908849     Space::getRightMostEnd() const [19]
+                0.02    0.05 1999302/10000001     Space::getSize() [27]
+                0.00    0.01   49765/11628145     Space::copyCodeBlockToEnd(unsigned char*, unsigned long) [16]
+                0.01    0.00 1999302/5998540     CodeBlock::getNeededCodeBlockSize(unsigned long) [41]
+                0.00    0.00   49765/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                0.00    0.00   49765/2999340     CodeBlock::setFree(unsigned char*, int) [39]
+-----------------------------------------------
+                0.00    0.00 1949537/3895440064     FreeSpace::pushBeginningRight(unsigned char*) [18]
+                0.02    0.00 23193356/3895440064     FreeSpace::setNext(FreeSpace*, unsigned char*) [24]
+                0.05    0.00 56004893/3895440064     FreeSpace::pushEndLeft(unsigned char*) [14]
+                3.74    0.00 3814292278/3895440064     FreeSpace::getNext(unsigned char*) [2]
+[10]     5.9    3.82    0.00 3895440064         Space::getLeftMostEnd() const [10]
+-----------------------------------------------
+                0.00    3.33  999990/999990      Test::test(int, char**) [1]
+[11]     5.1    0.00    3.33  999990         dynamicDelete(void*) [11]
+                0.03    3.30  999990/999990      PageList::dynamicDelete(void*) [12]
+-----------------------------------------------
+                0.03    3.30  999990/999990      dynamicDelete(void*) [11]
+[12]     5.1    0.03    3.30  999990         PageList::dynamicDelete(void*) [12]
+                0.02    3.18  999990/999990      Page::deleteBlock(void*) [13]
+                0.08    0.00 12578643/12578643     Page::blockIsInSpace(void*) [32]
+                0.03    0.00 23157306/23160083     Page::getNextPage() [38]
+-----------------------------------------------
+                0.02    3.18  999990/999990      PageList::dynamicDelete(void*) [12]
+[13]     4.9    0.02    3.18  999990         Page::deleteBlock(void*) [13]
+                0.03    2.98  999990/999990      Page::mergeFreeSpace(Space*, Space*, Space*) [15]
+                0.08    0.00 1999936/3321388     CodeBlock::isFree(unsigned char*) [31]
+                0.00    0.03  999946/999946      Space::getLeftNeighbor(unsigned char*) [37]
+                0.02    0.00  999990/11000625     CodeBlock::readFromRight(unsigned char const*, unsigned char*&) [28]
+                0.02    0.00  999990/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                0.02    0.00  999990/999990      Statistic::freeDynamic(unsigned long, void*) [42]
+-----------------------------------------------
+                0.07    3.04 8000699/8000699     Page::getStaticBlock(unsigned long) [6]
+[14]     4.8    0.07    3.04 8000699         FreeSpace::pushEndLeft(unsigned char*) [14]
+                0.74    0.93 8000699/11628145     Space::copyCodeBlockToEnd(unsigned char*, unsigned long) [16]
+                0.96    0.00 8000699/10578390     CodeBlock::getCodeBlockForInternalSize(unsigned char*, unsigned long, unsigned long&, bool) [17]
+                0.32    0.00 16001398/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                0.05    0.00 56004893/3895440064     Space::getLeftMostEnd() const [10]
+                0.04    0.00 8000699/149877652     CodeBlock::readFromLeft(unsigned char*) [21]
+-----------------------------------------------
+                0.03    2.98  999990/999990      Page::deleteBlock(void*) [13]
+[15]     4.6    0.03    2.98  999990         Page::mergeFreeSpace(Space*, Space*, Space*) [15]
+                0.12    2.33  628106/10628107     BucketList::deleteFromList(FreeSpace*) [3]
+                0.15    0.19 1628096/11628145     Space::copyCodeBlockToEnd(unsigned char*, unsigned long) [16]
+                0.08    0.00  628106/10578390     CodeBlock::getCodeBlockForInternalSize(unsigned char*, unsigned long, unsigned long&, bool) [17]
+                0.01    0.06  999990/10950274     BucketList::addToList(FreeSpace*) [20]
+                0.02    0.00  999990/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                0.00    0.02  628106/27908849     Space::getRightMostEnd() const [19]
+                0.01    0.00  999990/2999340     CodeBlock::setFree(unsigned char*, int) [39]
+-----------------------------------------------
+                0.00    0.00       1/11628145     Page::Page(unsigned long, bool) [51]
+                0.00    0.00      47/11628145     Page::Page(unsigned long) [50]
+                0.00    0.01   49765/11628145     Page::getDynamicBlock(unsigned long) [9]
+                0.15    0.19 1628096/11628145     Page::mergeFreeSpace(Space*, Space*, Space*) [15]
+                0.18    0.23 1949537/11628145     FreeSpace::pushBeginningRight(unsigned char*) [18]
+                0.74    0.93 8000699/11628145     FreeSpace::pushEndLeft(unsigned char*) [14]
+[16]     3.7    1.07    1.36 11628145         Space::copyCodeBlockToEnd(unsigned char*, unsigned long) [16]
+                1.09    0.00 54245221/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                0.27    0.00 54245221/149877652     CodeBlock::readFromLeft(unsigned char*) [21]
+-----------------------------------------------
+                0.00    0.00       1/10578390     Page::Page(unsigned long, bool) [51]
+                0.00    0.00      47/10578390     Page::Page(unsigned long) [50]
+                0.08    0.00  628106/10578390     Page::mergeFreeSpace(Space*, Space*, Space*) [15]
+                0.23    0.00 1949537/10578390     FreeSpace::pushBeginningRight(unsigned char*) [18]
+                0.96    0.00 8000699/10578390     FreeSpace::pushEndLeft(unsigned char*) [14]
+[17]     2.0    1.27    0.00 10578390         CodeBlock::getCodeBlockForInternalSize(unsigned char*, unsigned long, unsigned long&, bool) [17]
+-----------------------------------------------
+                0.02    0.84 1949537/1949537     Page::getDynamicBlock(unsigned long) [9]
+[18]     1.3    0.02    0.84 1949537         FreeSpace::pushBeginningRight(unsigned char*) [18]
+                0.18    0.23 1949537/11628145     Space::copyCodeBlockToEnd(unsigned char*, unsigned long) [16]
+                0.23    0.00 1949537/10578390     CodeBlock::getCodeBlockForInternalSize(unsigned char*, unsigned long, unsigned long&, bool) [17]
+                0.01    0.10 3899074/27908849     Space::getRightMostEnd() const [19]
+                0.08    0.00 3899074/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                0.01    0.00 1949537/149877652     CodeBlock::readFromLeft(unsigned char*) [21]
+                0.00    0.00 1949537/3895440064     Space::getLeftMostEnd() const [10]
+-----------------------------------------------
+                0.00    0.02  628106/27908849     Page::mergeFreeSpace(Space*, Space*, Space*) [15]
+                0.01    0.09 3784292/27908849     Page::getDynamicBlock(unsigned long) [9]
+                0.01    0.10 3899074/27908849     FreeSpace::pushBeginningRight(unsigned char*) [18]
+                0.03    0.20 8000699/27908849     Page::getStaticBlock(unsigned long) [6]
+                0.04    0.29 11596678/27908849     FreeSpace::setNext(FreeSpace*, unsigned char*) [24]
+[19]     1.2    0.10    0.70 27908849         Space::getRightMostEnd() const [19]
+                0.56    0.00 27908849/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                0.14    0.00 27908849/149877652     CodeBlock::readFromLeft(unsigned char*) [21]
+-----------------------------------------------
+                0.00    0.00       1/10950274     Page::Page(unsigned long, bool) [51]
+                0.00    0.00      47/10950274     Page::Page(unsigned long) [50]
+                0.01    0.06  999990/10950274     Page::mergeFreeSpace(Space*, Space*, Space*) [15]
+                0.02    0.12 1949537/10950274     Page::getDynamicBlock(unsigned long) [9]
+                0.10    0.47 8000699/10950274     Page::getStaticBlock(unsigned long) [6]
+[20]     1.2    0.13    0.65 10950274         BucketList::addToList(FreeSpace*) [20]
+                0.03    0.57 10950274/11596678     FreeSpace::setNext(FreeSpace*, unsigned char*) [24]
+                0.05    0.00 10950274/149877652     CodeBlock::readFromLeft(unsigned char*) [21]
+-----------------------------------------------
+                0.01    0.00 1321452/149877652     Test::checkPages() [7]
+                0.01    0.00 1949537/149877652     FreeSpace::pushBeginningRight(unsigned char*) [18]
+                0.01    0.00 2266461/149877652     FreeSpace::setNext(FreeSpace*, unsigned char*) [24]
+                0.03    0.00 5767797/149877652     Space::toOccupied(unsigned long) [29]
+                0.03    0.00 6211147/149877652     BucketList::getFreeSpace(unsigned long) [30]
+                0.04    0.00 8000699/149877652     FreeSpace::pushEndLeft(unsigned char*) [14]
+                0.05    0.00 10000001/149877652     Space::getSize() [27]
+                0.05    0.00 10950274/149877652     BucketList::addToList(FreeSpace*) [20]
+                0.11    0.00 21256214/149877652     BucketList::deleteFromList(FreeSpace*) [3]
+                0.14    0.00 27908849/149877652     Space::getRightMostEnd() const [19]
+                0.27    0.00 54245221/149877652     Space::copyCodeBlockToEnd(unsigned char*, unsigned long) [16]
+[21]     1.2    0.75    0.00 149877652         CodeBlock::readFromLeft(unsigned char*) [21]
+-----------------------------------------------
+                0.00    0.00       1/322188      Page::Page(unsigned long, bool) [51]
+                0.00    0.00      47/322188      Page::Page(unsigned long) [50]
+                0.68    0.00  322140/322188      Test::checkPages() [7]
+[22]     1.0    0.68    0.00  322188         BucketList::getFromBucketList(int) [22]
+-----------------------------------------------
+                                                 <spontaneous>
+[23]     1.0    0.67    0.00                 FreeSpace::getRightNext(unsigned long) [23]
+-----------------------------------------------
+                0.00    0.00       1/11596678     Page::Page(unsigned long, bool) [51]
+                0.00    0.00      47/11596678     Page::Page(unsigned long) [50]
+                0.00    0.03  646356/11596678     BucketList::deleteFromList(FreeSpace*) [3]
+                0.03    0.57 10950274/11596678     BucketList::addToList(FreeSpace*) [20]
+[24]     1.0    0.03    0.60 11596678         FreeSpace::setNext(FreeSpace*, unsigned char*) [24]
+                0.04    0.29 11596678/27908849     Space::getRightMostEnd() const [19]
+                0.23    0.00 11596678/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                0.02    0.00 23193356/3895440064     Space::getLeftMostEnd() const [10]
+                0.01    0.00 2266461/149877652     CodeBlock::readFromLeft(unsigned char*) [21]
+-----------------------------------------------
+                0.09    0.00 11010840/51010842     unsigned int std::uniform_int_distribution<unsigned int>::operator()<std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul> >(std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&, std::uniform_int_distribution<unsigned int>::param_type const&) [26]
+                0.34    0.00 40000002/51010842     Test::test(int, char**) [1]
+[25]     0.7    0.43    0.00 51010842         std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>::operator()() [25]
+-----------------------------------------------
+                0.27    0.09 11009680/11009680     Test::test(int, char**) [1]
+[26]     0.6    0.27    0.09 11009680         unsigned int std::uniform_int_distribution<unsigned int>::operator()<std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul> >(std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&, std::uniform_int_distribution<unsigned int>::param_type const&) [26]
+                0.09    0.00 11010840/51010842     std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>::operator()() [25]
+-----------------------------------------------
+                0.02    0.05 1999302/10000001     Page::getDynamicBlock(unsigned long) [9]
+                0.07    0.20 8000699/10000001     Page::getStaticBlock(unsigned long) [6]
+[27]     0.5    0.09    0.25 10000001         Space::getSize() [27]
+                0.20    0.00 10000001/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                0.05    0.00 10000001/149877652     CodeBlock::readFromLeft(unsigned char*) [21]
+-----------------------------------------------
+                0.02    0.00  999946/11000625     Space::getLeftNeighbor(unsigned char*) [37]
+                0.02    0.00  999990/11000625     Page::deleteBlock(void*) [13]
+                0.02    0.00  999990/11000625     Test::test(int, char**) [1]
+                0.17    0.00 8000699/11000625     Page::getStaticBlock(unsigned long) [6]
+[28]     0.4    0.24    0.00 11000625         CodeBlock::readFromRight(unsigned char const*, unsigned char*&) [28]
+-----------------------------------------------
+                0.04    0.16 1949537/1949537     Page::getDynamicBlock(unsigned long) [9]
+[29]     0.3    0.04    0.16 1949537         Space::toOccupied(unsigned long) [29]
+                0.12    0.00 5767797/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                0.03    0.00 5767797/149877652     CodeBlock::readFromLeft(unsigned char*) [21]
+                0.01    0.00 1949537/2999340     CodeBlock::setFree(unsigned char*, int) [39]
+                0.00    0.00 1949537/1949537     CodeBlock::getCodeBlockForPayloadSize(unsigned char*, unsigned long, unsigned long&, bool) [59]
+-----------------------------------------------
+                0.10    0.10 1999316/1999316     Page::getDynamicBlock(unsigned long) [9]
+[30]     0.3    0.10    0.10 1999316         BucketList::getFreeSpace(unsigned long) [30]
+                0.01    0.05 2459287/1907146139     FreeSpace::getNext(unsigned char*) [2]
+                0.03    0.00 6211147/149877652     CodeBlock::readFromLeft(unsigned char*) [21]
+-----------------------------------------------
+                0.06    0.00 1321452/3321388     Test::checkPages() [7]
+                0.08    0.00 1999936/3321388     Page::deleteBlock(void*) [13]
+[31]     0.2    0.14    0.00 3321388         CodeBlock::isFree(unsigned char*) [31]
+-----------------------------------------------
+                0.08    0.00 12578643/12578643     PageList::dynamicDelete(void*) [12]
+[32]     0.1    0.08    0.00 12578643         Page::blockIsInSpace(void*) [32]
+-----------------------------------------------
+                0.05    0.00 8000699/8000699     Test::test(int, char**) [1]
+[33]     0.1    0.05    0.00 8000699         staticNew(unsigned long) [33]
+-----------------------------------------------
+                0.00    0.04 1999302/1999302     PageList::dynamicNew(unsigned long) [8]
+[34]     0.1    0.00    0.04 1999302         Space::getStartOfSpace() [34]
+                0.04    0.00 1999302/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+-----------------------------------------------
+                                                 <spontaneous>
+[35]     0.0    0.03    0.00                 std::_Rb_tree<int, std::pair<int const, int>, std::_Select1st<std::pair<int const, int> >, std::less<int>, std::allocator<std::pair<int const, int> > >::_M_get_insert_hint_unique_pos(std::_Rb_tree_const_iterator<std::pair<int const, int> >, int const&) [35]
+-----------------------------------------------
+                0.02    0.01 1999302/1999302     PageList::dynamicNew(unsigned long) [8]
+[36]     0.0    0.02    0.01 1999302         Statistic::newDynamic(unsigned long, void*) [36]
+                0.01    0.00 1999302/5998540     CodeBlock::getNeededCodeBlockSize(unsigned long) [41]
+-----------------------------------------------
+                0.00    0.03  999946/999946      Page::deleteBlock(void*) [13]
+[37]     0.0    0.00    0.03  999946         Space::getLeftNeighbor(unsigned char*) [37]
+                0.02    0.00  999946/11000625     CodeBlock::readFromRight(unsigned char const*, unsigned char*&) [28]
+                0.00    0.00  999946/5998540     CodeBlock::getNeededCodeBlockSize(unsigned long) [41]
+-----------------------------------------------
+                0.00    0.00      28/23160083     PageList::dynamicNew(unsigned long) [8]
+                0.00    0.00      48/23160083     Test::checkPages() [7]
+                0.00    0.00    2701/23160083     PageList::staticNew(unsigned long) [5]
+                0.03    0.00 23157306/23160083     PageList::dynamicDelete(void*) [12]
+[38]     0.0    0.03    0.00 23160083         Page::getNextPage() [38]
+-----------------------------------------------
+                0.00    0.00       1/2999340     Page::Page(unsigned long, bool) [51]
+                0.00    0.00      47/2999340     Page::Page(unsigned long) [50]
+                0.00    0.00   49765/2999340     Page::getDynamicBlock(unsigned long) [9]
+                0.01    0.00  999990/2999340     Page::mergeFreeSpace(Space*, Space*, Space*) [15]
+                0.01    0.00 1949537/2999340     Space::toOccupied(unsigned long) [29]
+[39]     0.0    0.02    0.00 2999340         CodeBlock::setFree(unsigned char*, int) [39]
+-----------------------------------------------
+                0.02    0.00      48/48          Test::checkPages() [7]
+[40]     0.0    0.02    0.00      48         Page::getBucketList() [40]
+-----------------------------------------------
+                0.00    0.00  999946/5998540     Space::getLeftNeighbor(unsigned char*) [37]
+                0.00    0.00  999990/5998540     Statistic::freeDynamic(unsigned long, void*) [42]
+                0.01    0.00 1999302/5998540     Page::getDynamicBlock(unsigned long) [9]
+                0.01    0.00 1999302/5998540     Statistic::newDynamic(unsigned long, void*) [36]
+[41]     0.0    0.02    0.00 5998540         CodeBlock::getNeededCodeBlockSize(unsigned long) [41]
+-----------------------------------------------
+                0.02    0.00  999990/999990      Page::deleteBlock(void*) [13]
+[42]     0.0    0.02    0.00  999990         Statistic::freeDynamic(unsigned long, void*) [42]
+                0.00    0.00  999990/5998540     CodeBlock::getNeededCodeBlockSize(unsigned long) [41]
+-----------------------------------------------
+                0.02    0.00 1999302/1999302     Test::test(int, char**) [1]
+[43]     0.0    0.02    0.00 1999302         dynamicNew(unsigned long) [43]
+-----------------------------------------------
+                                                 <spontaneous>
+[44]     0.0    0.02    0.00                 setDefaultBlockSize(unsigned long) [44]
+-----------------------------------------------
+                                                 <spontaneous>
+[45]     0.0    0.02    0.00                 Page::align(unsigned long) [45]
+-----------------------------------------------
+                0.01    0.00 8000699/8000699     PageList::staticNew(unsigned long) [5]
+[46]     0.0    0.01    0.00 8000699         Statistic::newStatic(unsigned long, void*) [46]
+-----------------------------------------------
+                0.01    0.00  322140/322140      Test::checkPages() [7]
+[47]     0.0    0.01    0.00  322140         BucketList::lookupBucket(unsigned long) [47]
+-----------------------------------------------
+                                                 <spontaneous>
+[48]     0.0    0.01    0.00                 Page::~Page() [48]
+-----------------------------------------------
+                0.01    0.00       1/1           Test::test(int, char**) [1]
+[49]     0.0    0.01    0.00       1         Statistic::getDynamicBlocksPeak() [49]
+-----------------------------------------------
+                0.00    0.00      47/47          PageList::staticNew(unsigned long) [5]
+[50]     0.0    0.00    0.00      47         Page::Page(unsigned long) [50]
+                0.00    0.00      47/322188      BucketList::getFromBucketList(int) [22]
+                0.00    0.00      47/11628145     Space::copyCodeBlockToEnd(unsigned char*, unsigned long) [16]
+                0.00    0.00      47/10578390     CodeBlock::getCodeBlockForInternalSize(unsigned char*, unsigned long, unsigned long&, bool) [17]
+                0.00    0.00      47/10950274     BucketList::addToList(FreeSpace*) [20]
+                0.00    0.00      47/11596678     FreeSpace::setNext(FreeSpace*, unsigned char*) [24]
+                0.00    0.00      47/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                0.00    0.00      47/2999340     CodeBlock::setFree(unsigned char*, int) [39]
+                0.00    0.00      47/48          BucketList::BucketList() [63]
+                0.00    0.00      47/48          BucketList::setStartOfPage(unsigned char*) [62]
+-----------------------------------------------
+                                                 <spontaneous>
+[51]     0.0    0.00    0.00                 Page::Page(unsigned long, bool) [51]
+                0.00    0.00       1/322188      BucketList::getFromBucketList(int) [22]
+                0.00    0.00       1/11628145     Space::copyCodeBlockToEnd(unsigned char*, unsigned long) [16]
+                0.00    0.00       1/10578390     CodeBlock::getCodeBlockForInternalSize(unsigned char*, unsigned long, unsigned long&, bool) [17]
+                0.00    0.00       1/10950274     BucketList::addToList(FreeSpace*) [20]
+                0.00    0.00       1/11596678     FreeSpace::setNext(FreeSpace*, unsigned char*) [24]
+                0.00    0.00       1/2049936403     CodeBlock::getBlockSize(unsigned char*) [4]
+                0.00    0.00       1/2999340     CodeBlock::setFree(unsigned char*, int) [39]
+                0.00    0.00       1/48          BucketList::BucketList() [63]
+                0.00    0.00       1/48          BucketList::setStartOfPage(unsigned char*) [62]
+-----------------------------------------------
+                0.00    0.00 1949537/1949537     Space::toOccupied(unsigned long) [29]
+[59]     0.0    0.00    0.00 1949537         CodeBlock::getCodeBlockForPayloadSize(unsigned char*, unsigned long, unsigned long&, bool) [59]
+-----------------------------------------------
+                0.00    0.00      94/94          PageList::staticNew(unsigned long) [5]
+[60]     0.0    0.00    0.00      94         Page::setNextPage(Page*) [60]
+-----------------------------------------------
+                0.00    0.00      49/49          Test::checkPages() [7]
+[61]     0.0    0.00    0.00      49         PageList::getFirstPage() [61]
+-----------------------------------------------
+                0.00    0.00       1/48          Page::Page(unsigned long, bool) [51]
+                0.00    0.00      47/48          Page::Page(unsigned long) [50]
+[62]     0.0    0.00    0.00      48         BucketList::setStartOfPage(unsigned char*) [62]
+-----------------------------------------------
+                0.00    0.00       1/48          Page::Page(unsigned long, bool) [51]
+                0.00    0.00      47/48          Page::Page(unsigned long) [50]
+[63]     0.0    0.00    0.00      48         BucketList::BucketList() [63]
+-----------------------------------------------
+                0.00    0.00      48/48          Test::checkPages() [7]
+[64]     0.0    0.00    0.00      48         Page::getDynamicEnd() [64]
+-----------------------------------------------
+                0.00    0.00      48/48          Test::checkPages() [7]
+[65]     0.0    0.00    0.00      48         Page::getStartOfPage() [65]
+-----------------------------------------------
+                0.00    0.00      21/21          Test::test(int, char**) [1]
+[66]     0.0    0.00    0.00      21         void std::vector<unsigned long*, std::allocator<unsigned long*> >::_M_emplace_back_aux<unsigned long* const&>(unsigned long* const&) [66]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [116]
+[67]     0.0    0.00    0.00       1         _GLOBAL__sub_I__ZN4Test17DEFAULT_P_DYNAMICE [67]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [116]
+[68]     0.0    0.00    0.00       1         _GLOBAL__sub_I__ZN8PageList8pageSizeE [68]
+-----------------------------------------------
+                0.00    0.00       1/1           Test::test(int, char**) [1]
+[69]     0.0    0.00    0.00       1         Statistic::getUsedStaticBlocks() [69]
+-----------------------------------------------
+                0.00    0.00       1/1           Test::test(int, char**) [1]
+[70]     0.0    0.00    0.00       1         Statistic::getUsedStaticMemory() [70]
+-----------------------------------------------
+                0.00    0.00       1/1           Test::test(int, char**) [1]
+[71]     0.0    0.00    0.00       1         Statistic::getDynamicMemoryPeak() [71]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2014 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+  [67] _GLOBAL__sub_I__ZN4Test17DEFAULT_P_DYNAMICE [15] Page::mergeFreeSpace(Space*, Space*, Space*) [17] CodeBlock::getCodeBlockForInternalSize(unsigned char*, unsigned long, unsigned long&, bool)
+  [68] _GLOBAL__sub_I__ZN8PageList8pageSizeE [9] Page::getDynamicBlock(unsigned long) [31] CodeBlock::isFree(unsigned char*)
+  [43] dynamicNew(unsigned long) [45] Page::align(unsigned long) [39] CodeBlock::setFree(unsigned char*, int)
+  [11] dynamicDelete(void*)   [50] Page::Page(unsigned long) [14] FreeSpace::pushEndLeft(unsigned char*)
+  [44] setDefaultBlockSize(unsigned long) [48] Page::~Page() [23] FreeSpace::getRightNext(unsigned long)
+  [33] staticNew(unsigned long) [7] Test::checkPages()    [18] FreeSpace::pushBeginningRight(unsigned char*)
+  [30] BucketList::getFreeSpace(unsigned long) [1] Test::test(int, char**) [2] FreeSpace::getNext(unsigned char*)
+  [47] BucketList::lookupBucket(unsigned long) [29] Space::toOccupied(unsigned long) [24] FreeSpace::setNext(FreeSpace*, unsigned char*)
+   [3] BucketList::deleteFromList(FreeSpace*) [37] Space::getLeftNeighbor(unsigned char*) [36] Statistic::newDynamic(unsigned long, void*)
+  [62] BucketList::setStartOfPage(unsigned char*) [34] Space::getStartOfSpace() [42] Statistic::freeDynamic(unsigned long, void*)
+  [22] BucketList::getFromBucketList(int) [16] Space::copyCodeBlockToEnd(unsigned char*, unsigned long) [69] Statistic::getUsedStaticBlocks()
+  [20] BucketList::addToList(FreeSpace*) [27] Space::getSize() [70] Statistic::getUsedStaticMemory()
+  [63] BucketList::BucketList() [8] PageList::dynamicNew(unsigned long) [49] Statistic::getDynamicBlocksPeak()
+  [13] Page::deleteBlock(void*) [61] PageList::getFirstPage() [71] Statistic::getDynamicMemoryPeak()
+  [38] Page::getNextPage()    [12] PageList::dynamicDelete(void*) [46] Statistic::newStatic(unsigned long, void*)
+  [60] Page::setNextPage(Page*) [5] PageList::staticNew(unsigned long) [10] Space::getLeftMostEnd() const
+  [40] Page::getBucketList()   [4] CodeBlock::getBlockSize(unsigned char*) [19] Space::getRightMostEnd() const
+  [64] Page::getDynamicEnd()  [21] CodeBlock::readFromLeft(unsigned char*) [25] std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>::operator()()
+  [32] Page::blockIsInSpace(void*) [28] CodeBlock::readFromRight(unsigned char const*, unsigned char*&) [26] unsigned int std::uniform_int_distribution<unsigned int>::operator()<std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul> >(std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&, std::uniform_int_distribution<unsigned int>::param_type const&)
+  [65] Page::getStartOfPage() [41] CodeBlock::getNeededCodeBlockSize(unsigned long) [66] void std::vector<unsigned long*, std::allocator<unsigned long*> >::_M_emplace_back_aux<unsigned long* const&>(unsigned long* const&)
+   [6] Page::getStaticBlock(unsigned long) [59] CodeBlock::getCodeBlockForPayloadSize(unsigned char*, unsigned long, unsigned long&, bool) [35] std::_Rb_tree<int, std::pair<int const, int>, std::_Select1st<std::pair<int const, int> >, std::less<int>, std::allocator<std::pair<int const, int> > >::_M_get_insert_hint_unique_pos(std::_Rb_tree_const_iterator<std::pair<int const, int> >, int const&)
