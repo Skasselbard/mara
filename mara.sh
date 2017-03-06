@@ -12,7 +12,7 @@ race="n"
 
 function cleanBuild {
     rm mara Makefile
-    cmake .
+    cmake -DCMAKE_BUILD_TYPE=Release .
     make
 }
 
@@ -249,8 +249,8 @@ then
     compareResults
 fi
 
-echo "Errors: $errorRunsTotal (Corrupt: ${corruptedRuns}/${corruptedTotal}, Leaked: ${leakedRuns}/${leakedBlocksTotal})" >> "${simpleLogPath}-eval.log"
-
 git add ${simpleLogPath}.log ${simpleLogPath}-eval.log
 git commit -m "updated testlogs"
 git push
+
+cat "${simpleLogPath}-eval.log" | mail -s "${simpleLogPath}" "julian.gaede@uni-rostock.de"
