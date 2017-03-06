@@ -223,7 +223,7 @@ bool Page::deleteBlock(void *firstByte) {
     if (leftNeighbor && !CodeBlock::isFree((byte *) leftNeighbor)) {
         leftNeighbor = nullptr;
     }
-    if (rightNeighbor && !CodeBlock::isFree((byte *) rightNeighbor)) {
+    if (rightNeighbor && ((byte*) rightNeighbor >= staticEnd || !CodeBlock::isFree((byte *) rightNeighbor))) {
         rightNeighbor = nullptr;
     }
     mergeFreeSpace(leftNeighbor, (Space *) codeBlockStart, rightNeighbor);
