@@ -1,0 +1,7 @@
+requests=10000000 pDyn=0.2 pFree=0.5 maxSize=1000 maxSeed=2500
+           total      average    factor    
+mara       34068.940000 13.62757600 1.290765  
+malloc     26394.360000 10.55774400 1         
+difference 7674.580000 3.06983200
+
+Errors: 0 (Corrupt: 0/0, Leaked: 0/0)
