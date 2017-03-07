@@ -12,7 +12,7 @@
  * @param sizeInByte default size for malloc calls from mara
  * @return 0 on success
  */
-int setDefaultBlockSize(size_t sizeInByte);
+int setPageSize(size_t sizeInByte);
 
 /**
  * Reserves memory in the static sector. Memory in this sector is expected to live as long as the program. Memory
@@ -24,8 +24,5 @@ int setDefaultBlockSize(size_t sizeInByte);
  * until complete program termination.
  */
 void* staticNew(size_t sizeInByte);
-
-void* dynamicNew(size_t sizeInByte);
-int dynamicDelete(void* address);
 
 #endif //MARA_INTERFACE_H
