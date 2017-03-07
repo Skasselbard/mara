@@ -7,14 +7,14 @@ set(HEADER_FILES
     include/interface.h
         include/Page.h
         include/predefined.h
-        include/Statistic.h)
+        #include/Statistic.h
+        )
 
 set(SOURCE_FILES
         ${HEADER_FILES}
         main.c
         src/interface.c
-        src/Test.c
-        src/Statistic.c
+        #src/Statistic.c
         src/Page.c)
 
 set(CMAKE_INCLUDE_PATH

@@ -1,12 +1,21 @@
 #include <stdio.h>
 #include <memory.h>
 #include <time.h>
+#include <stdlib.h>
+#include "include/predefined.h"
+#include "include/interface.h"
 
 unsigned int minSize = 4;
 unsigned int maxSize = 4000;
-unsigned int sizeSpan = maxSize - minSize;
+unsigned int sizeSpan = 3996;
 unsigned int requests = 10000;
 unsigned int seed = 1234;
+
+void writeIntoBlock(unsigned long *address, size_t size) {
+    for (unsigned int i = 0; i < size / 8; i++) {
+        *(address + i) = (unsigned long) size;
+    }
+}
 
 // usage: mara test minSize maxSize requests seed
 main(int argc, char **argv) {
@@ -40,15 +49,10 @@ main(int argc, char **argv) {
         double timeSpent = (double) (end - begin) / CLOCKS_PER_SEC;
 
 #ifdef USE_MARA
-        printf("mara   %u %f", seed, timeSpent);
+        printf("mara   %u %f\n", seed, timeSpent);
 #else
-        printf("malloc %u %f", seed, timeSpent);
+        printf("malloc %u %f\n", seed, timeSpent);
 #endif
     }
 }
 
-void writeIntoBlock(unsigned long *address, size_t size) {
-    for (unsigned int i = 0; i < size / 8; i++) {
-        *(address + i) = size;
-    }
-}

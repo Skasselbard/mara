@@ -7,27 +7,10 @@
 
 #include <stdint.h>
 
-#define USE_MARA
+//#define USE_MARA
+//#define NDEBUG
 
-// enables/disables the alignment
-//#define ALIGNMENT
-#ifdef ALIGNMENT
-#define ALIGN_STATIC
-#define ALIGN_DYNAMIC
-#endif
-
-#define MAX_PAGE_SIZE 4294967295 //4GigaByte - 1Byte
-#define SMALLEST_POSSIBLE_FREE_SPACE 6 //6 byte
-
-#define STATISTIC
-//#define STATISTIC_VERBOSE
-#define ERROR_NEXT_POINTER (uint32_t)~0 // just ones from front to back (0b11111111111111111111111111111111111111111111....)
-#define PRECONDITION
-#define POSTCONDITION
+#define DEFAULT_PAGE_SIZE 104857600 //1 Gibibyte
 typedef uint8_t byte;
-
-enum ERROR_CODES{
-    STATIC_AND_DYNAMIC_SECTORS_OVERLAP
-};
 
 #endif //MARA_PREDEFINED_H
