@@ -2,11 +2,9 @@
 
 nParallel=10
 maxSeed=123456
-nVariablesPerIteration=50000
-pDynamic=0.2
-pFree=0.5
+nRequests=50000
+minSize=4
 maxSize=1000
-nIterations=1
 
 race="n"
 
@@ -61,16 +59,16 @@ then
    nParallel=${c}
 fi
 
-echo "Amount of variables per iteration? Default: ${nVariablesPerIteration}"
+echo "Amount of requests per iteration? Default: ${nRequests}"
 read c
 
 re='^[0-9]+$'
 
 if ! [[ ${c} =~ ${re} ]]
 then
-   echo "No valid number entered, defaulting to ${nVariablesPerIteration}"
+   echo "No valid number entered, defaulting to ${nRequests}"
    else
-   nVariablesPerIteration=${c}
+   nRequests=${c}
 fi
 
 echo "Maximum Seed? Default: ${maxSeed}"
@@ -85,28 +83,16 @@ then
    maxSeed=${c}
 fi
 
-echo "Probability of dynamic allocation? Default: ${pDynamic}"
+echo "Minimum size allocated? Default: ${minSize}"
 read c
 
-re='^(0\.[0-9]+|1(\.0)?)$'
+re='^[0-9]+$'
 
 if ! [[ ${c} =~ ${re} ]]
 then
-   echo "No valid number entered, defaulting to ${pDynamic}"
+   echo "No valid number entered, defaulting to ${minSize}"
    else
-   pDynamic=${c}
-fi
-
-echo "Probability of freeing memory each allocation? Default: ${pFree}"
-read c
-
-re='^(0\.[0-9]+|1(\.0)?)$'
-
-if ! [[ ${c} =~ ${re} ]]
-then
-   echo "No valid number entered, defaulting to ${pFree}"
-   else
-   pFree=${c}
+   minSize=${c}
 fi
 
 echo "Maximum size allocated? Default: ${maxSize}"
@@ -123,7 +109,7 @@ fi
 
 function maraTest {
   echo "started mara with seed $1"
-  ./mara test ${nVariablesPerIteration} ${pDynamic} ${pFree} 4 16 ${maxSize} ${nIterations} $1 >> ${logPath} 2>> ${simpleLogPath}_$1.err
+  ./mara test ${minSize} ${maxSize} ${nRequests} $1 >> ${logPath} 2>> ${simpleLogPath}_$1.err
   if ! [ -s ${simpleLogPath}_$1.err ]
   then
      rm ${simpleLogPath}_$1.err
@@ -134,21 +120,14 @@ startTime=`date +%Y-%m-%d_%H-%M-%S`
 
 simpleLogPath=testlogs/${startTime}
 setFlag "include/predefined.h" "USE_MARA" "y"
-
-if [ ${race} == "y" ]
-then
-    logPath=${simpleLogPath}.log
-    cleanBuild
-else
-    logPath=${simpleLogPath}.log
-fi
-
+logPath=${simpleLogPath}.log
+cleanBuild
 
 mkdir testlogs
 touch ${logPath}
 
-echo type     seed        time    dynamicMemoryPeak dynamicBlocksPeak staticMemoryPeak staticBlockPeak corruptedBlocks freeSpaceNotInBL >> "${simpleLogPath}.log"
-echo requests=${nVariablesPerIteration} pDyn=${pDynamic} pFree=${pFree} maxSize=${maxSize} maxSeed=${maxSeed} >> "${simpleLogPath}-eval.log"
+echo type     seed        time >> "${simpleLogPath}.log"
+echo requests=${nRequests} minSize=${minSize} maxSize=${maxSize} maxSeed=${maxSeed} >> "${simpleLogPath}-eval.log"
 
 function testLoop {
 
@@ -180,38 +159,14 @@ function compareResults {
     totalTimeMalloc=0
     totalDifference=0
 
-    corruptedTotal=0
-    corruptedRuns=0
-    leakedBlocksTotal=0
-    leakedRuns=0
-    errorRunsTotal=0
-
-    { while read -r type seed t dynMemPeak dynBlocksPeak staticMemPeak staticBlockPeak corruptedBlocks freeSpaceNotInBucketList
+    { while read -r type seed t
     do
         if [ "${type}" == "mara" ]
         then
             totalTimeMara=$(echo ${totalTimeMara} + ${t} | bc)
-		echo $totalTimeMara
-            corruptedTotal=$((corruptedTotal + corruptedBlocks))
-            leakedBlocksTotal=$((leakedBlocksTotal + freeSpaceNotInBucketList))
-            if [ "${corruptedBlocks}" -ne "0" ] || [ "${freeSpaceNotInBucketList}" -ne "0" ]
-            then
-                errorRunsTotal=$((errorRunsTotal+1))
-                if [ "${corruptedBlocks}" -ne "0" ]
-                then
-                    corruptedRuns=$((corruptedRuns + 1))
-                fi
-                if [ "${freeSpaceNotInBucketList}" -ne "0" ]
-                then
-                    leakedRuns=$((leakedRuns + 1))
-                fi
-            fi
         elif [ "${type}" == "malloc" ]
         then
             totalTimeMalloc=$(echo ${totalTimeMalloc} + ${t} | bc)
-		echo $totalTimeMalloc
-        else
-            echo "Invalid line: ${type} ${seed} ${t} ${dynMemPeak} ${dynBlocksPeak} ${staticMemPeak} ${staticBlockPeak}"
         fi
     done } < ${simpleLogPath}.log
 
