@@ -1,4 +1,3 @@
-
 // usage: mara test minSize maxSize requests seed
 main(int argc, char** argv) {
 if (argc >= 6 && strcmp(argv[1], "test") == 0) {
@@ -33,9 +32,9 @@ clock_t end = clock();
 double timeSpent = (double) (end-begin) / CLOCKS_PER_SEC;
 
 #ifdef USE_MARA
-printf("mara   %u %f", seed, timeSpent)
+printf("mara   %u %f", seed, timeSpent);
 #else
-printf("malloc %u %f", seed, timeSpent)
+printf("malloc %u %f", seed, timeSpent);
 #endif
 }
 }
