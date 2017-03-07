@@ -11,6 +11,8 @@ byte* startOfPage = NULL; //equals top of stack on page creation
 byte* endOfPage = NULL; //first byte not in the page anymore
 byte* topOfStack = NULL; //points to the next free byte
 
+size_t pageSize = DEFAULT_PAGE_SIZE;
+
 
 void* allocateStatic(size_t sizeInBytes) {
     //in case we get a request with size 0
@@ -18,7 +20,7 @@ void* allocateStatic(size_t sizeInBytes) {
     //if we don't have a page yet
     if(__glibc_unlikely(!startOfPage)) {
         //if we couldn't get one
-        if(__glibc_unlikely(createNewPage())) return malloc(sizeInBytes);
+        if(__glibc_unlikely(!createNewPage())) return malloc(sizeInBytes);
     }
     //if the request doesn't fit into the page
     if(__glibc_unlikely(topOfStack + sizeInBytes > endOfPage)){
@@ -29,6 +31,11 @@ void* allocateStatic(size_t sizeInBytes) {
     //default case: shift the top of stack, return the old topOfStack as pointer
     byte* p = topOfStack;
     topOfStack = topOfStack+sizeInBytes;
+    assert(startOfPage);
+    assert(topOfStack);
+    assert(endOfPage);
+    assert(startOfPage < topOfStack);
+    assert(endOfPage >= topOfStack);
     return p;
 }
 

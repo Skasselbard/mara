@@ -12,9 +12,5 @@ int setPageSize(size_t sizeInByte) {
 }
 
 void *staticNew(size_t sizeInByte) {
-#ifdef USE_MARA
-    return allocateStatic(sizeInByte)
-#else
-    return malloc(sizeInByte);
-#endif
+    return allocateStatic(sizeInByte);
 }

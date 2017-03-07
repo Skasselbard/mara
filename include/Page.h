@@ -8,7 +8,7 @@
 #include <stddef.h>
 #include "../include/predefined.h"
 
-size_t pageSize = MAX_PAGE_SIZE;
+size_t pageSize;
 
 void* allocateStatic(size_t sizeInBytes);
 int createNewPage();
