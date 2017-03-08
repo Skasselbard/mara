@@ -28,14 +28,6 @@ void statisticNewPage() {
         currentPage = newp;
     }
 }
-
-void printPagesRec(struct stat_page * current) {
-    if (current->next != 0) {
-        printPagesRec(current->next);
-    }
-    printf("%4u %u\n", current->pageNr, current->usedMemory);
-}
-
 void printPages() {
     struct stat_page * p = firstPage;
     while (p != 0) {
