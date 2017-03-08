@@ -6,6 +6,7 @@
 #include <assert.h>
 #include "../include/Page.h"
 #include "../include/predefined.h"
+#include "../include/Statistic.h"
 
 byte* startOfPage = NULL; //equals top of stack on page creation
 byte* endOfPage = NULL; //first byte not in the page anymore
@@ -31,6 +32,9 @@ void* allocateStatic(size_t sizeInBytes) {
     //default case: shift the top of stack, return the old topOfStack as pointer
     byte* p = topOfStack;
     topOfStack = topOfStack+sizeInBytes;
+#ifdef STATISTIC
+    statisticNewStatic(sizeInBytes);
+#endif
     assert(startOfPage);
     assert(topOfStack);
     assert(endOfPage);
@@ -44,6 +48,9 @@ int createNewPage(){
     if(__glibc_unlikely(!startOfPage)) return 0;
     endOfPage = startOfPage + pageSize;
     topOfStack = startOfPage;
+#ifdef STATISTIC
+    statisticNewPage();
+#endif
     assert(startOfPage);
     assert(topOfStack);
     assert(endOfPage);
