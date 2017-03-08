@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "include/predefined.h"
 #include "include/interface.h"
+#include "include/Statistic.h"
 
 unsigned int minSize = 4;
 unsigned int maxSize = 4000;
@@ -49,7 +50,11 @@ main(int argc, char **argv) {
         double timeSpent = (double) (end - begin) / CLOCKS_PER_SEC;
 
 #ifdef USE_MARA
-        printf("mara   %u %f\n", seed, timeSpent);
+#ifdef STATISTIC
+        printf("mara   %u %15f %12f\n", seed, timeSpent, statisticAverageFillPercentage());
+#else
+        printf("mara   %u %15f\n", seed, timeSpent);
+#endif
 #else
         printf("malloc %u %f\n", seed, timeSpent);
 #endif
