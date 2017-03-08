@@ -1,7 +1,0 @@
-requests=10000000 minSize=4 maxSize=1000 maxSeed=10
-           total      average    factor    
-mara       13.241355  1.32413550 .579393   
-malloc     22.853836  2.28538360 1         
-difference -9.612481  -.96124810
-
-Errors:  (Corrupt: /, Leaked: /)

@@ -182,8 +182,6 @@ function compareResults {
     printf "%-10s %-10s %-10s %-10s\n" "mara" ${totalTimeMara} ${avrgMara} ${factor}
     printf "%-10s %-10s %-10s %-10s\n" "malloc" ${totalTimeMalloc} ${avrgMalloc} 1
     printf "%-10s %-10s %-10s\n" "difference" ${totalDifference} ${avrgDifference}
-    echo
-    echo "Errors: $errorRunsTotal (Corrupt: ${corruptedRuns}/${corruptedTotal}, Leaked: ${leakedRuns}/${leakedBlocksTotal})"
     } >> "${simpleLogPath}-eval.log"
 
 }

@@ -7,10 +7,14 @@
 
 #include <stdint.h>
 
-//#define USE_MARA
-//#define NDEBUG
+#define USE_MARA
 
-#define DEFAULT_PAGE_SIZE 4294967296 
+
+//#define DEFAULT_PAGE_SIZE 4294967296 
+#define DEFAULT_PAGE_SIZE 104857600 //100MB
+
+//#define STATISTIC
+
 typedef uint8_t byte;
 
 #endif //MARA_PREDEFINED_H
