@@ -29,7 +29,7 @@ void* allocateStatic(size_t sizeInBytes) {
 #ifdef USE_REALLOC
         void* newPage = realloc(startOfPage, topOfStack - startOfPage);
         if(newPage != startOfPage){
-            fprintf(stderr, "Fatal: realloc changed the pointer!");
+            fprintf(stderr, "Fatal: realloc changed the pointer!\n");
             fflush(stderr);
             exit(1);
         }
@@ -55,7 +55,7 @@ int createNewPage(){
     startOfPage = malloc(pageSize);
     if(__glibc_unlikely(!startOfPage)){
 #ifdef LOGGING
-        printf("Warn: couldn't allocate a new Page!");
+        printf("Warn: couldn't allocate a new Page!\n");
 #endif
         return 0;
     }
@@ -69,5 +69,8 @@ int createNewPage(){
     assert(endOfPage);
     assert(startOfPage = topOfStack);
     assert(endOfPage > topOfStack);
+#ifdef LOGGING
+    printf("Info:  allocated new page");
+#endif
     return 1;
 }
