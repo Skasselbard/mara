@@ -27,6 +27,8 @@ public:
      * as a 4 byte integer interpreted as offset from the last byte (to the right)
      * @param next pointer to the next free space. Can be null. If null the offset is set to 0 which will be interpreted
      * as if there is no successor.
+     * @param startOfPage the start of the page the space is in. Is needed to calculate the offset that is actually
+     * saved in the space
      */
     void setNext(FreeSpace *next, byte *startOfPage);
 

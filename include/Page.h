@@ -55,10 +55,11 @@ private:
     size_t align(size_t requestedSizeInByte);
 
     /**
-     * Merges the three blocks into one Block of free Space.
+     * Merges up to three blocks into one Block of free Space.
+     * Only free blocks are merged.
      * The bucketList will be updated accordingly<br/>
      * WARNING: the blocks have to be adjacent to each other. Merging distant blocks will cause undefined behavior.
-     * Probably causing the world as we know it, cease to exist!
+     * Probably causing the world as we know it, to cease to exist!
      * @param leftBlock leftBlock to be merged. Ignored if null
      * @param middleBlock middle Block to be merged
      * @param rightBlock right Block to be merged. Ignored if null
@@ -101,8 +102,15 @@ private:
      */
     FreeSpace* cutRightFromFreeSpace(FreeSpace *freeSpace, size_t bytesToCutOf);
 
+    /**
+     * generates the first bucket entry
+     * @return the first bucket entry
+     */
     FreeSpace* generateFirstBucketEntry();
 
+    /**
+     * initializes the bucket list
+     */
     void initializeBucketList();
 
 
@@ -132,9 +140,23 @@ public:
      */
     bool staticBlockFitInPage(size_t blockSizeInByte);
 
+    /**
+     * tries to reserve a dynamic block in this page, and returns it
+     * @param sizeInByte the size of the space requested
+     * @return a pointer to the space, or nullptr if no space was found
+     */
     OccupiedSpace * getDynamicBlock(size_t sizeInByte);
 
+    /**
+     *
+     * @return the next page in the ring storage
+     */
     Page* getNextPage();
+
+    /**
+     * sets the next page
+     * @param nextPage the next page
+     */
     void setNextPage(Page* nextPage);
 
     /**
@@ -144,15 +166,35 @@ public:
      */
     bool blockIsInSpace(void* firstByte);
 
-
+    /**
+     * deletes a reserved block
+     * @param firstByte the first byte of the block
+     * @return true if successful, false otherwise
+     */
     bool deleteBlock(void* firstByte);
 
+    /**
+     *
+     * @return a pointer to the first byte in the page
+     */
     void * getStartOfPage();
 
+    /**
+     *
+     * @return a pointer to the first byte in the static area
+     */
     byte * getStaticEnd();
 
+    /**
+     *
+     * @return the dynamic end
+     */
     byte * getDynamicEnd();
 
+    /**
+     *
+     * @return the bucket list
+     */
     BucketList * getBucketList();
 
 };

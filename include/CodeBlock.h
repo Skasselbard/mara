@@ -56,7 +56,7 @@ public:
     static size_t readFromLeft(byte* firstByte);
     /**
      * Reads the CodeBlock from the right
-     * @param firstByte the first byte from the CodeBlock
+     * @param firstByte the rightmost byte from the CodeBlock
      * @param outLeftByte output for the leftmost byte of the block
      * @return the size of the memory block
      */
@@ -69,7 +69,7 @@ public:
      * @param memoryBlockSize size of the memory block which should be represented by the CodeBlock
      * @param returnArraySize size of the array returned by this function
      * @return an array of bytes, containing the codeBlock representing the memory block size.
-     * The size of the array is stored in the last parameter. It should correspond to the leftStartOfBlock parameter
+     * The size of the array is stored in the second to last parameter. It should correspond to the leftStartOfBlock parameter
      */
     static byte *getCodeBlockForPayloadSize(byte *leftStartOfBlock, size_t memoryBlockSize, size_t &returnArraySize,
                                                 bool isFree);
