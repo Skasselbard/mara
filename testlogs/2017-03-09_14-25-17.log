@@ -1,0 +1,21 @@
+type seed time
+Info:  allocated new pagemara   1        0.006820
+Info:  allocated new pagemara   2        0.006063
+Info:  allocated new pagemara   3        0.014371
+Info:  allocated new pagemara   4        0.006494
+Info:  allocated new pagemara   5        0.013102
+Info:  allocated new pagemara   6        0.007084
+Info:  allocated new pagemara   7        0.006496
+Info:  allocated new pagemara   8        0.007287
+Info:  allocated new pagemara   9        0.006540
+Info:  allocated new pagemara   10        0.006695
+malloc 1 0.012064
+malloc 2 0.011466
+malloc 3 0.012165
+malloc 4 0.015149
+malloc 5 0.014819
+malloc 6 0.016588
+malloc 7 0.011677
+malloc 8 0.014326
+malloc 9 0.015071
+malloc 10 0.014787
