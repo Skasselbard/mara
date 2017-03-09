@@ -1,0 +1,17 @@
+type seed time
+mara   1        5.040261
+mara   2        4.964985
+mara   3        4.821069
+mara   4        4.665700
+mara   6        5.005369
+mara   7        4.893746
+mara   8        4.819961
+mara   10        5.381995
+malloc 1 5.603504
+malloc 2 5.625974
+malloc 4 6.279025
+malloc 5 5.644747
+malloc 7 6.135294
+malloc 8 5.726206
+malloc 9 5.955512
+malloc 10 5.456993
