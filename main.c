@@ -3,7 +3,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include "include/predefined.h"
-#include "include/interface.h"
+#include "include/mara.h"
 #include "include/Statistic.h"
 
 unsigned int minSize = 4;

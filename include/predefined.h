@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 
-//#define USE_MARA
+#define USE_MARA
 
 
 //#define DEFAULT_PAGE_SIZE 4294967296 

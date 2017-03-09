@@ -4,7 +4,7 @@
 
 #include <stddef.h>
 #include <malloc.h>
-#include "../include/interface.h"
+#include "../include/mara.h"
 #include "../include/Page.h"
 
 int setPageSize(size_t sizeInByte) {
