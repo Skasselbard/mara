@@ -25,7 +25,18 @@ int setDefaultBlockSize(size_t sizeInByte);
  */
 void* staticNew(size_t sizeInByte);
 
+/**
+ * Reserves memory in the dynamic sector. Memory in this sector can be freed using the dynamicDelete method.
+ * @param sizeInByte how many bytes shall be reserved
+ * @return a pointer to the first byte in a reserved space with at least the requested size
+ */
 void* dynamicNew(size_t sizeInByte);
+
+/**
+ * frees a previously reserved space in the dynamic sector
+ * @param address the pointer that was returned by dynamicNew
+ * @return true if the operation was successful, false elsewhen
+ */
 int dynamicDelete(void* address);
 
 #endif //MARA_INTERFACE_H
