@@ -12,10 +12,14 @@ unsigned int sizeSpan = 3996;
 unsigned int requests = 10000;
 unsigned int seed = 1234;
 
+uint8_t fillWith = 0xff;
+
 void writeIntoBlock(unsigned long *address, size_t size) {
-    for (unsigned int i = 0; i < size / 8; i++) {
-        *(address + i) = (unsigned long) size;
+    uint8_t *firstByte = (uint8_t *) address;
+    for (int i = 0; i < size; i++) {
+        *(firstByte + i) = fillWith;
     }
+    fillWith = (uint8_t) ((fillWith == 0xff) ? 0x00 : 0xff);
 }
 
 // usage: mara test minSize maxSize requests seed
