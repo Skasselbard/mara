@@ -4,6 +4,7 @@
 
 #include <malloc.h>
 #include <assert.h>
+#include <stdlib.h>
 #include "../include/Page.h"
 #include "../include/predefined.h"
 #include "../include/Statistic.h"
@@ -25,7 +26,14 @@ void* allocateStatic(size_t sizeInBytes) {
     }
     //if the request doesn't fit into the page
     if(__glibc_unlikely(topOfStack + sizeInBytes > endOfPage)){
-        realloc(startOfPage, topOfStack - startOfPage);
+#ifdef USE_REALLOC
+        void* newPage = realloc(startOfPage, topOfStack - startOfPage);
+        if(newPage != startOfPage){
+            fprintf(stderr, "Fatal: realloc changed the pointer!");
+            fflush(stderr);
+            exit(1);
+        }
+#endif
         //if we couldn't get a new one
         if(__glibc_unlikely(createNewPage())) return malloc(sizeInBytes);
     }
@@ -45,7 +53,12 @@ void* allocateStatic(size_t sizeInBytes) {
 
 int createNewPage(){
     startOfPage = malloc(pageSize);
-    if(__glibc_unlikely(!startOfPage)) return 0;
+    if(__glibc_unlikely(!startOfPage)){
+#ifdef LOGGING
+        printf("Warn: couldn't allocate a new Page!");
+#endif
+        return 0;
+    }
     endOfPage = startOfPage + pageSize;
     topOfStack = startOfPage;
 #ifdef STATISTIC
