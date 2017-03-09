@@ -109,7 +109,7 @@ fi
 
 function maraTest {
   echo "started mara with seed $1"
-  ./mara test ${minSize} ${maxSize} ${nRequests} $1 >> ${logPath} 2>> ${simpleLogPath}_$1.err
+  ./mara_test test ${minSize} ${maxSize} ${nRequests} $1 >> ${logPath} 2>> ${simpleLogPath}_$1.err
   if ! [ -s ${simpleLogPath}_$1.err ]
   then
      rm ${simpleLogPath}_$1.err
@@ -139,7 +139,7 @@ function testLoop {
       while [ ${n} -ge ${nParallel} ]
       do
         oldN=${n}
-        n=$(ps aux | grep -c "./mara test")
+        n=$(ps aux | grep -c "./mara_test test")
         n=$((n-1))
         if [ ${oldN} -ne ${n} ] && [ ${n} -ge ${nParallel} ]
         then
@@ -195,11 +195,12 @@ then
     testLoop
 
     echo "Waiting for last instances to finish"
-    while [ $(ps aux | grep -c "./mara test") -gt 1 ]
+    while [ $(ps aux | grep -c "./mara_test test") -gt 1 ]
     do
         sleep 1
     done
     compareResults
+    setFlag "include/predefined.h" "USE_MARA" "y"
 fi
 
 git add ${simpleLogPath}.log ${simpleLogPath}-eval.log

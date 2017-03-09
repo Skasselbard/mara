@@ -7,7 +7,11 @@
 #include <stdlib.h>
 #include "../include/Page.h"
 #include "../include/predefined.h"
+
+#ifdef STATISTIC
 #include "../include/Statistic.h"
+
+#endif
 
 byte* startOfPage = NULL; //equals top of stack on page creation
 byte* endOfPage = NULL; //first byte not in the page anymore
@@ -69,8 +73,5 @@ int createNewPage(){
     assert(endOfPage);
     assert(startOfPage = topOfStack);
     assert(endOfPage > topOfStack);
-#ifdef LOGGING
-    printf("Info:  allocated new page");
-#endif
     return 1;
 }
