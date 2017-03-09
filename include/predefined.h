@@ -7,13 +7,14 @@
 
 #include <stdint.h>
 
-#define USE_MARA
+//#define USE_MARA
 
 
 //#define DEFAULT_PAGE_SIZE 4294967296 
 #define DEFAULT_PAGE_SIZE 104857600 //100MB
-
+#define USE_REALLOC
 //#define STATISTIC
+#define LOGGING
 
 typedef uint8_t byte;
 

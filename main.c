@@ -19,7 +19,7 @@ void writeIntoBlock(unsigned long *address, size_t size) {
 }
 
 // usage: mara test minSize maxSize requests seed
-main(int argc, char **argv) {
+int main(int argc, char **argv) {
     if (argc >= 6 && strcmp(argv[1], "test") == 0) {
 
         sscanf(argv[2], "%u", &minSize);
