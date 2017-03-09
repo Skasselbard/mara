@@ -2,9 +2,9 @@
 #include <memory.h>
 #include <time.h>
 #include <stdlib.h>
-#include "include/predefined.h"
-#include "include/mara.h"
-#include "include/Statistic.h"
+#include "../library/include/predefined.h"
+#include "../library/include/mara.h"
+#include "../library/include/Statistic.h"
 
 unsigned int minSize = 4;
 unsigned int maxSize = 4000;

@@ -1,26 +1,18 @@
 cmake_minimum_required(VERSION 3.3)
-project(mara)
+project(mara_test)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
 
-set(HEADER_FILES
-        include/mara.h
-        include/Page.h
-        include/predefined.h
-        include/Statistic.h
-        )
+add_subdirectory(library)
 
-set(SOURCE_FILES
-        ${HEADER_FILES}
-        src/mara.c
-        src/Statistic.c
-        src/Page.c)
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
 
 set(CMAKE_INCLUDE_PATH
         ${CMAKE_INCLUDE_PATH}
-        include
+        library/include
         )
 
-add_library(mara ${SOURCE_FILES})
-add_executable(mara_test main.c)
+add_executable(mara_test testExecutable/main.c)
+add_dependencies(mara_test mara)
 TARGET_LINK_LIBRARIES(mara_test mara)
