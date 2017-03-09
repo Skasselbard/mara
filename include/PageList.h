@@ -16,6 +16,11 @@ private:
      */
     static Page *firstPage;
 
+    /**
+     * Inserts a new page into cyclic list after the specified page.
+     * @param currentPage the page after which a new page will be inserted
+     * @return {@code true} if a new page was successfully inserted.
+     */
     static bool addPageToList(Page *currentPage);
     static bool iteratePage(Page *&currentPage);
 
