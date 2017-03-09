@@ -13,7 +13,8 @@
  * The code block which encodes the size of the memory block dynamically
  *
  * A code block consist of one ore more bytes. The first bit encodes if there belong more bytes to the block
- * or if this one is the last. The rest of the bytes encoding the size of the memory block
+ * or if this one is the last. In the first byte the second bit encodes if the block is free. The rest of the bytes
+ * encode the size of the memory block
  *
  * To encode and decode the codeBlock, an automaton is used
  * In the first state, it examines if there are more than on byte needed to encode the memory block size.
@@ -27,19 +28,20 @@
  * Examples:
  * Legend:
  *      0 or 1  - bit which is used to encode the codeBlock size
+ *      f       - free-bit 1=free, 0=used
  *      x       - bit which is used to encode the memory block size
  *      |       - byte delimiter
  *      .       - half byte delimiter
  *
  *  1. Memory block size < 2⁷ byte
- *      CodeBlock: 1xxx.xxxx
+ *      CodeBlock: 1fxx.xxxx
  *
  *  2. 2⁷ < Memory block size < 2¹⁴
- *      CodeBlock: 0xxx.xxxx | 0xxx.xxxx
+ *      CodeBlock: 0fxx.xxxx | 0xxx.xxxx
  *
  *  3. 2¹⁴ < Memory block size
- *      CodeBlock: 0xxx.xxxx | 1xxx.xxxx | 0xxx.xxxx
- *      CodeBlock: 0xxx.xxxx | 1xxx.xxxx | 1xxx.xxxx | 0xxx.xxxx
+ *      CodeBlock: 0fxx.xxxx | 1xxx.xxxx | 0xxx.xxxx
+ *      CodeBlock: 0fxx.xxxx | 1xxx.xxxx | 1xxx.xxxx | 0xxx.xxxx
  *                  .
  *                  .
  *                  .
