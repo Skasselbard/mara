@@ -6,6 +6,11 @@ nRequestsDef=50000
 minSizeDef=4
 maxSizeDef=1000
 
+pageSize=104857600
+
+race="n"
+online="n"
+
 function cleanBuild {
     rm mara Makefile
     cmake -DCMAKE_BUILD_TYPE=Release .
@@ -14,18 +19,13 @@ function cleanBuild {
 
 function setFlag {
     file=$1
-    flagName=$2
-    enabled=$3
+    oldLine=$2
+    newLine=$3
 
-    lineNumber=$(grep -n "#define ${flagName}" ${file})
+    lineNumber=$(grep -n "${oldLine}" ${file})
     lineNumber=$( cut -d ':' -f 1 <<< "$lineNumber" )
 
-    if [ ${enabled} == "y" ]
-    then
-        newLine="#define ${flagName}"
-    else
-        newLine="\/\/#define ${flagName}"
-    fi
+    echo $lineNumber
 
     sed -i "${lineNumber}s/.*/${newLine}/" ${file}
 
@@ -114,11 +114,13 @@ function userInteraction {
 function showHelp {
     help1="usage: mara.sh [-h (Help)] [-i instances (Parallel instances)] [-s seed (Max seed)]"
     help2="\t[-r requests (# of Requests)] [-n minSize (Smallest Size)] [-x maxSize (Biggest Size)]"
+    help3="\t[-p pageSize (PageSize in Bytes)]"
     echo ${help1}
     echo -e ${help2}
+    echo -e ${help3}
 }
 
-while getopts ":hmi:s:r:n:x:" flag
+while getopts ":homi:s:r:n:x:p:" flag
 do
     case ${flag} in
         h)
@@ -126,34 +128,45 @@ do
         exit
         ;;
         i)
-        if [ ${OPTARG} != "" ]
+        if [ -n ${OPTARG} ]
         then
             nParallel=${OPTARG}
         fi
         ;;
         s)
-        if [ ${OPTARG} != "" ]
+        if [ -n ${OPTARG} ]
         then
             maxSeed=${OPTARG}
         fi
         ;;
         r)
-        if [ ${OPTARG} != "" ]
+        if [ -n ${OPTARG} ]
         then
             nRequests=${OPTARG}
         fi
         ;;
         n)
-        if [ ${OPTARG} != "" ]
+        if [ -n ${OPTARG} ]
         then
             minSize=${OPTARG}
         fi
         ;;
         x)
-        if [ ${OPTARG} != "" ]
+        if [ -n ${OPTARG} ]
         then
             maxSize=${OPTARG}
         fi
+        ;;
+        p)
+        if [ -n ${OPTARG} ]
+        then
+            echo "hurr"
+            pageSize=${OPTARG}
+            setFlag "library/include/predefined.h" "#define DEFAULT_PAGE_SIZE" "#define DEFAULT_PAGE_SIZE ${OPTARG}"
+        fi
+        ;;
+        o)
+        online="y"
         ;;
         m)
         race="y"
@@ -186,7 +199,7 @@ function maraTest {
 startTime=`date +%Y-%m-%d_%H-%M-%S`
 
 simpleLogPath=testlogs/${startTime}
-setFlag "library/include/predefined.h" "USE_MARA" "y"
+setFlag "library/include/predefined.h" "#define USE_MARA" "#define USE_MARA"
 logPath=${simpleLogPath}.log
 cleanBuild
 
@@ -267,7 +280,7 @@ function compareResults {
 
 if [ ${race} == "y" ]
 then
-    setFlag "library/include/predefined.h" "USE_MARA" "n"
+    setFlag "library/include/predefined.h" "#define USE_MARA" "\/\/#define USE_MARA"
     cleanBuild
     logPath=${simpleLogPath}.log
     testLoop
@@ -278,12 +291,14 @@ then
         sleep 1
     done
     compareResults
-    setFlag "library/include/predefined.h" "USE_MARA" "y"
+    setFlag "library/include/predefined.h" "#define USE_MARA" "#define USE_MARA"
 fi
 
+if [ ${online} == "y" ]
+then
+    git add ${simpleLogPath}.log ${simpleLogPath}-eval.log
+    git commit -m "updated testlogs"
+    git push
 
-#git add ${simpleLogPath}.log ${simpleLogPath}-eval.log
-#git commit -m "updated testlogs"
-#git push
-
-#cat "${simpleLogPath}-eval.log" | mail -s "${simpleLogPath}" "julian.gaede@uni-rostock.de"
+    cat "${simpleLogPath}-eval.log" | mail -s "${simpleLogPath}" "julian.gaede@uni-rostock.de"
+fi
