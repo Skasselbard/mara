@@ -109,7 +109,7 @@ fi
 
 function maraTest {
   echo "started mara with seed $1"
-  ./mara_test test ${minSize} ${maxSize} ${nRequests} $1 >> ${logPath} 2>> ${simpleLogPath}_$1.err
+  ./mara_test test ${minSize} ${maxSize} ${nRequests} $1 >> ${logPath} 2> ${simpleLogPath}_$1.err
   if ! [ -s ${simpleLogPath}_$1.err ]
   then
      rm ${simpleLogPath}_$1.err
@@ -119,7 +119,7 @@ function maraTest {
 startTime=`date +%Y-%m-%d_%H-%M-%S`
 
 simpleLogPath=testlogs/${startTime}
-setFlag "include/predefined.h" "USE_MARA" "y"
+setFlag "library/include/predefined.h" "USE_MARA" "y"
 logPath=${simpleLogPath}.log
 cleanBuild
 
@@ -159,11 +159,19 @@ function compareResults {
     totalTimeMalloc=0
     totalDifference=0
 
-    { while read -r type seed t
+    totalPageLoad=0
+    corrupted=0
+
+    { while read -r type seed t pageLoad checkSuccess
     do
         if [ "${type}" == "mara" ]
         then
             totalTimeMara=$(echo ${totalTimeMara} + ${t} | bc)
+            totalPageLoad=$(echo ${totalPageLoad} + ${pageLoad} | bc)
+            if [ "$checkSuccess" == "0" ]
+            then
+                corrupted=$((corrupted+1))
+            fi
         elif [ "${type}" == "malloc" ]
         then
             totalTimeMalloc=$(echo ${totalTimeMalloc} + ${t} | bc)
@@ -176,12 +184,15 @@ function compareResults {
     avrgMara=$(echo "scale = 8; ${totalTimeMara} / ${maxSeed}" | bc)
     avrgMalloc=$(echo "scale = 8; ${totalTimeMalloc} / ${maxSeed}" | bc)
     avrgDifference=$(echo "scale = 8; ${totalDifference} / ${maxSeed}" | bc)
+    avrgPageLoad=$(echo "scale = 8; ${totalPageLoad} / ${maxSeed}" | bc)
 
     {
     printf "%-10s %-10s %-10s %-10s\n" " " "total" "average" "factor"
     printf "%-10s %-10s %-10s %-10s\n" "mara" ${totalTimeMara} ${avrgMara} ${factor}
     printf "%-10s %-10s %-10s %-10s\n" "malloc" ${totalTimeMalloc} ${avrgMalloc} 1
     printf "%-10s %-10s %-10s\n" "difference" ${totalDifference} ${avrgDifference}
+
+    echo "Corrupted blocks: ${corrupted}, average page load: ${avrgPageLoad}"
     } >> "${simpleLogPath}-eval.log"
 
 }
@@ -189,7 +200,7 @@ function compareResults {
 
 if [ ${race} == "y" ]
 then
-    setFlag "include/predefined.h" "USE_MARA" "n"
+    setFlag "library/include/predefined.h" "USE_MARA" "n"
     cleanBuild
     logPath=${simpleLogPath}.log
     testLoop
@@ -200,11 +211,12 @@ then
         sleep 1
     done
     compareResults
-    setFlag "include/predefined.h" "USE_MARA" "y"
+    setFlag "library/include/predefined.h" "USE_MARA" "y"
 fi
 
-git add ${simpleLogPath}.log ${simpleLogPath}-eval.log
-git commit -m "updated testlogs"
-git push
 
-cat "${simpleLogPath}-eval.log" | mail -s "${simpleLogPath}" "julian.gaede@uni-rostock.de"
+#git add ${simpleLogPath}.log ${simpleLogPath}-eval.log
+#git commit -m "updated testlogs"
+#git push
+
+#cat "${simpleLogPath}-eval.log" | mail -s "${simpleLogPath}" "julian.gaede@uni-rostock.de"
