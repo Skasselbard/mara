@@ -1,12 +1,10 @@
 #!/bin/bash
 
-nParallel=10
-maxSeed=123456
-nRequests=50000
-minSize=4
-maxSize=1000
-
-race="n"
+nParallelDef=2
+maxSeedDef=100
+nRequestsDef=50000
+minSizeDef=4
+maxSizeDef=1000
 
 function cleanBuild {
     rm mara Makefile
@@ -33,85 +31,152 @@ function setFlag {
 
 }
 
-echo "Race? Press y to race against malloc!"
-read -n1 race
-echo
-
-if [ ${race} == "n" ]
-then
-    echo "Clean build? Press 'y' to clean!"
-    read -n1 c
+function userInteraction {
+    echo "Race? Press y to race against malloc!"
+    read -n1 race
     echo
-    if [ ${c} == "y" ]
+
+
+    if [ ${race} == "n" ]
     then
-        cleanBuild
+        echo "Clean build? Press 'y' to clean!"
+        read -n1 c
+        echo
+        if [ ${c} == "y" ]
+        then
+            cleanBuild
+        fi
     fi
-fi
 
-echo "Maximum parallel instances (give or take 1-2)? Default: 10"
-read c
+    echo "Maximum parallel instances (give or take 1-2)? Default: ${nParallelDef}"
+    read c
 
-re='^[0-9]+$'
-if ! [[ ${c} =~ ${re} ]]
+    re='^[0-9]+$'
+    if ! [[ ${c} =~ ${re} ]]
+    then
+       echo "No valid number entered, defaulting to ${nParallelDef}"
+       nParallel=${nParallelDef}
+       else
+       nParallel=${c}
+    fi
+
+    echo "Amount of requests per iteration? Default: ${nRequestsDef}"
+    read c
+
+    re='^[0-9]+$'
+    if ! [[ ${c} =~ ${re} ]]
+    then
+       echo "No valid number entered, defaulting to ${nRequestsDef}"
+       nRequests=${nRequestsDef}
+       else
+       nRequests=${c}
+    fi
+
+    echo "Maximum Seed? Default: ${maxSeedDef}"
+    read c
+
+    re='^[0-9]+$'
+    if ! [[ ${c} =~ ${re} ]]
+    then
+       echo "No valid number entered, defaulting to ${maxSeedDef}"
+       maxSeed=${maxSeedDef}
+       else
+       maxSeed=${c}
+    fi
+
+    echo "Minimum size allocated? Default: ${minSizeDef}"
+    read c
+
+    re='^[0-9]+$'
+
+    if ! [[ ${c} =~ ${re} ]]
+    then
+       echo "No valid number entered, defaulting to ${minSizeDef}"
+       minSize=${minSizeDef}
+       else
+       minSize=${c}
+    fi
+
+    echo "Maximum size allocated? Default: ${maxSizeDef}"
+    read c
+
+    re='^[0-9]+$'
+
+    if ! [[ ${c} =~ ${re} ]]
+    then
+       echo "No valid number entered, defaulting to ${maxSizeDef}"
+       maxSize=${maxSizeDef}
+       else
+       maxSize=${c}
+    fi
+}
+
+function showHelp {
+    help1="usage: mara.sh [-h (Help)] [-i instances (Parallel instances)] [-s seed (Max seed)]"
+    help2="\t[-r requests (# of Requests)] [-n minSize (Smallest Size)] [-x maxSize (Biggest Size)]"
+    echo ${help1}
+    echo -e ${help2}
+}
+
+while getopts ":hmi:s:r:n:x:" flag
+do
+    case ${flag} in
+        h)
+        showHelp
+        exit
+        ;;
+        i)
+        if [ ${OPTARG} != "" ]
+        then
+            nParallel=${OPTARG}
+        fi
+        ;;
+        s)
+        if [ ${OPTARG} != "" ]
+        then
+            maxSeed=${OPTARG}
+        fi
+        ;;
+        r)
+        if [ ${OPTARG} != "" ]
+        then
+            nRequests=${OPTARG}
+        fi
+        ;;
+        n)
+        if [ ${OPTARG} != "" ]
+        then
+            minSize=${OPTARG}
+        fi
+        ;;
+        x)
+        if [ ${OPTARG} != "" ]
+        then
+            maxSize=${OPTARG}
+        fi
+        ;;
+        m)
+        race="y"
+        ;;
+        *)
+        echo "Invalid parameter: $flag"
+        showHelp
+        exit
+        ;;
+    esac
+done
+
+echo "${nParallel}  ${maxSeed}  ${nRequests}  ${minSize}  ${maxSize}"
+
+if [ -z ${nParallel} ] || [ -z ${maxSeed} ] || [ -z ${nRequests} ] || [ -z ${minSize} ] || [ -z ${maxSize} ]
 then
-   echo "No valid number entered, defaulting to ${nParallel}"
-   else
-   nParallel=${c}
-fi
-
-echo "Amount of requests per iteration? Default: ${nRequests}"
-read c
-
-re='^[0-9]+$'
-
-if ! [[ ${c} =~ ${re} ]]
-then
-   echo "No valid number entered, defaulting to ${nRequests}"
-   else
-   nRequests=${c}
-fi
-
-echo "Maximum Seed? Default: ${maxSeed}"
-read c
-
-re='^[0-9]+$'
-
-if ! [[ ${c} =~ ${re} ]]
-then
-   echo "No valid number entered, defaulting to ${maxSeed}"
-   else
-   maxSeed=${c}
-fi
-
-echo "Minimum size allocated? Default: ${minSize}"
-read c
-
-re='^[0-9]+$'
-
-if ! [[ ${c} =~ ${re} ]]
-then
-   echo "No valid number entered, defaulting to ${minSize}"
-   else
-   minSize=${c}
-fi
-
-echo "Maximum size allocated? Default: ${maxSize}"
-read c
-
-re='^[0-9]+$'
-
-if ! [[ ${c} =~ ${re} ]]
-then
-   echo "No valid number entered, defaulting to ${maxSize}"
-   else
-   maxSize=${c}
+    echo "Not all parameters were specified, entering interactive mode."
+    userInteraction
 fi
 
 function maraTest {
   echo "started mara with seed $1"
-  ./mara_test test ${minSize} ${maxSize} ${nRequests} $1
-  #>> ${logPath}
-  #2> ${simpleLogPath}_$1.err
+  ./mara_test test ${minSize} ${maxSize} ${nRequests} $1 >> ${logPath} 2> ${simpleLogPath}_$1.err
   if ! [ -s ${simpleLogPath}_$1.err ]
   then
      rm ${simpleLogPath}_$1.err
