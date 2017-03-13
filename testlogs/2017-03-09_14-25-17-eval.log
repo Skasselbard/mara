@@ -1,5 +1,0 @@
-requests=50000 minSize=4 maxSize=1000 maxSeed=10
-           total      average    factor    
-mara       0          0          0         
-malloc     .138112    .01381120  1         
-difference -.138112   -.01381120

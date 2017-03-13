@@ -10,8 +10,9 @@
 #define USE_MARA
 
 
-//#define DEFAULT_PAGE_SIZE 4294967296 
-#define DEFAULT_PAGE_SIZE 104857600 //100MB
+// Stored page sizes: 104857600 (100MB),
+//                    4294967296 (4GB)
+#define DEFAULT_PAGE_SIZE 104857600
 #define USE_REALLOC
 #define STATISTIC
 #define LOGGING
