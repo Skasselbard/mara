@@ -12,14 +12,43 @@ unsigned int sizeSpan = 3996;
 unsigned int requests = 10000;
 unsigned int seed = 1234;
 
+//#define FILLSIMPLE
+
+#ifdef FILLSIMPLE
 uint8_t fillWith = 0xff;
+#endif
 
 void writeIntoBlock(unsigned long *address, size_t size) {
-    uint8_t *firstByte = (uint8_t *) address;
+    uint32_t *firstByte = (uint32_t *) address;
+#ifdef FILLSIMPLE
     for (int i = 0; i < size; i++) {
-        *(firstByte + i) = fillWith;
+        *((byte *)firstByte + i) = fillWith;
     }
     fillWith = (uint8_t) ((fillWith == 0xff) ? 0x00 : 0xff);
+#else
+    for (int i = 0; i < size / sizeof(uint32_t); i++) {
+        *(firstByte + i) = (uint32_t) size;
+    }
+#endif
+}
+
+int checkPages() {
+    struct stat_page * p = firstPage;
+    while (p != 0) {
+        byte * currentByte = p->pointer;
+        while (currentByte < p->pointer + p->usedMemory) {
+            uint32_t size = * (uint32_t *) currentByte;
+            for (int i = 0; i < size / sizeof(uint32_t); i++) {
+                if (* (uint32_t *) currentByte != size) {
+                    return 0;
+                }
+                currentByte += sizeof(uint32_t);
+            }
+            currentByte += size % sizeof(uint32_t);
+        }
+        p = p->next;
+    }
+    return 1;
 }
 
 // usage: mara test minSize maxSize requests seed
@@ -38,7 +67,7 @@ int main(int argc, char **argv) {
         clock_t begin = clock();
 
         for (int i = 1; i <= requests; i++) {
-            unsigned int size = (rand() % sizeSpan) + 1;
+            unsigned int size = (rand() % sizeSpan) + minSize;
             unsigned long *address;
 #ifdef USE_MARA
             address = (unsigned long *) staticNew(size);
@@ -55,12 +84,16 @@ int main(int argc, char **argv) {
 
 #ifdef USE_MARA
 #ifdef STATISTIC
-        printf("mara   %u %15f %12f\n", seed, timeSpent, statisticAverageFillPercentage());
+#ifdef FILLSIMPLE
+        printf("mara   %8u %12f %12f\n", seed, timeSpent, statisticAverageFillPercentage());
 #else
-        printf("mara   %u %15f\n", seed, timeSpent);
+        printf("mara   %8u %12f %12f %5u\n", seed, timeSpent, statisticAverageFillPercentage(), checkPages());
 #endif
 #else
-        printf("malloc %u %f\n", seed, timeSpent);
+        printf("mara   %8u %12f\n", seed, timeSpent);
+#endif
+#else
+        printf("malloc %8u %12f\n", seed, timeSpent);
 #endif
     }
 }

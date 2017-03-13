@@ -14,16 +14,18 @@ void statisticNewStatic(size_t size) {
     }
 }
 
-void statisticNewPage() {
+void statisticNewPage(byte * pointer) {
     if (firstPage == 0) {
         firstPage = malloc(sizeof(struct stat_page));
         firstPage->usedMemory = 0;
         firstPage->pageNr = 1;
+        firstPage->pointer = pointer;
         currentPage = firstPage;
     } else {
         struct stat_page * newp = malloc(sizeof(struct stat_page));
         newp->pageNr = currentPage->pageNr+1;
         newp->usedMemory = 0;
+        newp->pointer = pointer;
         currentPage->next = newp;
         currentPage = newp;
     }

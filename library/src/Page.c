@@ -66,7 +66,7 @@ int createNewPage(){
     endOfPage = startOfPage + pageSize;
     topOfStack = startOfPage;
 #ifdef STATISTIC
-    statisticNewPage();
+    statisticNewPage(startOfPage);
 #endif
     assert(startOfPage);
     assert(topOfStack);
