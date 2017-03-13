@@ -25,8 +25,6 @@ function setFlag {
     lineNumber=$(grep -n "${oldLine}" ${file})
     lineNumber=$( cut -d ':' -f 1 <<< "$lineNumber" )
 
-    echo $lineNumber
-
     sed -i "${lineNumber}s/.*/${newLine}/" ${file}
 
 }
@@ -160,7 +158,6 @@ do
         p)
         if [ -n ${OPTARG} ]
         then
-            echo "hurr"
             pageSize=${OPTARG}
             setFlag "library/include/predefined.h" "#define DEFAULT_PAGE_SIZE" "#define DEFAULT_PAGE_SIZE ${OPTARG}"
         fi
@@ -178,8 +175,6 @@ do
         ;;
     esac
 done
-
-echo "${nParallel}  ${maxSeed}  ${nRequests}  ${minSize}  ${maxSize}"
 
 if [ -z ${nParallel} ] || [ -z ${maxSeed} ] || [ -z ${nRequests} ] || [ -z ${minSize} ] || [ -z ${maxSize} ]
 then
