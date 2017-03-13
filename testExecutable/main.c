@@ -26,7 +26,7 @@ void writeIntoBlock(unsigned long *address, size_t size) {
     }
     fillWith = (uint8_t) ((fillWith == 0xff) ? 0x00 : 0xff);
 #else
-    for (int i = 0; i < size / sizeof(uint32_t); i++) {
+    for (unsigned int i = 0; i < size / sizeof(uint32_t); i++) {
         *(firstByte + i) = (uint32_t) size;
     }
 #endif
