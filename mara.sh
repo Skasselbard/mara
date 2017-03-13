@@ -109,7 +109,9 @@ fi
 
 function maraTest {
   echo "started mara with seed $1"
-  ./mara_test test ${minSize} ${maxSize} ${nRequests} $1 >> ${logPath} 2> ${simpleLogPath}_$1.err
+  ./mara_test test ${minSize} ${maxSize} ${nRequests} $1
+  #>> ${logPath}
+  #2> ${simpleLogPath}_$1.err
   if ! [ -s ${simpleLogPath}_$1.err ]
   then
      rm ${simpleLogPath}_$1.err
