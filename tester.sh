@@ -72,7 +72,10 @@ function iterateAll {
         do
             while [ ${minSize} -le ${minMax} ]
             do
+                if [ ${minSize} -le ${maxSize} ]
+                then
                 ./mara.sh -i ${cores} -s ${seed} -r ${requests} -n ${minSize} -x ${maxSize} -p ${pageSize}
+                fi
                 minSize=$(( minSize + minStep ))
             done
             minSize=${minMin}
@@ -180,6 +183,7 @@ case ${selection} in
     ;;
     *)
     echo "invalid option: ${selection}"
+    exit
     ;;
 esac
 
