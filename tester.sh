@@ -3,6 +3,7 @@
 cores=$1
 seed=$2
 requests=$3
+race=$4
 
 min=0
 max=0
@@ -108,11 +109,18 @@ function getPageSize {
 
 if [ -z ${cores} ] || [ -z ${requests} ] || [ -z ${seed} ]
 then
-    echo "usage: ./tester.sh cores seed requests"
+    echo "usage: ./tester.sh cores seed requests (malloc: y/n)"
     exit
 fi
 
-echo "[1]	./mara.sh -i 50 -s 500 -r 10000000 -n 4 -x 1000"
+if [ -n ${race} ] || [ ${race} == "y" ]
+then
+    COMMON_ARGS="-m -i ${cores} -s ${seed} -r ${requests}"
+else
+    COMMON_ARGS="-i ${cores} -s ${seed} -r ${requests}"
+fi
+
+echo "[1]	./mara.sh ${COMMON_ARGS} -n 4 -x 1000"
 echo "[2]	iterate minSize"
 echo "[3]	iterate maxSize"
 echo "[4]	iterate pageSize"
@@ -121,9 +129,14 @@ echo "[5]	iterate all"
 read -n1 selection
 echo
 
+logBackup=.testlogs
+newLogs=testlogs_`date +%Y-%m-%d_%H-%M-%S`
+
+mv testlogs ${logBackup}
+
 case ${selection} in
     1)
-    ./mara.sh -i 50 -s 500 -r 10000000 -n 4 -x 1000
+    ./mara.sh ${COMMON_ARGS} -n 4 -x 1000
     ;;
     2)
     echo "Interval minSize?"
@@ -169,3 +182,9 @@ case ${selection} in
     echo "invalid option: ${selection}"
     ;;
 esac
+
+if [ -z "$(ls -A testlogs)" ]
+then
+    mv testlogs ${newLogs}
+    mv ${logBackup} testlogs
+fi
