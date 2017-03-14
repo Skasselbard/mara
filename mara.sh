@@ -6,8 +6,6 @@ nRequestsDef=50000
 minSizeDef=4
 maxSizeDef=1000
 
-pageSize=104857600
-
 race="n"
 online="n"
 
@@ -202,7 +200,12 @@ mkdir testlogs
 touch ${logPath}
 
 echo type     seed        time >> "${simpleLogPath}.log"
-echo requests=${nRequests} minSize=${minSize} maxSize=${maxSize} maxSeed=${maxSeed} >> "${simpleLogPath}-eval.log"
+if [ -n ${pageSize} ]
+then
+    echo requests=${nRequests} minSize=${minSize} maxSize=${maxSize} maxSeed=${maxSeed} pageSize=${pageSize} >> "${simpleLogPath}-eval.log"
+else
+    echo requests=${nRequests} minSize=${minSize} maxSize=${maxSize} maxSeed=${maxSeed} >> "${simpleLogPath}-eval.log"
+fi
 
 function testLoop {
 
