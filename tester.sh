@@ -23,7 +23,7 @@ function iterateMinSize {
     currentSize=${min}
     while [ ${currentSize} -le ${max} ]
     do
-        ./mara.sh -i ${cores} -s ${seed} -r ${requests} -n ${currentSize} -x ${maxSize} -p ${pageSize}
+        ./mara.sh ${COMMON_ARGS} -n ${currentSize} -x ${maxSize} -p ${pageSize}
         currentSize=$((currentSize + step))
     done
 }
@@ -38,7 +38,7 @@ function iterateMaxSize {
     currentSize=${min}
     while [ ${currentSize} -le ${max} ]
     do
-        ./mara.sh -i ${cores} -s ${seed} -r ${requests} -n ${minSize} -x ${currentSize} -p ${pageSize}
+        ./mara.sh ${COMMON_ARGS} -n ${minSize} -x ${currentSize} -p ${pageSize}
         currentSize=$((currentSize + step))
     done
 }
@@ -53,7 +53,7 @@ function iteratePageSize {
     currentSize=${min}
     while [ ${currentSize} -le ${max} ]
     do
-        ./mara.sh -i ${cores} -s ${seed} -r ${requests} -n ${minSize} -x ${maxSize} -p ${currentSize}
+        ./mara.sh ${COMMON_ARGS} -n ${minSize} -x ${maxSize} -p ${currentSize}
         currentSize=$((currentSize + step))
     done
 }
@@ -72,7 +72,7 @@ function iterateAll {
             do
                 if [ ${minSize} -le ${maxSize} ]
                 then
-                ./mara.sh -i ${cores} -s ${seed} -r ${requests} -n ${minSize} -x ${maxSize} -p ${pageSize}
+                ./mara.sh ${COMMON_ARGS} -n ${minSize} -x ${maxSize} -p ${pageSize}
                 fi
                 minSize=$(( minSize + minStep ))
             done
@@ -185,8 +185,9 @@ case ${selection} in
     ;;
 esac
 
-if [ -z "$(ls -A testlogs)" ]
+if [ -n "$(ls -A testlogs)" ]
 then
     mv testlogs ${newLogs}
-    mv ${logBackup} testlogs
+    mkdir testlogs
+    mv ${logBackup}/* testlogs
 fi
