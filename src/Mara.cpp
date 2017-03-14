@@ -5,18 +5,13 @@
 #include <malloc.h>
 #include <assert.h>
 #include <stdlib.h>
-#include "../include/Page.h"
+#include "../include/Mara.h"
 #include "../include/predefined.h"
 #include "../include/Statistic.h"
 
-byte* startOfPage = NULL; //equals top of stack on page creation
-byte* endOfPage = NULL; //first byte not in the page anymore
-byte* topOfStack = NULL; //points to the next free byte
-
-size_t pageSize = DEFAULT_PAGE_SIZE;
 
 
-void* allocateStatic(size_t sizeInBytes) {
+void* Mara::staticNew(size_t sizeInBytes) {
     //in case we get a request with size 0
     if(__glibc_unlikely(!sizeInBytes)) return NULL;
     //if we don't have a page yet
@@ -51,8 +46,8 @@ void* allocateStatic(size_t sizeInBytes) {
     return p;
 }
 
-int createNewPage(){
-    startOfPage = malloc(pageSize);
+int Mara::createNewPage(){
+    startOfPage = (byte *) malloc(pageSize);
     if(__glibc_unlikely(!startOfPage)){
 #ifdef LOGGING
         printf("Warn: couldn't allocate a new Page!\n");
@@ -70,7 +65,7 @@ int createNewPage(){
     assert(startOfPage = topOfStack);
     assert(endOfPage > topOfStack);
 #ifdef LOGGING
-    printf("Info:  allocated new page");
+    printf("Info:  allocated new page\n");
 #endif
     return 1;
 }
