@@ -84,6 +84,43 @@ function iterateAll {
     done
 }
 
+function logsToCsv {
+    logFile=${newLogs}/${newLogs}.csv
+    touch ${logFile}
+    for l in ${newLogs}/*-eval.log
+    do
+        read -r requests minSize maxSize maxSeed pageSize < "${l}"
+        i=0
+	line=`grep "mara" ${l}`
+	echo $line
+        for number in ${line}
+        do
+            echo $number
+            case $i in
+                1)
+                total=$number
+                ;;
+                2)
+                factor=$number
+                ;;
+                *)
+                ;;
+            esac
+            i=$((i+1))
+        done
+        if [ -n $requests ] && [ -n $minSize ] && [ -n $maxSize ] && [ -n $maxSeed ] && [ -n $pageSize ]
+        then
+            requests=${requests#requests=}
+            minSize=${minSize#minSize=}
+            maxSize=${maxSize#maxSize=}
+            pageSize=${pageSize#pageSize=}
+            echo "${requests},${minSize},${maxSize},${pageSize},${total},${factor}" >> ${logFile}
+        fi
+    done
+    
+    rm ${newLogs}/*.log
+}
+
 function getInterval {
     echo "Minimum?"
     read min
@@ -190,4 +227,7 @@ then
     mv testlogs ${newLogs}
     mkdir testlogs
     mv ${logBackup}/* testlogs
+
+    logsToCsv
 fi
+
