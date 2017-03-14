@@ -1,2 +1,40 @@
-The memory and resource allocator is a tool to bypass the OS memory management in order to tweak the performance.
+The Memory And Resource Allocator (MARA) is a tool to bypass the OS memory management in order to tweak the performance.
+
+Mara can be used to speed up memory allocation for program parts that will persist until the end of the process runtime.
+Initially mara allocates a big chunk of memory (Page) that will be managed as stack internally. If the stack is full, a
+new page will be allocated and the old one will be forgotten (but the memory will stay allocated). Mara will only make
+sure that the returned space was not used before. The user has to make sure that he will stay inside the boundaries that
+he requested initially. Mara will not take care of any memory cleanup, leaving the operating system to deal with the
+boring part.
+
+
+Build:
+
+To build mara use cmake to build a make file and then use make to build the project. The project will consist of the
+static core library libmara.a and a test program mara_test.
+
+Standard builld:
+    cd /path/to/mara/
+    cmake .
+    make
+
+Release build:
+    cd /path/to/mara/
+    cmake -DCMAKE_BUILD_TYPE=Release .
+    make
+
+Test script:
+
+Mara comes with a test script that builds the mara project and lets the test programm run with a variety of parameters.
+The allocated space will be tested for consistency and a run against malloc will be started to compare the performance.
+You can just run the script and fill out the prompts or start the script with parameters to start with predefined
+parameters. To show a list of the possible parameters start the script with the -h flag.
+
+
+Usage:
+
+To use mara, you have to instantiate an object of the Mara class and then call its staticNew(size) function. Mara will
+give you a void* to a free space with the specified size.
+The default page size is 100mb but can be reset at runtime with the setPageSize() function or before compilation by
+setting DEFAULT_PAGE_SIZE in include/predefined.h.
 
