@@ -60,8 +60,6 @@ function iteratePageSize {
 
 function iterateAll {
 
-    echo "minMin=$minMin, minMax=$minMax, maxMin=$maxMin, maxMax=$maxMax, pageMin=$pageMin, pageMax=$pageMax"
-
     minSize=${minMin}
     maxSize=${maxMin}
     pageSize=${pageMin}
