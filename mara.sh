@@ -1,12 +1,13 @@
 #!/bin/bash
 
-nParallel=10
-maxSeed=123456
-nRequests=50000
-minSize=4
-maxSize=1000
+nParallelDef=2
+maxSeedDef=100
+nRequestsDef=50000
+minSizeDef=4
+maxSizeDef=1000
 
 race="n"
+online="n"
 
 function cleanBuild {
     rm mara Makefile
@@ -16,100 +17,172 @@ function cleanBuild {
 
 function setFlag {
     file=$1
-    flagName=$2
-    enabled=$3
+    oldLine=$2
+    newLine=$3
 
-    lineNumber=$(grep -n "#define ${flagName}" ${file})
+    lineNumber=$(grep -n "${oldLine}" ${file})
     lineNumber=$( cut -d ':' -f 1 <<< "$lineNumber" )
-
-    if [ ${enabled} == "y" ]
-    then
-        newLine="#define ${flagName}"
-    else
-        newLine="\/\/#define ${flagName}"
-    fi
 
     sed -i "${lineNumber}s/.*/${newLine}/" ${file}
 
 }
 
-echo "Race? Press y to race against malloc!"
-read -n1 race
-echo
-
-if [ ${race} == "n" ]
-then
-    echo "Clean build? Press 'y' to clean!"
-    read -n1 c
+function userInteraction {
+    echo "Race? Press y to race against malloc!"
+    read -n1 race
     echo
-    if [ ${c} == "y" ]
+
+
+    if [ ${race} == "n" ]
     then
-        cleanBuild
+        echo "Clean build? Press 'y' to clean!"
+        read -n1 c
+        echo
+        if [ ${c} == "y" ]
+        then
+            cleanBuild
+        fi
     fi
-fi
 
-echo "Maximum parallel instances (give or take 1-2)? Default: 10"
-read c
+    echo "Maximum parallel instances (give or take 1-2)? Default: ${nParallelDef}"
+    read c
 
-re='^[0-9]+$'
-if ! [[ ${c} =~ ${re} ]]
+    re='^[0-9]+$'
+    if ! [[ ${c} =~ ${re} ]]
+    then
+       echo "No valid number entered, defaulting to ${nParallelDef}"
+       nParallel=${nParallelDef}
+       else
+       nParallel=${c}
+    fi
+
+    echo "Amount of requests per iteration? Default: ${nRequestsDef}"
+    read c
+
+    re='^[0-9]+$'
+    if ! [[ ${c} =~ ${re} ]]
+    then
+       echo "No valid number entered, defaulting to ${nRequestsDef}"
+       nRequests=${nRequestsDef}
+       else
+       nRequests=${c}
+    fi
+
+    echo "Maximum Seed? Default: ${maxSeedDef}"
+    read c
+
+    re='^[0-9]+$'
+    if ! [[ ${c} =~ ${re} ]]
+    then
+       echo "No valid number entered, defaulting to ${maxSeedDef}"
+       maxSeed=${maxSeedDef}
+       else
+       maxSeed=${c}
+    fi
+
+    echo "Minimum size allocated? Default: ${minSizeDef}"
+    read c
+
+    re='^[0-9]+$'
+
+    if ! [[ ${c} =~ ${re} ]]
+    then
+       echo "No valid number entered, defaulting to ${minSizeDef}"
+       minSize=${minSizeDef}
+       else
+       minSize=${c}
+    fi
+
+    echo "Maximum size allocated? Default: ${maxSizeDef}"
+    read c
+
+    re='^[0-9]+$'
+
+    if ! [[ ${c} =~ ${re} ]]
+    then
+       echo "No valid number entered, defaulting to ${maxSizeDef}"
+       maxSize=${maxSizeDef}
+       else
+       maxSize=${c}
+    fi
+}
+
+function showHelp {
+    help1="usage: mara.sh [-h (Help)] [-i instances (Parallel instances)] [-s seed (Max seed)]"
+    help2="\t[-r requests (# of Requests)] [-n minSize (Smallest Size)] [-x maxSize (Biggest Size)]"
+    help3="\t[-p pageSize (PageSize in Bytes)]"
+    echo ${help1}
+    echo -e ${help2}
+    echo -e ${help3}
+}
+
+while getopts ":homi:s:r:n:x:p:" flag
+do
+    case ${flag} in
+        h)
+        showHelp
+        exit
+        ;;
+        i)
+        if [ -n ${OPTARG} ]
+        then
+            nParallel=${OPTARG}
+        fi
+        ;;
+        s)
+        if [ -n ${OPTARG} ]
+        then
+            maxSeed=${OPTARG}
+        fi
+        ;;
+        r)
+        if [ -n ${OPTARG} ]
+        then
+            nRequests=${OPTARG}
+        fi
+        ;;
+        n)
+        if [ -n ${OPTARG} ]
+        then
+            minSize=${OPTARG}
+        fi
+        ;;
+        x)
+        if [ -n ${OPTARG} ]
+        then
+            maxSize=${OPTARG}
+        fi
+        ;;
+        p)
+        if [ -n ${OPTARG} ]
+        then
+            pageSize=${OPTARG}
+            setFlag "library/include/predefined.h" "#define DEFAULT_PAGE_SIZE" "#define DEFAULT_PAGE_SIZE ${OPTARG}"
+        fi
+        ;;
+        o)
+        online="y"
+        ;;
+        m)
+        race="y"
+        ;;
+        *)
+        echo "Invalid parameter: $flag"
+        showHelp
+        exit
+        ;;
+    esac
+done
+
+if [ -z ${nParallel} ] || [ -z ${maxSeed} ] || [ -z ${nRequests} ] || [ -z ${minSize} ] || [ -z ${maxSize} ]
 then
-   echo "No valid number entered, defaulting to ${nParallel}"
-   else
-   nParallel=${c}
-fi
-
-echo "Amount of requests per iteration? Default: ${nRequests}"
-read c
-
-re='^[0-9]+$'
-
-if ! [[ ${c} =~ ${re} ]]
-then
-   echo "No valid number entered, defaulting to ${nRequests}"
-   else
-   nRequests=${c}
-fi
-
-echo "Maximum Seed? Default: ${maxSeed}"
-read c
-
-re='^[0-9]+$'
-
-if ! [[ ${c} =~ ${re} ]]
-then
-   echo "No valid number entered, defaulting to ${maxSeed}"
-   else
-   maxSeed=${c}
-fi
-
-echo "Minimum size allocated? Default: ${minSize}"
-read c
-
-re='^[0-9]+$'
-
-if ! [[ ${c} =~ ${re} ]]
-then
-   echo "No valid number entered, defaulting to ${minSize}"
-   else
-   minSize=${c}
-fi
-
-echo "Maximum size allocated? Default: ${maxSize}"
-read c
-
-re='^[0-9]+$'
-
-if ! [[ ${c} =~ ${re} ]]
-then
-   echo "No valid number entered, defaulting to ${maxSize}"
-   else
-   maxSize=${c}
+    echo "Not all parameters were specified, entering interactive mode."
+    userInteraction
 fi
 
 function maraTest {
   echo "started mara with seed $1"
-  ./mara test ${minSize} ${maxSize} ${nRequests} $1 >> ${logPath} 2>> ${simpleLogPath}_$1.err
+  ./mara_test test ${minSize} ${maxSize} ${nRequests} $1 >> ${logPath} 2> ${simpleLogPath}_$1.err
   if ! [ -s ${simpleLogPath}_$1.err ]
   then
      rm ${simpleLogPath}_$1.err
@@ -119,7 +192,7 @@ function maraTest {
 startTime=`date +%Y-%m-%d_%H-%M-%S`
 
 simpleLogPath=testlogs/${startTime}
-setFlag "include/predefined.h" "USE_MARA" "y"
+setFlag "library/include/predefined.h" "#define USE_MARA" "#define USE_MARA"
 logPath=${simpleLogPath}.log
 cleanBuild
 
@@ -127,7 +200,12 @@ mkdir testlogs
 touch ${logPath}
 
 echo type     seed        time >> "${simpleLogPath}.log"
-echo requests=${nRequests} minSize=${minSize} maxSize=${maxSize} maxSeed=${maxSeed} >> "${simpleLogPath}-eval.log"
+if [ -n ${pageSize} ]
+then
+    echo requests=${nRequests} minSize=${minSize} maxSize=${maxSize} maxSeed=${maxSeed} pageSize=${pageSize} >> "${simpleLogPath}-eval.log"
+else
+    echo requests=${nRequests} minSize=${minSize} maxSize=${maxSize} maxSeed=${maxSeed} >> "${simpleLogPath}-eval.log"
+fi
 
 function testLoop {
 
@@ -139,7 +217,7 @@ function testLoop {
       while [ ${n} -ge ${nParallel} ]
       do
         oldN=${n}
-        n=$(ps aux | grep -c "./mara test")
+        n=$(ps aux | grep -c "./mara_test test")
         n=$((n-1))
         if [ ${oldN} -ne ${n} ] && [ ${n} -ge ${nParallel} ]
         then
@@ -159,11 +237,19 @@ function compareResults {
     totalTimeMalloc=0
     totalDifference=0
 
-    { while read -r type seed t
+    totalPageLoad=0
+    corrupted=0
+
+    { while read -r type seed t pageLoad checkSuccess
     do
         if [ "${type}" == "mara" ]
         then
             totalTimeMara=$(echo ${totalTimeMara} + ${t} | bc)
+            totalPageLoad=$(echo ${totalPageLoad} + ${pageLoad} | bc)
+            if [ "$checkSuccess" == "0" ]
+            then
+                corrupted=$((corrupted+1))
+            fi
         elif [ "${type}" == "malloc" ]
         then
             totalTimeMalloc=$(echo ${totalTimeMalloc} + ${t} | bc)
@@ -176,12 +262,15 @@ function compareResults {
     avrgMara=$(echo "scale = 8; ${totalTimeMara} / ${maxSeed}" | bc)
     avrgMalloc=$(echo "scale = 8; ${totalTimeMalloc} / ${maxSeed}" | bc)
     avrgDifference=$(echo "scale = 8; ${totalDifference} / ${maxSeed}" | bc)
+    avrgPageLoad=$(echo "scale = 8; ${totalPageLoad} / ${maxSeed}" | bc)
 
     {
     printf "%-10s %-10s %-10s %-10s\n" " " "total" "average" "factor"
     printf "%-10s %-10s %-10s %-10s\n" "mara" ${totalTimeMara} ${avrgMara} ${factor}
     printf "%-10s %-10s %-10s %-10s\n" "malloc" ${totalTimeMalloc} ${avrgMalloc} 1
     printf "%-10s %-10s %-10s\n" "difference" ${totalDifference} ${avrgDifference}
+
+    echo "Corrupted blocks: ${corrupted}, average page load: ${avrgPageLoad}"
     } >> "${simpleLogPath}-eval.log"
 
 }
@@ -189,21 +278,25 @@ function compareResults {
 
 if [ ${race} == "y" ]
 then
-    setFlag "include/predefined.h" "USE_MARA" "n"
+    setFlag "library/include/predefined.h" "#define USE_MARA" "\/\/#define USE_MARA"
     cleanBuild
     logPath=${simpleLogPath}.log
     testLoop
 
     echo "Waiting for last instances to finish"
-    while [ $(ps aux | grep -c "./mara test") -gt 1 ]
+    while [ $(ps aux | grep -c "./mara_test test") -gt 1 ]
     do
         sleep 1
     done
     compareResults
+    setFlag "library/include/predefined.h" "#define USE_MARA" "#define USE_MARA"
 fi
 
-git add ${simpleLogPath}.log ${simpleLogPath}-eval.log
-git commit -m "updated testlogs"
-git push
+if [ ${online} == "y" ]
+then
+    git add ${simpleLogPath}.log ${simpleLogPath}-eval.log
+    git commit -m "updated testlogs"
+    git push
 
-cat "${simpleLogPath}-eval.log" | mail -s "${simpleLogPath}" "julian.gaede@uni-rostock.de"
+    cat "${simpleLogPath}-eval.log" | mail -s "${simpleLogPath}" "julian.gaede@uni-rostock.de"
+fi
