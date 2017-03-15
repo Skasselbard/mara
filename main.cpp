@@ -2,7 +2,7 @@
 #include <memory.h>
 #include <time.h>
 #include <stdlib.h>
-#include <pthread.h>
+#include <thread>
 #include "include/predefined.h"
 #include "include/Mara.h"
 
@@ -14,7 +14,7 @@ unsigned int requests = 10000;
 unsigned int seed = 1234;
 
 unsigned int numThreads = 1;
-pthread_t * threads;
+std::thread * threads;
 Statistic * statistics;
 
 //#define FILLSIMPLE
@@ -69,12 +69,11 @@ void * testingRoutine(Mara * mara) {
     }
 }
 
-void * threadTestingRoutine(void * tid) {
-    srand((*(unsigned int *) tid + 1) * seed);
+void * threadTestingRoutine(unsigned int tid) {
+    srand((tid + 1) * seed);
     Mara * mara = new Mara();
     testingRoutine(mara);
-    statistics[*(unsigned int *) tid] = *(mara->statistic);
-    pthread_exit(NULL);
+    statistics[tid] = *(mara->statistic);
 }
 
 void evaluateStatistics(double * averageFill, unsigned long * memoryRequested) {
@@ -128,17 +127,17 @@ int main(int argc, char **argv) {
         clock_t end;
 
         if (numThreads > 1) {
-            threads = new pthread_t[numThreads];
+            threads = new std::thread[numThreads];
             statistics = new Statistic[numThreads];
             int rc;
 
             for (unsigned int i = 0; i < numThreads; i++) {
-                rc = pthread_create(&threads[i], NULL, threadTestingRoutine, (void *) &i);
+                threads[i] = std::thread(threadTestingRoutine, i);
             }
 
             void * ret;
             for (unsigned int i = 0; i < numThreads; i++) {
-                pthread_join(threads[i], &ret);
+                threads[i].join();
             }
             end = clock();
         } else {
