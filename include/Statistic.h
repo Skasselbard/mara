@@ -3,19 +3,32 @@
 //
 
 #include <stddef.h>
+#include "predefined.h"
 
 #ifndef MARA_STATISTIC_H
 #define MARA_STATISTIC_H
 
 struct stat_page {
     int pageNr;
-    long usedMemory;
-    struct stat_page * next;
+    unsigned long usedMemory;
+    byte *pointer;
+    struct stat_page *next;
 };
 
-void statisticNewStatic(size_t size);
-void statisticNewPage();
-void printPages();
-double statisticAverageFillPercentage();
+class Statistic {
 
+public:
+
+    stat_page *firstPage = 0;
+    stat_page *currentPage = 0;
+
+    void newStatic(size_t size);
+
+    void newPage(byte *pointer);
+
+    void printPages();
+
+    double averageFillPercentage();
+
+};
 #endif //MARA_STATISTIC_H

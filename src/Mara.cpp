@@ -6,10 +6,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include "../include/Mara.h"
-#include "../include/predefined.h"
-#include "../include/Statistic.h"
-
-
 
 void* Mara::staticNew(size_t sizeInBytes) {
     //in case we get a request with size 0
@@ -36,7 +32,7 @@ void* Mara::staticNew(size_t sizeInBytes) {
     byte* p = topOfStack;
     topOfStack = topOfStack+sizeInBytes;
 #ifdef STATISTIC
-    statisticNewStatic(sizeInBytes);
+    statistic->newStatic(sizeInBytes);
 #endif
     assert(startOfPage);
     assert(topOfStack);
@@ -57,7 +53,7 @@ int Mara::createNewPage(){
     endOfPage = startOfPage + pageSize;
     topOfStack = startOfPage;
 #ifdef STATISTIC
-    statisticNewPage();
+    statistic->newPage(startOfPage);
 #endif
     assert(startOfPage);
     assert(topOfStack);
