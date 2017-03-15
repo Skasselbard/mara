@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.3)
 project(mara CXX)
 
-set(CMAKE_CPP_FLAGS "${CMAKE_CPP_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(HEADER_FILES
         include/Mara.h
@@ -20,5 +20,7 @@ set(CMAKE_INCLUDE_PATH
         )
 
 add_library(mara ${SOURCE_FILES})
+find_package(Threads)
 add_executable(mara_test main.cpp)
-TARGET_LINK_LIBRARIES(mara_test mara)
+target_link_libraries(mara_test ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(mara_test mara)

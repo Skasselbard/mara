@@ -6,7 +6,8 @@
 #ifndef MARA_PAGE_H
 #define MARA_PAGE_H
 
-#include "../include/predefined.h"
+#include "predefined.h"
+#include "Statistic.h"
 
 class Mara {
 
@@ -22,7 +23,7 @@ private:
 
 public:
 
-    /**
+/**
      * Reserves memory in the static sector. Memory in this sector is expected to live as long as the program. Memory
      * allocated with this function CANNOT be freed. Mara returns a pointer to the location with an unused block with the
      * given size and completely ignore this space in the future. The advantage is that these blocks will produce absolutely
@@ -41,6 +42,8 @@ public:
      * \return 0 on success
      */
     int setPageSize(size_t sizeInByte);
+
+    Statistic * statistic = new Statistic();
 
 
 };
