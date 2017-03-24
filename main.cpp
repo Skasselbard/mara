@@ -86,10 +86,11 @@ void evaluateStatistics(double * averageFill, unsigned long * memoryRequested) {
         struct stat_page *p = stat.firstPage;
         while (p != 0) {
             fillPercentSum += (double) p->usedMemory / DEFAULT_PAGE_SIZE;
-            *memoryRequested = p->usedMemory;
+            *memoryRequested = *memoryRequested + p->usedMemory;
             p = p->next;
             pageCount++;
         }
+        //printf("fillPs=%f, memory=%lu, thread=%u\n", fillPercentSum, *memoryRequested, i);
     }
     *averageFill = fillPercentSum / pageCount;
 }

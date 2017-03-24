@@ -110,13 +110,13 @@ function userInteraction {
 function showHelp {
     help1="usage: mara.sh [-h (Help)] [-i instances (Parallel instances)] [-s seed (Max seed)]"
     help2="\t[-r requests (# of Requests)] [-n minSize (Smallest Size)] [-x maxSize (Biggest Size)]"
-    help3="\t[-p pageSize (PageSize in Bytes)]"
+    help3="\t[-p pageSize (PageSize in Bytes)] [-t Threads]"
     echo ${help1}
     echo -e ${help2}
     echo -e ${help3}
 }
 
-while getopts ":homi:s:r:n:x:p:" flag
+while getopts ":homi:s:r:n:x:p:t:" flag
 do
     case ${flag} in
         h)
@@ -166,6 +166,12 @@ do
         m)
         race="y"
         ;;
+        t)
+        if [ -n ${OPTARG} ]
+        then
+            threads=${OPTARG}
+        fi
+	;;
         *)
         echo "Invalid parameter: $flag"
         showHelp
