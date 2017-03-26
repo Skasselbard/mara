@@ -157,7 +157,7 @@ do
         if [ -n ${OPTARG} ]
         then
             pageSize=${OPTARG}
-            setFlag "library/include/predefined.h" "#define DEFAULT_PAGE_SIZE" "#define DEFAULT_PAGE_SIZE ${OPTARG}"
+            setFlag "include/predefined.h" "#define DEFAULT_PAGE_SIZE" "#define DEFAULT_PAGE_SIZE ${OPTARG}"
         fi
         ;;
         o)
@@ -187,7 +187,7 @@ then
 fi
 
 function maraTest {
-  echo "started mara with seed $1"
+#  echo "started mara with seed $1"
   ./mara_test test ${minSize} ${maxSize} ${nRequests} $1 >> ${logPath} 2> ${simpleLogPath}_$1.err
   if ! [ -s ${simpleLogPath}_$1.err ]
   then
@@ -218,7 +218,7 @@ function testLoop {
     n=0
     for i in `seq 1 ${maxSeed}`
     do
-      n=$(ps aux | grep -c "./mara test")
+      n=$(ps aux | grep -c "./mara_test test")
       n=$((n-1))
       while [ ${n} -ge ${nParallel} ]
       do
