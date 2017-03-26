@@ -1,5 +1,13 @@
 #!/bin/bash
 
+PROJECT=".."
+PREDEFINED="include/predefined.h"
+
+updateMail="julian.gaede@uni-rostock.de"
+
+oldpath=`pwd`
+cd ${PROJECT}
+
 nParallelDef=2
 maxSeedDef=100
 nRequestsDef=50000
@@ -157,7 +165,7 @@ do
         if [ -n ${OPTARG} ]
         then
             pageSize=${OPTARG}
-            setFlag "include/predefined.h" "#define DEFAULT_PAGE_SIZE" "#define DEFAULT_PAGE_SIZE ${OPTARG}"
+            setFlag "${PREDEFINED}" "#define DEFAULT_PAGE_SIZE" "#define DEFAULT_PAGE_SIZE ${OPTARG}"
         fi
         ;;
         o)
@@ -198,7 +206,7 @@ function maraTest {
 startTime=`date +%Y-%m-%d_%H-%M-%S`
 
 simpleLogPath=testlogs/${startTime}
-setFlag "include/predefined.h" "#define USE_MARA" "#define USE_MARA"
+setFlag "${PREDEFINED}" "#define USE_MARA" "#define USE_MARA"
 logPath=${simpleLogPath}.log
 cleanBuild
 
@@ -238,56 +246,9 @@ function testLoop {
 testLoop
 
 
-function compareResults {
-    totalTimeMara=0
-    totalTimeMalloc=0
-    totalDifference=0
-
-    totalMemory=0
-    totalPageLoad=0
-    corrupted=0
-
-    { while read -r type seed t memory pageLoad checkSuccess
-    do
-        if [ "${type}" == "mara" ]
-        then
-            totalTimeMara=$(echo ${totalTimeMara} + ${t} | bc)
-            totalPageLoad=$(echo ${totalPageLoad} + ${pageLoad} | bc)
-            totalMemory=$(echo ${totalMemory} + ${memory} | bc)
-            if [ "$checkSuccess" == "0" ]
-            then
-                corrupted=$((corrupted+1))
-            fi
-        elif [ "${type}" == "malloc" ]
-        then
-            totalTimeMalloc=$(echo ${totalTimeMalloc} + ${t} | bc)
-        fi
-    done } < ${simpleLogPath}.log
-
-    totalDifference=$(echo "scale = 8; ${totalTimeMara} - ${totalTimeMalloc}" | bc)
-    factor=$(echo "scale = 6; ${totalTimeMara} / ${totalTimeMalloc}" | bc)
-
-    avrgMara=$(echo "scale = 8; ${totalTimeMara} / ${maxSeed}" | bc)
-    avrgMalloc=$(echo "scale = 8; ${totalTimeMalloc} / ${maxSeed}" | bc)
-    avrgDifference=$(echo "scale = 8; ${totalDifference} / ${maxSeed}" | bc)
-    avrgPageLoad=$(echo "scale = 8; ${totalPageLoad} / ${maxSeed}" | bc)
-    avrgMemory=$(echo "scale = 8; ${totalMemory} / ${maxSeed}" | bc)
-
-    {
-    printf "%-10s %-10s %-10s %-10s\n" " " "total" "average" "factor"
-    printf "%-10s %-10s %-10s %-10s\n" "mara" ${totalTimeMara} ${avrgMara} ${factor}
-    printf "%-10s %-10s %-10s %-10s\n" "malloc" ${totalTimeMalloc} ${avrgMalloc} 1
-    printf "%-10s %-10s %-10s\n" "difference" ${totalDifference} ${avrgDifference}
-
-    echo "Corrupted blocks: ${corrupted}, average page load: ${avrgPageLoad}, average memory requested: ${avrgMemory}"
-    } >> "${simpleLogPath}-eval.log"
-
-}
-
-
 if [ ${race} == "y" ]
 then
-    setFlag "include/predefined.h" "#define USE_MARA" "\/\/#define USE_MARA"
+    setFlag "${PREDEFINED}" "#define USE_MARA" "\/\/#define USE_MARA"
     cleanBuild
     logPath=${simpleLogPath}.log
     testLoop
@@ -297,8 +258,10 @@ then
     do
         sleep 1
     done
-    compareResults
-    setFlag "include/predefined.h" "#define USE_MARA" "#define USE_MARA"
+
+    ${oldpath}/evalresults ${simpleLogPath}
+
+    setFlag "${PREDEFINED}" "#define USE_MARA" "#define USE_MARA"
 fi
 
 if [ ${online} == "y" ]
@@ -307,5 +270,7 @@ then
     git commit -m "updated testlogs"
     git push
 
-    cat "${simpleLogPath}-eval.log" | mail -s "${simpleLogPath}" "julian.gaede@uni-rostock.de"
+    cat "${simpleLogPath}-eval.log" | mail -s "${simpleLogPath}" "${updateMail}"
 fi
+
+cd ${oldpath}
