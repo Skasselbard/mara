@@ -19,7 +19,7 @@ do
         totalTimeMara=$(echo ${totalTimeMara} + ${t} | bc)
         totalPageLoad=$(echo ${totalPageLoad} + ${pageLoad} | bc)
         totalMemory=$(echo ${totalMemory} + ${memory} | bc)
-        nSeeds=$((nSeeds + 1))
+        maxSeed=$((maxSeed + 1))
         if [ "$checkSuccess" == "0" ]
         then
             corrupted=$((corrupted+1))
@@ -37,7 +37,7 @@ avrgMara=$(echo "scale = 8; ${totalTimeMara} / ${maxSeed}" | bc)
 avrgMalloc=$(echo "scale = 8; ${totalTimeMalloc} / ${maxSeed}" | bc)
 avrgDifference=$(echo "scale = 8; ${totalDifference} / ${maxSeed}" | bc)
 avrgPageLoad=$(echo "scale = 8; ${totalPageLoad} / ${maxSeed}" | bc)
-avrgMemory=$(echo "scale = 8; ${totalMemory} / ${maxSeed}" | bc)
+avrgMemory=$(echo "${totalMemory} / ${maxSeed}" | bc)
 
 {
 printf "%-10s %-10s %-10s %-10s\n" " " "total" "average" "factor"
