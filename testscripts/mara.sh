@@ -222,39 +222,44 @@ else
 fi
 
 function testLoop {
-
     n=0
     for i in `seq 1 ${maxSeed}`
     do
-      n=$(ps aux | grep -c "./mara_test test")
+      n=$(ps aux | grep -c "mara_test test")
       n=$((n-1))
       while [ ${n} -ge ${nParallel} ]
       do
         oldN=${n}
-        n=$(ps aux | grep -c "./mara_test test")
+        n=$(ps aux | grep -c "mara_test test")
         n=$((n-1))
         if [ ${oldN} -ne ${n} ] && [ ${n} -ge ${nParallel} ]
         then
-          echo "waiting for terminations: running=$n"
+#          echo "waiting for terminations: running=$n"
           sleep 1
         fi
       done
       maraTest ${i} &
+      if [ $((i % (maxSeed / 10))) -eq 0 ]
+      then
+          printf "#"
+      fi
     done
+    echo
 }
 
+printf "mara: "
 testLoop
-
 
 if [ ${race} == "y" ]
 then
     setFlag "${PREDEFINED}" "#define USE_MARA" "\/\/#define USE_MARA"
     cleanBuild
     logPath=${simpleLogPath}.log
+    printf "malloc: "
     testLoop
 
     echo "Waiting for last instances to finish"
-    while [ $(ps aux | grep -c "./mara_test test") -gt 1 ]
+    while [ $(ps aux | grep -c "mara_test test") -gt 1 ]
     do
         sleep 1
     done
