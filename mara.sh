@@ -198,7 +198,7 @@ function maraTest {
 startTime=`date +%Y-%m-%d_%H-%M-%S`
 
 simpleLogPath=testlogs/${startTime}
-setFlag "library/include/predefined.h" "#define USE_MARA" "#define USE_MARA"
+setFlag "include/predefined.h" "#define USE_MARA" "#define USE_MARA"
 logPath=${simpleLogPath}.log
 cleanBuild
 
@@ -284,7 +284,7 @@ function compareResults {
 
 if [ ${race} == "y" ]
 then
-    setFlag "library/include/predefined.h" "#define USE_MARA" "\/\/#define USE_MARA"
+    setFlag "include/predefined.h" "#define USE_MARA" "\/\/#define USE_MARA"
     cleanBuild
     logPath=${simpleLogPath}.log
     testLoop
@@ -295,7 +295,7 @@ then
         sleep 1
     done
     compareResults
-    setFlag "library/include/predefined.h" "#define USE_MARA" "#define USE_MARA"
+    setFlag "include/predefined.h" "#define USE_MARA" "#define USE_MARA"
 fi
 
 if [ ${online} == "y" ]
