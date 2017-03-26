@@ -243,15 +243,17 @@ function compareResults {
     totalTimeMalloc=0
     totalDifference=0
 
+    totalMemory=0
     totalPageLoad=0
     corrupted=0
 
-    { while read -r type seed t pageLoad checkSuccess
+    { while read -r type seed t memory pageLoad checkSuccess
     do
         if [ "${type}" == "mara" ]
         then
             totalTimeMara=$(echo ${totalTimeMara} + ${t} | bc)
             totalPageLoad=$(echo ${totalPageLoad} + ${pageLoad} | bc)
+            totalMemory=$(echo ${totalMemory} + ${memory} | bc)
             if [ "$checkSuccess" == "0" ]
             then
                 corrupted=$((corrupted+1))
@@ -269,6 +271,7 @@ function compareResults {
     avrgMalloc=$(echo "scale = 8; ${totalTimeMalloc} / ${maxSeed}" | bc)
     avrgDifference=$(echo "scale = 8; ${totalDifference} / ${maxSeed}" | bc)
     avrgPageLoad=$(echo "scale = 8; ${totalPageLoad} / ${maxSeed}" | bc)
+    avrgMemory=$(echo "scale = 8; ${totalMemory} / ${maxSeed}" | bc)
 
     {
     printf "%-10s %-10s %-10s %-10s\n" " " "total" "average" "factor"
@@ -276,7 +279,7 @@ function compareResults {
     printf "%-10s %-10s %-10s %-10s\n" "malloc" ${totalTimeMalloc} ${avrgMalloc} 1
     printf "%-10s %-10s %-10s\n" "difference" ${totalDifference} ${avrgDifference}
 
-    echo "Corrupted blocks: ${corrupted}, average page load: ${avrgPageLoad}"
+    echo "Corrupted blocks: ${corrupted}, average page load: ${avrgPageLoad}, average memory requested: ${avrgMemory}"
     } >> "${simpleLogPath}-eval.log"
 
 }
