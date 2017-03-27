@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -n $1 ] || [ -n $2 ]
+if [ -z $1 ] || [ -z $2 ]
 then
     echo "Insufficient parameters! Usage: eval2csv [ LOG DIRECTORY ] [ PATH TO CSV ]"
     exit
