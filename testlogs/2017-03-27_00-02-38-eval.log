@@ -1,6 +1,0 @@
-requests=80000000 minSize=4 maxSize=1000 maxSeed=100 pageSize=536870912
-           total      average    factor    
-mara       2934.270000 29.34270000 .620182   
-malloc     4731.300000 47.31300000 1         
-difference -1797.030000 -17.97030000
-Corrupted blocks: 0, average page load: .99639186, average memory requested: 40120034853
