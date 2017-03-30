@@ -12,22 +12,22 @@ class Statistic {
 public:
     /**
      * Registers a new dynamic memory array into the statistic.
-     * @param size the array's size
-     * @param address the array's address
+     * \param size the array's size
+     * \param address the array's address
      */
     static void newDynamic(size_t size, void * address);
 
     /**
      * Registers a new static memory array into the statistic.
-     * @param size the array's size
-     * @param address the array's address
+     * \param size the array's size
+     * \param address the array's address
      */
     static void newStatic(size_t size, void * address);
 
     /**
      * "Unregisters" a dynamic memory array from the statistic.
-     * @param size the array's size
-     * @param address the array's address
+     * \param size the array's size
+     * \param address the array's address
      */
     static void freeDynamic(size_t size, void * address);
 
