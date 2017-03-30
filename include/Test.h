@@ -42,7 +42,7 @@ public:
      * about the requested blocks (min, max, [ average is currently ignored ]), iterations (after each iteration, all
      * pages are deleted and another n requests are made), seed for the RNG.
      *
-     * Syntax: {@code test amountNewVariables pDynamic pFree minSize averageSize maxSize iterations seed}
+     * Syntax: mara test amountNewVariables pDynamic pFree minSize averageSize maxSize iterations seed
      *
      * After a request, the received block is filled with values depending on FILL_REQUESTED_MEMORY. Before freeing a
      * block, it is filled with zeroes to make debugging easier.
@@ -71,8 +71,8 @@ public:
      * FILL_REQUESTED_MEMORY macro. If the block is to be filled with its starting address, any rest of 7 bytes or
      * smaller is ignored.
      *
-     * @param address the block's starting address
-     * @param size the block's size
+     * \param address the block's starting address
+     * \param size the block's size
      */
     static void writeIntoBlock(unsigned long * address, size_t size);
 
