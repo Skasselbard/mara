@@ -20,11 +20,6 @@ unsigned int Test::freeSpaceNotInBucketList = 0;
 unsigned int Test::corruptedBlocks = 0;
 
 
-/**
- * Syntax: {@code test amountNewVariables pDynamic pFree minSize averageSize maxSize iterations seed}
- * Example arguments: test 50000 0.85 0.2 4 16 1000 1 123456789
- */
-
 int Test::test(int argc, char **argv) {
 
     clock_t begin = clock();
@@ -54,7 +49,6 @@ int Test::test(int argc, char **argv) {
     std::uniform_real_distribution<double> prob_distribution(0, 1);
     std::uniform_int_distribution<unsigned int> dynamicVariable_distribution(0, amountNewVariables - 1);
 
-    // TODO maybe think of better distribution, maybe not
     std::uniform_int_distribution<unsigned int> size_distribution(minSize, maxSize);
 
     for (int iterations = 1; iterations <= maxIterations; iterations++) {
@@ -161,7 +155,6 @@ int Test::checkPages() {
 #if FILL_REQUESTED_MEMORY != -1
                 unsigned long *memoryStart = (unsigned long *) (blockPointer + codeBlockSize);
                 for (int i = 0; i < memorySize / 8 - 1; i++) {
-                    // TODO if less than 6 bytes are left, those are attached to the array. CHECK!
                     bool valid;
 #if FILL_REQUESTED_MEMORY == 0
                     valid = *(memoryStart + i) == 0;
@@ -209,44 +202,5 @@ void Test::readArguments(int argc, char **argv, unsigned int *amountNewVariables
         sscanf(argv[7], "%u", maxSize);
         sscanf(argv[8], "%u", maxIterations);
         sscanf(argv[9], "%u", seed);
-    }
-}
-
-void Test::distributionTest() {
-
-    unsigned int seed = 123456789;
-
-    unsigned int amountNewVariables, minSize, averageSize, maxSize, maxIterations;
-    double pDynamic, pFree;
-
-    maxIterations = 1;
-    amountNewVariables = 50000;
-    pDynamic = 0.85;
-    pFree = 0.2;
-    minSize = 4;
-    averageSize = 16;
-    maxSize = 1000;
-
-    std::vector<unsigned long *> dynamicPointers;
-
-    std::mt19937 generator(seed);
-
-    float stddev = (float) 5 * (min(averageSize - maxSize, averageSize - minSize));
-    std::normal_distribution<> d(averageSize, stddev);
-
-    std::map<int, int> hist;
-    for (int n = 0; n < 10000; ++n) {
-        //cout << d(generator) << endl;
-        int r;
-        do {
-            r = (int) d(generator) / 4;
-            cout << r << endl;
-        } while (r < minSize / 4 || r > maxSize / 4);
-        ++hist[r];
-    }
-    for (auto p : hist) {
-        std::cout << p.first * 4 << ' '
-                  << '(' << p.second << ") "
-                  << std::string((unsigned long) (p.second / 100), '*') << '\n';
     }
 }
