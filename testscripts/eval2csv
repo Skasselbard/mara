@@ -1,5 +1,12 @@
 #!/bin/bash
 
+################################################################################
+#                                                                              #
+#  This script takes a folder with logfiles and compresses the results of      #
+#  the testruns into a single csv file (Parameter #2).                         #
+#                                                                              #
+################################################################################
+
 if [ -z $1 ] || [ -z $2 ]
 then
     echo "Insufficient parameters! Usage: eval2csv [ LOG DIRECTORY ] [ PATH TO CSV ]"
@@ -10,6 +17,8 @@ logDirectory=$1
 csvFile=$2
 
 touch ${csvFile}
+echo requests,minsize,maxsize,pagesize,totaltime,factormalloc >> ${csvFile}
+
 for l in ${logDirectory}/*-eval.log
 do
     read -r requests minSize maxSize maxSeed pageSize < "${l}"
