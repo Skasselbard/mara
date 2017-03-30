@@ -1,9 +1,21 @@
 #!/bin/bash
 
+################################################################################
+#                                                                              #
+#  This script works as the main way to test a single parameter configuration  #
+#  for an arbitrary amount of seeds. The test parameters can either be         #
+#  specified via the command line parameters or an interactive dialog.         #
+#  The script can change the pagesize of the library, as well as call          #
+#  "evalresults" to compare results of a race vs malloc. It is also possible   #
+#  to specify an email address to which the results will be sent, as well as   #
+#  a git autocommit of the testlogs.                                           #
+#                                                                              #
+################################################################################
+
 PROJECT=".."
 PREDEFINED="include/predefined.h"
 
-updateMail="julian.gaede@uni-rostock.de"
+updateMail="julian.gaede@uni-rostock.de" # please change!
 
 oldpath=`pwd`
 cd ${PROJECT}
