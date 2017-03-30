@@ -3,4 +3,4 @@ requests=80000000 minSize=1000 maxSize=4000 maxSeed=100 pageSize=4294967296
 mara       12960.400000 129.60400000 .550995   
 malloc     23521.770000 235.21770000 1         
 difference -10561.370000 -105.61370000
-Corrupted blocks: 0, average page load: 199957354231.07000000
+Corrupted blocks: 0, average page load: .99055745, average memory requested: 199957354231

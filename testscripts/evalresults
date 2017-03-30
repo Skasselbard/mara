@@ -21,7 +21,7 @@ totalDifference=0
 
 totalMemory=0
 totalPageLoad=0
-corrupted=0
+errors=0
 
 { while read -r type seed t memory pageLoad checkSuccess
 do
@@ -31,9 +31,9 @@ do
         totalPageLoad=$(echo ${totalPageLoad} + ${pageLoad} | bc)
         totalMemory=$(echo ${totalMemory} + ${memory} | bc)
         maxSeed=$((maxSeed + 1))
-        if [ "$checkSuccess" == "0" ]
+        if [ "$checkSuccess" != "0" ]
         then
-            corrupted=$((corrupted+1))
+            errors=$((errors+1))
         fi
     elif [ "${type}" == "malloc" ]
     then
@@ -56,5 +56,5 @@ printf "%-10s %-10s %-10s %-10s\n" "mara" ${totalTimeMara} ${avrgMara} ${factor}
 printf "%-10s %-10s %-10s %-10s\n" "malloc" ${totalTimeMalloc} ${avrgMalloc} 1
 printf "%-10s %-10s %-10s\n" "difference" ${totalDifference} ${avrgDifference}
 
-echo "Corrupted blocks: ${corrupted}, average page load: ${avrgPageLoad}, average memory requested: ${avrgMemory}"
+echo "Errors: ${errors}, average page load: ${avrgPageLoad}, average memory requested: ${avrgMemory}"
 } >> "${simpleLogPath}-eval.log"
