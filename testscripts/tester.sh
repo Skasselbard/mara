@@ -1,5 +1,14 @@
 #!/bin/bash
 
+################################################################################
+#                                                                              #
+#  This script can iterate over the 3 parameters of a test: minimum/maximum    #
+#  requested size and the pagesize. The amount of cores, the maximum Seed and  #
+#  number of requests need to be given as parameters, as well as a flag        #
+#  whether a comparison with malloc is desired.                                #
+#                                                                              #
+################################################################################
+
 cores=$1
 seed=$2
 requests=$3
