@@ -22,30 +22,41 @@ echo requests,minsize,maxsize,pagesize,totaltime,factormalloc >> ${csvFile}
 for l in ${logDirectory}/*-eval.log
 do
     read -r requests minSize maxSize maxSeed pageSize < "${l}"
+    #echo "${requests},${minSize},${maxSize},${pageSize},${total},${factor}"
     i=0
 	line=`grep "mara" ${l}`
-	echo ${line}
+	#echo ${line}
     for number in ${line}
     do
-        echo ${number}
+        #echo ${number}
         case ${i} in
             1)
             total=${number}
+            #echo read total: ${number}
             ;;
-            2)
+            3)
             factor=${number}
+            #echo read factor: ${number}
             ;;
             *)
             ;;
         esac
         i=$((i+1))
     done
+    lastLine=`grep "memory requested" ${l}`
+    errors=${lastLine#*blocks: }
+    errors=${errors%%, *}
+    pageLoad=${lastLine#*page load: }
+    pageLoad=${pageLoad%%,*}
+    memory=${lastLine#*memory requested: }
+    memory=${memory%% *}
     if [ -n ${requests} ] && [ -n ${minSize} ] && [ -n ${maxSize} ] && [ -n ${maxSeed} ] && [ -n ${pageSize} ]
     then
         requests=${requests#requests=}
         minSize=${minSize#minSize=}
         maxSize=${maxSize#maxSize=}
         pageSize=${pageSize#pageSize=}
-        echo "${requests},${minSize},${maxSize},${pageSize},${total},${factor}" >> ${csvFile}
+        echo "${requests},${minSize},${maxSize},${pageSize},${total},${factor},${pageLoad},${memory},${errors}"
+        echo "${requests},${minSize},${maxSize},${pageSize},${total},${factor},${pageLoad},${memory},${errors}" >> ${csvFile}
     fi
 done
