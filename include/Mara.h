@@ -60,7 +60,7 @@ public:
      * \param sizeInByte default size for malloc calls from mara
      * \return 0 on success
      */
-    int setPageSize(size_t sizeInByte) { pageSize = sizeinByte; };
+    int setPageSize(size_t sizeInByte) { pageSize = sizeinByte; return 0; };
 
     Statistic * statistic = new Statistic();
 
