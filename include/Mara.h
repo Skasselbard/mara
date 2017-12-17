@@ -55,8 +55,7 @@ public:
 
     /**
      * Sets the default size for blocks allocated from the system. These blocks are used bei mara for internal memory management.
-     * Calling staticNew and dynamicNew will allocate memory in one of these blocks. Because of internal structure, the
-     * blocks cannot be greater than approximately 4GB.
+     * Calling staticNew will allocate memory in one of these blocks.
      * \param sizeInByte default size for malloc calls from mara
      * \return 0 on success
      */
